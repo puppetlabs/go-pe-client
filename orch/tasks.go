@@ -1,29 +1,26 @@
 package orch
 
-// Tasks contains the response from /v1/tasks
+// Tasks contains the response from /orchestrator/v1/tasks
 type Tasks struct {
 	Environment struct {
-		Name   string      `json:"name"`
-		CodeID interface{} `json:"code_id"`
-	} `json:"environment,omitempty"`
+		Name   string `json:"name"`
+		CodeID string `json:"code_id"`
+	} `json:"environment"`
 	Items []struct {
-		ID        string `json:"id"`
-		Name      string `json:"name"`
-		Permitted bool   `json:"permitted"`
-	} `json:"items,omitempty"`
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"items"`
 }
 
-// Tasks returns information about all installed tasks
+// Tasks sends requests to /orchestrator/v1/tasks
 func (c *Client) Tasks() (*Tasks, error) {
-	tasks := &Tasks{}
-	r, err := c.resty.R().
-		SetResult(tasks).
-		Get("/orchestrator/v1/tasks")
+	payload := &Tasks{}
+	r, err := c.resty.R().SetResult(payload).Get("/orchestrator/v1/tasks")
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
 		return nil, r.Error().(error)
 	}
-	return tasks, nil
+	return payload, nil
 }

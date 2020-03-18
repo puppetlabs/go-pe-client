@@ -1,0 +1,19 @@
+{
+    "environment": {
+        "name": "production",
+        "code_id": "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"
+    },
+    "items": [{
+            "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install",
+            "name": "package::install"
+        },
+        {
+            "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade",
+            "name": "package::upgrade"
+        },
+        {
+            "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/exec/init",
+            "name": "exec"
+        }
+    ]
+}
