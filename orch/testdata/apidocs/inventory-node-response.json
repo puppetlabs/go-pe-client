@@ -1,0 +1,6 @@
+{
+    "name": "foo.example.com",
+    "connected": true,
+    "broker": "pcp://broker.example.com/server",
+    "timestamp": "2017-03-29T21:48:09.633Z"
+}

@@ -1,0 +1,38 @@
+{
+    "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install",
+    "name": "package::install",
+    "environment": {
+        "name": "production",
+        "code_id": "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"
+    },
+    "metadata": {
+        "description": "Install a package",
+        "supports_noop": true,
+        "input_method": "stdin",
+        "parameters": {
+            "name": {
+                "description": "The package to install",
+                "type": "String[1]"
+            },
+            "provider": {
+                "description": "The provider to use to install the package",
+                "type": "Optional[String[1]]"
+            },
+            "version": {
+                "description": "The version of the package to install, defaults to latest",
+                "type": "Optional[String[1]]"
+            }
+        }
+    },
+    "files": [{
+        "filename": "install",
+        "uri": {
+            "path": "/package/tasks/install",
+            "params": {
+                "environment": "production"
+            }
+        },
+        "sha256": "a9089b5b9720dca38a49db6f164cf8a053a7ea528711325da1c23de94672980f",
+        "size_bytes": 693
+    }]
+}

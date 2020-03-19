@@ -1,0 +1,19 @@
+{
+    "items": [{
+            "name": "foo.example.com",
+            "connected": true,
+            "broker": "pcp://broker.example.com/server",
+            "timestamp": "2017-07-14T15:57:33.640Z"
+        },
+        {
+            "name": "bar.example.com",
+            "connected": false
+        },
+        {
+            "name": "baz.example.com",
+            "connected": true,
+            "broker": "pcp://broker.example.com/server",
+            "timestamp": "2017-07-14T15:41:19.242Z"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "nodes": [
+        "foo.example.com",
+        "bar.example.com",
+        "baz.example.com"
+    ]
+}

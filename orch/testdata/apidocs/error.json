@@ -1,7 +1,0 @@
-{
-  "kind" : "puppetlabs.orchestrator/unknown-environment",
-  "msg" : "Unknown environment doesnotexist",
-  "details" : {
-    "environment" : "doesnotexist"
-  }
-}
