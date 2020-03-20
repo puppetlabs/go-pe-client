@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+        "os"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/puppetlabs/go-pe-client/orch"
@@ -9,10 +10,11 @@ import (
 )
 
 func main() {
-
-	pdbHost := "https://lenient-veranda.delivery.puppetlabs.net:8081"
-	orchHost := "https://lenient-veranda.delivery.puppetlabs.net:8143"
-	token := "xxxx"
+	peServer := os.Args[1]
+	token := os.Args[2]
+	pdbHost := "https://" + peServer + ":8081"
+	orchHost := "https://" + peServer + ":8143"
+	fmt.Println("Connecting to: ", peServer)
 
 	pdbClient := puppetdb.NewInsecureClient(pdbHost, token)
 	nodes, err := pdbClient.Nodes("")
@@ -22,7 +24,7 @@ func main() {
 	spew.Dump(nodes)
 	fmt.Println()
 
-	nodes, err = pdbClient.Nodes(`["=", "certname", "lenient-veranda.delivery.puppetlabs.net"]`)
+	nodes, err = pdbClient.Nodes("[\"=\", \"certname\", \"" + peServer + "\"]")
 	if err != nil {
 		panic(err)
 	}
