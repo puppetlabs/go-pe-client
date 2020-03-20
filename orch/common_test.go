@@ -12,9 +12,9 @@ import (
 )
 
 func init() {
-	client = NewInsecureClient(hostURL, "xxxx")
+	orchClient = NewInsecureClient(orchHostURL, "xxxx")
 	httpmock.Activate()
-	httpmock.ActivateNonDefault(client.resty.GetClient())
+	httpmock.ActivateNonDefault(orchClient.resty.GetClient())
 }
 
 func setupGetResponder(t *testing.T, url, query, responseFilename string) {
@@ -24,15 +24,15 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	response := httpmock.NewBytesResponse(200, responseBody)
 	response.Header.Set("Content-Type", "application/json")
 	if query != "" {
-		httpmock.RegisterResponder(http.MethodGet, hostURL+url, httpmock.ResponderFromResponse(response))
+		httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, httpmock.ResponderFromResponse(response))
 	} else {
-		httpmock.RegisterResponderWithQuery(http.MethodGet, hostURL+url, query, httpmock.ResponderFromResponse(response))
+		httpmock.RegisterResponderWithQuery(http.MethodGet, orchHostURL+url, query, httpmock.ResponderFromResponse(response))
 	}
 }
 
 func setupPostResponder(t *testing.T, url, requestFilename, responseFilename string) {
 	httpmock.Reset()
-	httpmock.RegisterResponder(http.MethodPost, hostURL+url,
+	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url,
 		func(req *http.Request) (*http.Response, error) {
 
 			// Validate the body
@@ -61,13 +61,13 @@ func setupErrorResponder(t *testing.T, url string) {
 	httpmock.Reset()
 	responder, err := httpmock.NewJsonResponder(400, expectedError)
 	require.Nil(t, err)
-	httpmock.RegisterResponder(http.MethodGet, hostURL+url, responder)
-	httpmock.RegisterResponder(http.MethodPost, hostURL+url, responder)
+	httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, responder)
+	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
 }
 
-var client *Client
+var orchClient *Client
 
-var hostURL = "https://test-host:8143"
+var orchHostURL = "https://test-host:8143"
 
 var expectedError = &OrchestratorError{
 	Kind: "puppetlabs.orchestrator/unknown-environment",

@@ -3,16 +3,16 @@ package orch
 // Tasks lists all tasks in a given environment (GET /tasks)
 func (c *Client) Tasks(environment string) (*Tasks, error) {
 	payload := &Tasks{}
-	request := c.resty.R().SetResult(payload)
+	req := c.resty.R().SetResult(payload)
 	if environment != "" {
-		request.SetQueryParam("environment", environment)
+		req.SetQueryParam("environment", environment)
 	}
-	response, err := request.Get("/orchestrator/v1/tasks")
+	r, err := req.Get("/orchestrator/v1/tasks")
 	if err != nil {
 		return nil, err
 	}
-	if response.IsError() {
-		return nil, response.Error().(error)
+	if r.IsError() {
+		return nil, r.Error().(error)
 	}
 	return payload, nil
 }
@@ -20,21 +20,21 @@ func (c *Client) Tasks(environment string) (*Tasks, error) {
 // Task returns data about a specified task, including metadata and file information. For the default task in a module, taskname is init. (GET /tasks/:module/:taskname)
 func (c *Client) Task(environment, module, taskname string) (*Task, error) {
 	payload := &Task{}
-	request := c.resty.R().
+	req := c.resty.R().
 		SetResult(payload).
 		SetPathParams(map[string]string{
 			"module":   module,
 			"taskname": taskname,
 		})
 	if environment != "" {
-		request.SetQueryParam("environment", environment)
+		req.SetQueryParam("environment", environment)
 	}
-	response, err := request.Get("/orchestrator/v1/tasks/{module}/{taskname}")
+	r, err := req.Get("/orchestrator/v1/tasks/{module}/{taskname}")
 	if err != nil {
 		return nil, err
 	}
-	if response.IsError() {
-		return nil, response.Error().(error)
+	if r.IsError() {
+		return nil, r.Error().(error)
 	}
 	return payload, nil
 }

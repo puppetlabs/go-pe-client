@@ -10,13 +10,13 @@ func TestInventory(t *testing.T) {
 
 	// Test success
 	setupGetResponder(t, "/orchestrator/v1/inventory", "", "inventory-response.json")
-	actual, err := client.Inventory()
+	actual, err := orchClient.Inventory()
 	require.Nil(t, err)
 	require.Equal(t, expectedInventory, actual)
 
 	// Test error
 	setupErrorResponder(t, "/orchestrator/v1/inventory")
-	actual, err = client.Inventory()
+	actual, err = orchClient.Inventory()
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
@@ -26,13 +26,13 @@ func TestInventoryNode(t *testing.T) {
 
 	// Test success
 	setupGetResponder(t, "/orchestrator/v1/inventory/foo", "", "inventory-node-response.json")
-	actual, err := client.InventoryNode("foo")
+	actual, err := orchClient.InventoryNode("foo")
 	require.Nil(t, err)
 	require.Equal(t, expectedInventoryNode, actual)
 
 	// Test error
 	setupErrorResponder(t, "/orchestrator/v1/inventory/foo")
-	actual, err = client.InventoryNode("foo")
+	actual, err = orchClient.InventoryNode("foo")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
@@ -42,13 +42,13 @@ func TestInventoryCheck(t *testing.T) {
 
 	// Test success
 	setupPostResponder(t, "/orchestrator/v1/inventory", "inventory-check-request.json", "inventory-check-response.json")
-	actual, err := client.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
+	actual, err := orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
 	require.Nil(t, err)
 	require.Equal(t, expectedInventoryCheck, actual)
 
 	// Test error
 	setupErrorResponder(t, "/orchestrator/v1/inventory")
-	actual, err = client.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
+	actual, err = orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 

@@ -1,7 +1,5 @@
 package orch
 
-import "github.com/davecgh/go-spew/spew"
-
 // Inventory lists all nodes that are connected to the PCP broker (GET /inventory)
 func (c *Client) Inventory() (*[]InventoryNode, error) {
 	payload := map[string][]InventoryNode{}
@@ -19,17 +17,17 @@ func (c *Client) Inventory() (*[]InventoryNode, error) {
 // InventoryNode returns information about whether the requested node is connected to the PCP broker (GET /inventory/:node)
 func (c *Client) InventoryNode(node string) (*InventoryNode, error) {
 	payload := &InventoryNode{}
-	request := c.resty.R().
+	req := c.resty.R().
 		SetResult(payload).
 		SetPathParams(map[string]string{
 			"node": node,
 		})
-	response, err := request.Get("/orchestrator/v1/inventory/{node}")
+	r, err := req.Get("/orchestrator/v1/inventory/{node}")
 	if err != nil {
 		return nil, err
 	}
-	if response.IsError() {
-		return nil, response.Error().(error)
+	if r.IsError() {
+		return nil, r.Error().(error)
 	}
 	return payload, nil
 }
@@ -41,7 +39,6 @@ func (c *Client) InventoryCheck(nodes []string) (*[]InventoryNode, error) {
 		SetResult(&payload).
 		SetBody(map[string]interface{}{"nodes": nodes}).
 		Post("/orchestrator/v1/inventory")
-	spew.Dump(r)
 	if err != nil {
 		return nil, err
 	}

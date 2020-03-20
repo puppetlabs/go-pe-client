@@ -10,19 +10,19 @@ func TestTasks(t *testing.T) {
 
 	// Test without environment
 	setupGetResponder(t, "/orchestrator/v1/tasks", "", "tasks-response.json")
-	actual, err := client.Tasks("")
+	actual, err := orchClient.Tasks("")
 	require.Nil(t, err)
 	require.Equal(t, expectedTasks, actual)
 
 	// Test with environment
 	setupGetResponder(t, "/orchestrator/v1/tasks", "environment=myenv", "tasks-response.json")
-	actual, err = client.Tasks("myenv")
+	actual, err = orchClient.Tasks("myenv")
 	require.Nil(t, err)
 	require.Equal(t, expectedTasks, actual)
 
 	// Test error
 	setupErrorResponder(t, "/orchestrator/v1/tasks")
-	actual, err = client.Tasks("")
+	actual, err = orchClient.Tasks("")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
@@ -32,19 +32,19 @@ func TestTask(t *testing.T) {
 
 	// Test without environment
 	setupGetResponder(t, "/orchestrator/v1/tasks/foo/bar", "", "task-response.json")
-	actual, err := client.Task("", "foo", "bar")
+	actual, err := orchClient.Task("", "foo", "bar")
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test with environment
 	setupGetResponder(t, "/orchestrator/v1/tasks/foo/bar", "environment=myenv", "task-response.json")
-	actual, err = client.Task("myenv", "foo", "bar")
+	actual, err = orchClient.Task("myenv", "foo", "bar")
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test error
 	setupErrorResponder(t, "/orchestrator/v1/tasks/foo/bar")
-	actual, err = client.Task("myenv", "foo", "bar")
+	actual, err = orchClient.Task("myenv", "foo", "bar")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
