@@ -13,7 +13,7 @@ func main() {
 	peHost := "lenient-veranda.delivery.puppetlabs.net"
 	pdbHostURL := fmt.Sprintf("https://%s:8081", peHost)
 	orchHostURL := fmt.Sprintf("https://%s:8143", peHost)
-	token := "xxxx"
+	token := "0UoFj-u-34x3O7o3AJe3ezh8NYJZ9MWIwhuFoFLEKLiM"
 
 	pdbClient := puppetdb.NewInsecureClient(pdbHostURL, token)
 	nodes, err := pdbClient.Nodes("")
@@ -36,6 +36,22 @@ func main() {
 		panic(err)
 	}
 	spew.Dump(inv)
+	fmt.Println()
+
+	job, err := orchClient.CommandTask(&orch.TaskRequest{
+		Task: "package",
+		Params: map[string]string{
+			"action": "status",
+			"name":   "openssl",
+		},
+		Scope: orch.TaskScope{
+			Nodes: []string{peHost},
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(job)
 	fmt.Println()
 
 }
