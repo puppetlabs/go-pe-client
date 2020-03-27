@@ -2,6 +2,7 @@ package puppetdb
 
 import (
 	"crypto/tls"
+	"net/http"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -17,7 +18,14 @@ func NewInsecureClient(hostURL, token string) *Client {
 	r.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
+
 	return &Client{
 		resty: r,
 	}
+}
+
+// SetTransport lets the caller overwrite the default transport used by the client.
+// This is useful when injecting mock transports for testing purposes.
+func (c *Client) SetTransport(tripper http.RoundTripper) {
+	c.resty.SetTransport(tripper)
 }
