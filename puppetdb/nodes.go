@@ -1,5 +1,9 @@
 package puppetdb
 
+import (
+	"fmt"
+)
+
 // Nodes will return all nodes matching the given query. Deactivated and expired nodes aren’t included in the response.
 func (c *Client) Nodes(query string) (*[]Node, error) {
 	payload := &[]Node{}
@@ -12,7 +16,7 @@ func (c *Client) Nodes(query string) (*[]Node, error) {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		return nil, fmt.Errorf("%s: %s", r.Status(), r.Body())
 	}
 	return payload, nil
 }

@@ -1,0 +1,6 @@
+{
+  "job": {
+    "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+    "name": "1234"
+  }
+}

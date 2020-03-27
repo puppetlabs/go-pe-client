@@ -1,0 +1,14 @@
+{
+  "environment": "test-env-1",
+  "task": "package",
+  "params": {
+    "action": "install",
+    "name": "httpd"
+  },
+  "scope": {
+    "application": "Wordpress_app[demo]",
+    "nodes": ["node1.example.com"],
+    "query": ["from", "nodes", ["~", "certname", ".*"]],
+    "node_group": "00000000-0000-4000-8000-000000000000"
+  }
+}
