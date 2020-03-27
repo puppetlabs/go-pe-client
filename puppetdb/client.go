@@ -2,6 +2,7 @@ package puppetdb
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	"github.com/go-resty/resty/v2"
@@ -28,4 +29,24 @@ func NewInsecureClient(hostURL, token string) *Client {
 // This is useful when injecting mock transports for testing purposes.
 func (c *Client) SetTransport(tripper http.RoundTripper) {
 	c.resty.SetTransport(tripper)
+}
+
+// getRequest uses the Given client to make a HTTP GET request to the given path, providing
+// the query.  The result of the request is marshalled into the response type. e.g.
+// var payload *[]Fact
+// getRequest(client, "/pdb/query/v4/facts", query, &payload)
+func getRequest(client *Client, path string, query string, response interface{}) error {
+	req := client.resty.R().SetResult(&response)
+	if query != "" {
+		req.SetQueryParam("query", query)
+	}
+	r, err := req.Get(path)
+	if err != nil {
+		return err
+	}
+	if r.IsError() {
+		return fmt.Errorf("%s: %s", r.Status(), r.Body())
+	}
+
+	return nil
 }

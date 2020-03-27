@@ -1,0 +1,49 @@
+[
+  {
+    "name": "id",
+    "value": "root",
+    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "environment": "production"
+  },
+  {
+    "name": "os",
+    "value": {
+      "architecture": "x86_64",
+      "distro": {
+        "codename": "Core",
+        "description": "CentOS Linux release 7.4.1708 (Core)",
+        "id": "CentOS",
+        "release": {
+          "full": "7.4.1708",
+          "major": "7",
+          "minor": "4"
+        },
+        "specification": ":core-4.1-amd64:core-4.1-noarch"
+      },
+      "family": "RedHat",
+      "hardware": "x86_64",
+      "name": "CentOS",
+      "release": {
+        "full": "7.4.1708",
+        "major": "7",
+        "minor": "4"
+      },
+      "selinux": {
+        "config_mode": "permissive",
+        "config_policy": "targeted",
+        "current_mode": "permissive",
+        "enabled": true,
+        "enforced": false,
+        "policy_version": "28"
+      }
+    },
+    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "environment": "production"
+  },
+  {
+    "name": "gid",
+    "value": "root",
+    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "environment": "production"
+  }
+]
