@@ -2,7 +2,7 @@
   {
     "name": "id",
     "value": "root",
-    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "certname": "foobar.puppetlabs.net",
     "environment": "production"
   },
   {
@@ -37,13 +37,13 @@
         "policy_version": "28"
       }
     },
-    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "certname": "foobar.puppetlabs.net",
     "environment": "production"
   },
   {
     "name": "gid",
     "value": "root",
-    "certname": "jenkins-compose-worker-prod-2.delivery.puppetlabs.net",
+    "certname": "foobar.puppetlabs.net",
     "environment": "production"
   }
 ]
