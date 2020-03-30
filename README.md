@@ -2,10 +2,9 @@
 
 ![Travis Build Status](https://travis-ci.com/puppetlabs/go-pe-client.svg?branch=master)
 
-Currently only a small subset of the Orchestrator API is supported: https://puppet.com/docs/pe/latest/orchestrator_api_usage_endpoint.html
-
-* `/orchestrator/v1/inventory`
-* `/orchestrator/v1/tasks`
+Currently a small subset of the Orchestrator and PuppetDB APIs are supported:
+* https://puppet.com/docs/pe/latest/orchestrator_api_usage_endpoint.html
+* https://puppet.com/docs/puppetdb/latest/api/index.html
 
 ## Running the command line
 * Go to your pe server cli and generate an rbac token. Be sure to set the correct username and password.
