@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"net/url"
+	"os"
+	"strings"
+
 	prompt "github.com/c-bata/go-prompt"
 	"github.com/puppetlabs/go-pe-client/internal/cli"
 	"github.com/puppetlabs/go-pe-client/puppetdb"
 	"github.com/sirupsen/logrus"
-	"net/url"
-	"os"
-	"strings"
 )
 
 var client *puppetdb.Client
@@ -77,7 +78,7 @@ func execute(api string, query string) {
 	case "inventory":
 		data, err = client.Inventory(query)
 	case "reports":
-	//	data, err = ctx.client.Reports(query)
+		data, err = client.Reports(query)
 	case "factnames":
 		data, err = client.FactNames()
 	}
