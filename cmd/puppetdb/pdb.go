@@ -8,7 +8,7 @@ import (
 
 	prompt "github.com/c-bata/go-prompt"
 	"github.com/puppetlabs/go-pe-client/internal/cli"
-	"github.com/puppetlabs/go-pe-client/puppetdb"
+	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
 	"github.com/sirupsen/logrus"
 )
 
