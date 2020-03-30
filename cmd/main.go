@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/puppetlabs/go-pe-client/orch"
-	"github.com/puppetlabs/go-pe-client/puppetdb"
+	"github.com/puppetlabs/go-pe-client/pkg/orch"
+	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
 )
 
 func main() {
