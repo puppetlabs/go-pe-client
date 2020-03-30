@@ -27,9 +27,9 @@ type JobID struct {
 // TaskRequest describes a task to be run
 type TaskRequest struct {
 	Environment string            `json:"environment,omitempty"`
-	Task        string            `json:"task,omitempty"`
-	Params      map[string]string `json:"params,omitempty"`
-	Scope       TaskScope         `json:"scope,omitempty"`
+	Task        string            `json:"task"`
+	Params      map[string]string `json:"params"`
+	Scope       TaskScope         `json:"scope"`
 }
 
 // TaskScope is part of a TaskRequest. Only a single field can be specified.
