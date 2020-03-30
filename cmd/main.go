@@ -50,7 +50,7 @@ func main() {
 			"action": "status",
 			"name":   "openssl",
 		},
-		Scope: orch.TaskScope{
+		Scope: orch.Scope{
 			Nodes: []string{peServer},
 		},
 	})

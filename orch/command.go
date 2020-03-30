@@ -29,13 +29,5 @@ type TaskRequest struct {
 	Environment string            `json:"environment,omitempty"`
 	Task        string            `json:"task"`
 	Params      map[string]string `json:"params"`
-	Scope       TaskScope         `json:"scope"`
-}
-
-// TaskScope is part of a TaskRequest. Only a single field can be specified.
-type TaskScope struct {
-	Application string        `json:"application,omitempty"`
-	Nodes       []string      `json:"nodes,omitempty"`
-	Query       []interface{} `json:"query,omitempty"`
-	NodeGroup   string        `json:"node_group,omitempty"`
+	Scope       Scope             `json:"scope"`
 }
