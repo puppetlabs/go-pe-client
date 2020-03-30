@@ -59,7 +59,7 @@ type ResourceEvents struct {
 		OldValue        interface{} `json:"old_value"`
 		Message         string      `json:"message"`
 		File            string      `json:"file"`
-		line            int         `json:"line"`
+		Line            int         `json:"line"`
 		ContainmentPath []string    `json:"containment_path"`
 	}
 }
