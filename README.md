@@ -1,3 +1,5 @@
+![Travis Build Status](https://travis-ci.com/puppetlabs/go-pe-client.svg?branch=master)
+
 ## Running the command line
 * Go to your pe server cli and generate an rbac token. Be sure to set the correct username and password.
 
