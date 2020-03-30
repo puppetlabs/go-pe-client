@@ -17,7 +17,7 @@ func TestCommandTask(t *testing.T) {
 			"action": "install",
 			"name":   "httpd",
 		},
-		Scope: TaskScope{
+		Scope: Scope{
 			Application: "Wordpress_app[demo]",
 			Nodes:       []string{"node1.example.com"},
 			Query:       []interface{}{"from", "nodes", []interface{}{"~", "certname", ".*"}},

@@ -1,0 +1,50 @@
+{
+    "items": [{
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+        "name": "1234",
+        "state": "finished",
+        "command": "deploy",
+        "node_count": 5,
+        "node_states": {
+            "finished": 2,
+            "errored": 1,
+            "failed": 1,
+            "running": 1
+        },
+        "options": {
+            "concurrency": null,
+            "noop": false,
+            "trace": false,
+            "debug": false,
+            "scope": {},
+            "enforce_environment": true,
+            "environment": "production",
+            "evaltrace": false,
+            "target": null,
+            "description": "deploy the web app"
+        },
+        "owner": {
+            "id": "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec",
+            "login": "brian"
+        },
+        "description": "deploy the web app",
+        "timestamp": "2016-05-20T16:45:31Z",
+        "environment": {
+            "name": "production"
+        },
+        "report": {
+            "id": "https://localhost:8143/orchestrator/v1/jobs/375/report"
+        },
+        "events": {
+            "id": "https://localhost:8143/orchestrator/v1/jobs/375/events"
+        },
+        "nodes": {
+            "id": "https://localhost:8143/orchestrator/v1/jobs/375/nodes"
+        }
+    }],
+    "pagination": {
+        "limit": 20,
+        "offset": 0,
+        "total": 42
+    }
+}

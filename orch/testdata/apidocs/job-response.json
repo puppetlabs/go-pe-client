@@ -1,0 +1,51 @@
+{
+    "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+    "name": "1234",
+    "command": "deploy",
+    "options": {
+        "concurrency": null,
+        "noop": false,
+        "trace": false,
+        "debug": false,
+        "scope": {
+            "application": "Wordpress_app"
+        },
+        "enforce_environment": true,
+        "environment": "production",
+        "evaltrace": false,
+        "target": null
+    },
+    "node_count": 5,
+    "owner": {
+        "id": "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec",
+        "login": "admin"
+    },
+    "description": "deploy the web app",
+    "timestamp": "2016-05-20T16:45:31Z",
+    "environment": {
+        "name": "production"
+    },
+    "status": [{
+        "state": "new",
+        "enter_time": "2016-04-11T18:44:31Z",
+        "exit_time": "2016-04-11T18:44:31Z"
+    }, {
+        "state": "ready",
+        "enter_time": "2016-04-11T18:44:31Z",
+        "exit_time": "2016-04-11T18:44:31Z"
+    }, {
+        "state": "running",
+        "enter_time": "2016-04-11T18:44:31Z",
+        "exit_time": "2016-04-11T18:45:31Z"
+    }, {
+        "state": "finished",
+        "enter_time": "2016-04-11T18:45:31Z",
+        "exit_time": null
+    }],
+    "nodes": {
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234/nodes"
+    },
+    "report": {
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234/report"
+    }
+}
