@@ -5,10 +5,10 @@ const (
 )
 
 // Inventory enables an alternative query syntax for digging into structured facts, and can be used instead of the facts,
-//fact-contents, and factsets endpoints for most fact-related queries.
-func (c *Client) Inventory(query string) (*[]Inventory, error) {
-	payload := &[]Inventory{}
-	err := getRequest(c, inventory, query, payload)
+// fact-contents, and factsets endpoints for most fact-related queries.
+func (c *Client) Inventory(query string) ([]Inventory, error) {
+	payload := []Inventory{}
+	err := getRequest(c, inventory, query, &payload)
 	return payload, err
 }
 

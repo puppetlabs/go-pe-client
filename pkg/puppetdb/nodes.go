@@ -5,9 +5,9 @@ import (
 )
 
 // Nodes will return all nodes matching the given query. Deactivated and expired nodes aren’t included in the response.
-func (c *Client) Nodes(query string) (*[]Node, error) {
-	payload := &[]Node{}
-	req := c.resty.R().SetResult(payload)
+func (c *Client) Nodes(query string) ([]Node, error) {
+	payload := []Node{}
+	req := c.resty.R().SetResult(&payload)
 	if query != "" {
 		req.SetQueryParam("query", query)
 	}

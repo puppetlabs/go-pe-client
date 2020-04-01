@@ -1,7 +1,7 @@
 package orch
 
 // Inventory lists all nodes that are connected to the PCP broker (GET /inventory)
-func (c *Client) Inventory() (*[]InventoryNode, error) {
+func (c *Client) Inventory() ([]InventoryNode, error) {
 	payload := map[string][]InventoryNode{}
 	r, err := c.resty.R().SetResult(&payload).Get("/orchestrator/v1/inventory")
 	if err != nil {
@@ -11,7 +11,7 @@ func (c *Client) Inventory() (*[]InventoryNode, error) {
 		return nil, r.Error().(error)
 	}
 	inventoryNodes := payload["items"]
-	return &inventoryNodes, nil
+	return inventoryNodes, nil
 }
 
 // InventoryNode returns information about whether the requested node is connected to the PCP broker (GET /inventory/:node)
@@ -33,7 +33,7 @@ func (c *Client) InventoryNode(node string) (*InventoryNode, error) {
 }
 
 // InventoryCheck checks if the given list of nodes is connected to the PCP broker (POST /inventory)
-func (c *Client) InventoryCheck(nodes []string) (*[]InventoryNode, error) {
+func (c *Client) InventoryCheck(nodes []string) ([]InventoryNode, error) {
 	payload := map[string][]InventoryNode{}
 	r, err := c.resty.R().
 		SetResult(&payload).
@@ -46,7 +46,7 @@ func (c *Client) InventoryCheck(nodes []string) (*[]InventoryNode, error) {
 		return nil, r.Error().(error)
 	}
 	inventoryNodes := payload["items"]
-	return &inventoryNodes, nil
+	return inventoryNodes, nil
 }
 
 // InventoryNode contains data about a single node

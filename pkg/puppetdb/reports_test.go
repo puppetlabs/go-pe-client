@@ -1,9 +1,10 @@
 package puppetdb
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 // TestReports performs a test on the Report endpoint and verifies the expected response is returned.
@@ -15,7 +16,7 @@ func TestReports(t *testing.T) {
 	require.Equal(t, expectedReport, actual)
 }
 
-var expectedReport = &[]Report{{
+var expectedReport = []Report{{
 	Hash:                 "4324324324324324324",
 	PuppetVersion:        "10.0",
 	ReceiveTime:          time.Time{},
