@@ -8,14 +8,13 @@ const (
 	reports = "/pdb/query/v4/reports"
 )
 
-// Puppet agent nodes submit reports after their runs, and the Puppet master forwards these to PuppetDB. Each report
-// includes:
+// Reports retrieve the reports that Puppet agent nodes submit after their runs. The Puppet master forwards these to PuppetDB. Each report includes:
 // Data about the entire run
 // Metadata about the report
 // Many events, describing what happened during the run
-func (c *Client) Reports(query string) (*[]Report, error) {
-	payload := &[]Report{}
-	err := getRequest(c, reports, query, payload)
+func (c *Client) Reports(query string) ([]Report, error) {
+	payload := []Report{}
+	err := getRequest(c, reports, query, &payload)
 	return payload, err
 }
 
