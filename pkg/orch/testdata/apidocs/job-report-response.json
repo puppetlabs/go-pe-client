@@ -1,0 +1,13 @@
+{
+    "items": [{
+        "node": "wss6c3w9wngpycg.example.com",
+        "state": "running",
+        "timestamp": "2015-07-13T20:37:01Z",
+        "events": []
+    }, {
+        "node": "xxyyzz.example.com",
+        "state": "running",
+        "timestamp": "2016-07-13T20:37:01Z",
+        "events": []
+    }]
+}
