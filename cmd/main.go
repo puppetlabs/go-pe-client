@@ -18,10 +18,11 @@ func main() {
 	peServer := os.Args[1]
 	token := os.Args[2]
 	pdbHostURL := "https://" + peServer + ":8081"
+	pdbClient := puppetdb.NewInsecureClient(pdbHostURL, token)
 	orchHostURL := "https://" + peServer + ":8143"
+	orchClient := orch.NewInsecureClient(orchHostURL, token)
 	fmt.Println("Connecting to: ", peServer)
 
-	pdbClient := puppetdb.NewInsecureClient(pdbHostURL, token)
 	nodes, err := pdbClient.Nodes("")
 	if err != nil {
 		panic(err)
@@ -36,7 +37,6 @@ func main() {
 	spew.Dump(nodes)
 	fmt.Println()
 
-	orchClient := orch.NewInsecureClient(orchHostURL, token)
 	inv, err := orchClient.Inventory()
 	if err != nil {
 		panic(err)
@@ -44,7 +44,7 @@ func main() {
 	spew.Dump(inv)
 	fmt.Println()
 
-	job, err := orchClient.CommandTask(&orch.TaskRequest{
+	jobID, err := orchClient.CommandTask(&orch.TaskRequest{
 		Task: "package",
 		Params: map[string]string{
 			"action": "status",
@@ -57,7 +57,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	spew.Dump(jobID)
+	fmt.Println()
+
+	job, err := orchClient.Job(jobID.Job.Name)
+	if err != nil {
+		panic(err)
+	}
 	spew.Dump(job)
+	fmt.Println()
+
+	jobReport, err := orchClient.JobReport(jobID.Job.Name)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(jobReport)
 	fmt.Println()
 
 }

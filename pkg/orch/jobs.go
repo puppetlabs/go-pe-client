@@ -1,8 +1,9 @@
 package orch
 
 const (
-	jobs = "/orchestrator/v1/jobs"
-	job  = "/orchestrator/v1/job/{job-id}"
+	jobs      = "/orchestrator/v1/jobs"
+	job       = "/orchestrator/v1/jobs/{job-id}"
+	jobReport = "/orchestrator/v1/jobs/{job-id}/report"
 )
 
 // Jobs lists all of the jobs known to the orchestrator (GET /jobs)
@@ -18,13 +19,29 @@ func (c *Client) Jobs() (*Jobs, error) {
 	return payload, nil
 }
 
-// Job lists all details of a given job (GET /job)
+// Job lists all details of a given job (GET /jobs/:job-id)
 func (c *Client) Job(jobID string) (*Job, error) {
 	payload := &Job{}
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetPathParams(map[string]string{"job-id": jobID}).
 		Get(job)
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return payload, nil
+}
+
+// JobReport returns the report for a given job (GET /jobs/:job-id/report)
+func (c *Client) JobReport(jobID string) (*JobReport, error) {
+	payload := &JobReport{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetPathParams(map[string]string{"job-id": jobID}).
+		Get(jobReport)
 	if err != nil {
 		return nil, err
 	}
@@ -103,4 +120,28 @@ type Options struct {
 	Evaltrace          bool        `json:"evaltrace"`
 	Target             interface{} `json:"target"`
 	Description        string      `json:"description"`
+}
+
+// JobReport contains the report for a single job
+type JobReport struct {
+	Items []struct {
+		Node      string     `json:"node"`
+		State     string     `json:"state"`
+		Timestamp string     `json:"timestamp"`
+		Events    []JobEvent `json:"events"`
+	} `json:"items"`
+}
+
+// JobEvent contains a single event from a job
+type JobEvent struct {
+	ID        string `json:"id"`
+	Type      string `json:"type"`
+	Timestamp string `json:"timestamp"`
+	Details   struct {
+		Node   string `json:"node"`
+		Detail struct {
+			Noop bool `json:"noop"`
+		} `json:"detail"`
+	} `json:"details"`
+	Message string `json:"message"`
 }
