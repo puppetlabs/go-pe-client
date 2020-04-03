@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 
 	prompt "github.com/c-bata/go-prompt"
@@ -50,8 +52,7 @@ func executor(in string) {
 	in = strings.TrimSpace(in)
 
 	// Parse the input and extract the API call + query
-	api, query := parseInput(in)
-
+	var api, query, pagination = parseInput(in)
 	// If a api has been selected, then execute it with the provided query
 	// the command should be recorded in history and the response printed to
 	// stdout
@@ -60,11 +61,11 @@ func executor(in string) {
 		if err != nil {
 			logrus.Warnf("Unable to write history to %s because : %s", historyFile.Name(), err)
 		}
-		execute(api, query)
+		execute(api, query, pagination)
 	}
 }
 
-func execute(api string, query string) {
+func execute(api string, query string, pagination puppetdb.Pagination) {
 	fmt.Printf("Executing Query '%s %s'\n", api, query)
 	var err error
 	var data interface{}
@@ -72,7 +73,7 @@ func execute(api string, query string) {
 	switch api {
 	case "nodes":
 		fmt.Printf("Nodes")
-		data, err = client.Nodes(query)
+		data, err = client.Nodes(query, pagination)
 	case "facts":
 		data, err = client.Facts(query)
 	case "inventory":
@@ -90,30 +91,78 @@ func execute(api string, query string) {
 	cli.PrintString(data)
 }
 
-func parseInput(command string) (string, string) {
-	blocks := strings.Split(command, " ")
-	var api, query string
+func extractString(str, start, end string) (result string) {
+	s := strings.Index(str, start)
+	s--
+	if s == -1 {
+		return
+	}
+	s += len(start)
+	e := strings.LastIndex(str, end)
+	e++
+	if e == -1 {
+		return
+	}
+	return str[s:e]
+}
 
-	switch blocks[0] {
-	case "exit":
-		fmt.Println("Bye!")
-		os.Exit(0)
-	case "factnames":
-		api = blocks[0]
-	case "nodes", "facts", "inventory", "reports":
-		if len(blocks) < 2 {
-			fmt.Println("please provide a query or enter '[]' for none")
-			return "", ""
-		}
-		if blocks[1] == "[]" {
+func parseInput(command string) (string, string, puppetdb.Pagination) {
+
+	//Split Query Api and Pagination Up
+	checkForQuery, err := regexp.Match(`[`, []byte(command))
+	var query = ""
+	if checkForQuery {
+		query = extractString(command, "[", "]")
+		if query == "[]" {
 			query = ""
-		} else {
-			query = strings.Join(blocks[1:], " ")
 		}
-		api = blocks[0]
+	}
+	if err != nil {
+		fmt.Println("No query parameters detected")
 	}
 
-	return api, query
+	querylessCommand := strings.Replace(command, query, "", 1)
+
+	blocks := strings.Split(querylessCommand, " ")
+	api := blocks[0]
+
+	if api == "exit" {
+		fmt.Println("Bye!")
+		os.Exit(0)
+	}
+
+	var rex = regexp.MustCompile("(\\w+)=(\\w+)")
+
+	options := rex.FindAllString(querylessCommand, -1)
+
+	pagination := puppetdb.Pagination{}
+
+	for _, option := range options {
+
+		matchedLimit, err := regexp.Match(`Limit=(\d*)`, []byte(option))
+		matchedOffset, err := regexp.Match(`Offset=(\d*)`, []byte(option))
+		matchedTotal, err := regexp.Match(`Include_total=(\d*)`, []byte(option))
+		if err != nil {
+			fmt.Println("Unable to write history ")
+		}
+
+		if matchedLimit {
+			re := regexp.MustCompile(`Limit=(\d*)`)
+			limit := re.FindStringSubmatch(option)
+			pagination.Limit, err = strconv.Atoi(limit[1])
+
+		}
+		if matchedOffset {
+			re := regexp.MustCompile(`Offset=(\d*)`)
+			offset := re.FindStringSubmatch(option)
+			pagination.Offset, err = strconv.Atoi(offset[1])
+		}
+		if matchedTotal {
+			fmt.Println("Include_total is currently not implemented")
+		}
+	}
+
+	return api, query, pagination
 }
 
 func completer(in prompt.Document) []prompt.Suggest {
