@@ -50,8 +50,7 @@ func executor(in string) {
 	in = strings.TrimSpace(in)
 
 	// Parse the input and extract the API call + query
-	api, query := parseInput(in)
-
+	var api, query, pagination = cli.ParseInput(in)
 	// If a api has been selected, then execute it with the provided query
 	// the command should be recorded in history and the response printed to
 	// stdout
@@ -60,11 +59,11 @@ func executor(in string) {
 		if err != nil {
 			logrus.Warnf("Unable to write history to %s because : %s", historyFile.Name(), err)
 		}
-		execute(api, query)
+		execute(api, query, pagination)
 	}
 }
 
-func execute(api string, query string) {
+func execute(api string, query string, pagination puppetdb.Pagination) {
 	fmt.Printf("Executing Query '%s %s'\n", api, query)
 	var err error
 	var data interface{}
@@ -72,7 +71,7 @@ func execute(api string, query string) {
 	switch api {
 	case "nodes":
 		fmt.Printf("Nodes")
-		data, err = client.Nodes(query)
+		data, err = client.Nodes(query, &pagination)
 	case "facts":
 		data, err = client.Facts(query)
 	case "inventory":
@@ -88,32 +87,6 @@ func execute(api string, query string) {
 		return
 	}
 	cli.PrintString(data)
-}
-
-func parseInput(command string) (string, string) {
-	blocks := strings.Split(command, " ")
-	var api, query string
-
-	switch blocks[0] {
-	case "exit":
-		fmt.Println("Bye!")
-		os.Exit(0)
-	case "factnames":
-		api = blocks[0]
-	case "nodes", "facts", "inventory", "reports":
-		if len(blocks) < 2 {
-			fmt.Println("please provide a query or enter '[]' for none")
-			return "", ""
-		}
-		if blocks[1] == "[]" {
-			query = ""
-		} else {
-			query = strings.Join(blocks[1:], " ")
-		}
-		api = blocks[0]
-	}
-
-	return api, query
 }
 
 func completer(in prompt.Document) []prompt.Suggest {
