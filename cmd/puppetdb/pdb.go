@@ -109,8 +109,8 @@ func extractString(str, start, end string) (result string) {
 func parseInput(command string) (string, string, puppetdb.Pagination) {
 
 	//Split Query Api and Pagination Up
-	checkForQuery, err := regexp.Match(`[`, []byte(command))
-	var query = ""
+	checkForQuery, err := regexp.Match(`[\\w+]`, []byte(command))
+	var query string
 	if checkForQuery {
 		query = extractString(command, "[", "]")
 		if query == "[]" {
@@ -118,7 +118,7 @@ func parseInput(command string) (string, string, puppetdb.Pagination) {
 		}
 	}
 	if err != nil {
-		fmt.Println("No query parameters detected")
+		fmt.Println("No query parameters detected", err)
 	}
 
 	querylessCommand := strings.Replace(command, query, "", 1)
@@ -131,7 +131,7 @@ func parseInput(command string) (string, string, puppetdb.Pagination) {
 		os.Exit(0)
 	}
 
-	var rex = regexp.MustCompile("(\\w+)=(\\w+)")
+	var rex = regexp.MustCompile(`(\w+)=(\w+)`) //nolint
 
 	options := rex.FindAllString(querylessCommand, -1)
 
@@ -139,26 +139,27 @@ func parseInput(command string) (string, string, puppetdb.Pagination) {
 
 	for _, option := range options {
 
-		matchedLimit, err := regexp.Match(`Limit=(\d*)`, []byte(option))
-		matchedOffset, err := regexp.Match(`Offset=(\d*)`, []byte(option))
-		matchedTotal, err := regexp.Match(`Include_total=(\d*)`, []byte(option))
-		if err != nil {
-			fmt.Println("Unable to write history ")
-		}
+		re := regexp.MustCompile(`Limit=(\d*)`)
+		limit := re.FindStringSubmatch(option)
 
-		if matchedLimit {
-			re := regexp.MustCompile(`Limit=(\d*)`)
-			limit := re.FindStringSubmatch(option)
+		re2 := regexp.MustCompile(`Offset=(\d*)`)
+		offset := re2.FindStringSubmatch(option)
+
+		re3 := regexp.MustCompile(`Include_total=(\d*)`)
+		total := re3.FindStringSubmatch(option)
+
+		if len(limit) >= 1 {
 			pagination.Limit, err = strconv.Atoi(limit[1])
-
 		}
-		if matchedOffset {
-			re := regexp.MustCompile(`Offset=(\d*)`)
-			offset := re.FindStringSubmatch(option)
+		if len(offset) >= 1 {
+
 			pagination.Offset, err = strconv.Atoi(offset[1])
 		}
-		if matchedTotal {
+		if len(total) >= 1 {
 			fmt.Println("Include_total is currently not implemented")
+		}
+		if err != nil {
+			fmt.Println("err: " + err.Error())
 		}
 	}
 
