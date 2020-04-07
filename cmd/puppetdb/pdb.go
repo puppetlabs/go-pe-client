@@ -73,13 +73,13 @@ func execute(api string, query string, pagination puppetdb.Pagination) {
 		fmt.Printf("Nodes")
 		data, err = client.Nodes(query, &pagination)
 	case "facts":
-		data, err = client.Facts(query)
+		data, err = client.Facts(query, &pagination)
 	case "inventory":
-		data, err = client.Inventory(query)
+		data, err = client.Inventory(query, &pagination)
 	case "reports":
-		data, err = client.Reports(query)
+		data, err = client.Reports(query, &pagination)
 	case "factnames":
-		data, err = client.FactNames()
+		data, err = client.FactNames(&pagination)
 	}
 
 	if err != nil {

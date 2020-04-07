@@ -12,9 +12,9 @@ const (
 // Data about the entire run
 // Metadata about the report
 // Many events, describing what happened during the run
-func (c *Client) Reports(query string) ([]Report, error) {
+func (c *Client) Reports(query string, pagination *Pagination) ([]Report, error) {
 	payload := []Report{}
-	err := getRequest(c, reports, query, &payload)
+	err := getRequest(c, reports, query, pagination, &payload)
 	return payload, err
 }
 

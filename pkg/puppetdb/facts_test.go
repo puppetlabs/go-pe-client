@@ -10,7 +10,7 @@ import (
 func TestFactNames(t *testing.T) {
 	// Test FactNames
 	setupGetResponder(t, factnames, "", "factnames-response.json")
-	actual, err := pdbClient.FactNames()
+	actual, err := pdbClient.FactNames(nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFactNames, actual)
 }
@@ -20,7 +20,7 @@ func TestFacts(t *testing.T) {
 	// Test with query
 	query := `["=", "certname", "foobar.puppetlabs.net"]`
 	setupGetResponder(t, facts, "query="+query, "facts-response.json")
-	actual, err := pdbClient.Facts(query)
+	actual, err := pdbClient.Facts(query, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFacts, actual)
 }
