@@ -1,9 +1,10 @@
 package orch
 
 const (
-	jobs      = "/orchestrator/v1/jobs"
 	job       = "/orchestrator/v1/jobs/{job-id}"
+	jobNodes  = "/orchestrator/v1/jobs/{job-id}/nodes"
 	jobReport = "/orchestrator/v1/jobs/{job-id}/report"
+	jobs      = "/orchestrator/v1/jobs"
 )
 
 // Jobs lists all of the jobs known to the orchestrator (GET /jobs)
@@ -42,6 +43,22 @@ func (c *Client) JobReport(jobID string) (*JobReport, error) {
 		SetResult(&payload).
 		SetPathParams(map[string]string{"job-id": jobID}).
 		Get(jobReport)
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return payload, nil
+}
+
+// JobNodes lists all of the nodes associated with a given job (GET /jobs/:job-id/nodes)
+func (c *Client) JobNodes(jobID string) (*JobNodes, error) {
+	payload := &JobNodes{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetPathParams(map[string]string{"job-id": jobID}).
+		Get(jobNodes)
 	if err != nil {
 		return nil, err
 	}
@@ -144,4 +161,38 @@ type JobEvent struct {
 		} `json:"detail"`
 	} `json:"details"`
 	Message string `json:"message"`
+}
+
+// JobNodes is a list of all nodes associated with a given job
+type JobNodes struct {
+	Items      []JobNode  `json:"items"`
+	NextEvents NextEvents `json:"next-events"`
+}
+
+// JobResult is the result for a single node in a given job
+type JobResult struct {
+	Latest  string `json:"latest"`
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+// JobNode is a single node associated with a given job
+type JobNode struct {
+	Transport       string                 `json:"transport"`
+	FinishTimestamp string                 `json:"finish_timestamp"`
+	TransactionUUID string                 `json:"transaction_uuid"`
+	StartTimestamp  string                 `json:"start_timestamp"`
+	Name            string                 `json:"name"`
+	Duration        float64                `json:"duration"`
+	State           string                 `json:"state"`
+	Details         map[string]interface{} `json:"details"`
+	Result          JobResult              `json:"result"`
+	LatestEventID   int                    `json:"latest-event-id"`
+	Timestamp       string                 `json:"timestamp"`
+}
+
+// NextEvents section of the response
+type NextEvents struct {
+	ID    string `json:"id"`
+	Event string `json:"event"`
 }

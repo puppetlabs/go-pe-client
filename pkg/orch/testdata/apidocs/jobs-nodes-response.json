@@ -1,0 +1,41 @@
+{
+    "items": [{
+        "transport": "pcp",
+        "finish_timestamp": "2020-04-02T15:25:17Z",
+        "transaction_uuid": null,
+        "start_timestamp": "2020-04-02T15:25:16Z",
+        "name": "scotch-chapter.delivery.puppetlabs.net",
+        "duration": 1.538,
+        "state": "finished",
+        "details": {},
+        "result": {
+            "latest": "1.1.1-1ubuntu2.1~18.04.5",
+            "status": "out of date",
+            "version": "1.1.0g-2ubuntu4.1"
+        },
+        "latest-event-id": 11,
+        "timestamp": "2020-04-02T15:25:17Z"
+    }, {
+        "transport": "pcp",
+        "finish_timestamp": "2020-04-02T15:25:18Z",
+        "transaction_uuid": null,
+        "start_timestamp": "2020-04-02T15:25:16Z",
+        "name": "legal-deposit.delivery.puppetlabs.net",
+        "duration": 2.068,
+        "state": "finished",
+        "details": {
+            "message": "Message of latest event"
+        },
+        "result": {
+            "latest": "1:1.0.2k-19.el7",
+            "status": "out of date",
+            "version": "1:1.0.2k-12.el7"
+        },
+        "latest-event-id": 12,
+        "timestamp": "2020-04-02T15:25:18Z"
+    }],
+    "next-events": {
+        "id": "https://legal-deposit.delivery.puppetlabs.net:8143/orchestrator/v1/jobs/3/events?start=13",
+        "event": "13"
+    }
+}

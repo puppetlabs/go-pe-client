@@ -74,4 +74,11 @@ func main() {
 	spew.Dump(jobReport)
 	fmt.Println()
 
+	jobNodes, err := orchClient.JobNodes(jobID.Job.Name)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(jobNodes)
+	fmt.Println()
+
 }
