@@ -105,7 +105,7 @@ func createPaginationStruct(options []string) (result puppetdb.Pagination) {
 // "nodes", "nodes Limit=10", "nodes []", "nodes ["=", "certname", "jenkins-compose.example.net"]" are all accepted by this func
 func ParseInput(command string) (string, string, puppetdb.Pagination) {
 
-	checkForQuery, err := regexp.Match(`[\\w+]`, []byte(command))
+	checkForQuery, err := regexp.Match(`[\w+]`, []byte(command))
 	var query string
 	if checkForQuery {
 		query = extractString(command, "[", "]")
