@@ -1,6 +1,6 @@
 ## Go client library for the Puppet Enterprise APIs
 
-![Travis Build Status](https://travis-ci.com/puppetlabs/go-pe-client.svg?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/puppetlabs/go-pe-client)](https://goreportcard.com/report/github.com/puppetlabs/go-pe-client) ![Travis Build Status](https://travis-ci.com/puppetlabs/go-pe-client.svg?branch=master)
 
 Currently a small subset of the Orchestrator and PuppetDB APIs are supported:
 * https://puppet.com/docs/pe/latest/orchestrator_api_usage_endpoint.html
