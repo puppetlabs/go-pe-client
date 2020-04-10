@@ -41,4 +41,5 @@ type Node struct {
 	CatalogTimestamp             string      `json:"catalog_timestamp"`
 	LatestReportJobID            string      `json:"latest_report_job_id"`
 	LatestReportStatus           string      `json:"latest_report_status"`
+	Count                        int         `json:"count"`
 }
