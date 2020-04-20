@@ -42,6 +42,7 @@ type Report struct {
 	Resources            Resources      `json:"resources"`
 	Metrics              Metrics        `json:"metrics"`
 	Logs                 Logs           `json:"logs"`
+	Count                int            `json:"count"`
 }
 
 // ResourceEvents ...
