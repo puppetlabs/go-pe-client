@@ -169,13 +169,6 @@ type JobNodes struct {
 	NextEvents NextEvents `json:"next-events"`
 }
 
-// JobResult is the result for a single node in a given job
-type JobResult struct {
-	Latest  string `json:"latest"`
-	Status  string `json:"status"`
-	Version string `json:"version"`
-}
-
 // JobNode is a single node associated with a given job
 type JobNode struct {
 	Transport       string                 `json:"transport"`
@@ -186,7 +179,7 @@ type JobNode struct {
 	Duration        float64                `json:"duration"`
 	State           string                 `json:"state"`
 	Details         map[string]interface{} `json:"details"`
-	Result          JobResult              `json:"result"`
+	Result          map[string]interface{} `json:"result"`
 	LatestEventID   int                    `json:"latest-event-id"`
 	Timestamp       string                 `json:"timestamp"`
 }
