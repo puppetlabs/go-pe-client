@@ -13,6 +13,10 @@ func (c *Client) Nodes(query string, pagination *Pagination) ([]Node, error) {
 		req.SetQueryParams(pagination.toParams())
 	}
 
+	orderPram := map[string]string{}
+	orderPram["order_by"] = `[{"field": "certname", "order": "asc"}]`
+	req.SetQueryParams(orderPram)
+
 	r, err := req.Get("/pdb/query/v4/nodes")
 	if err != nil {
 		return nil, err
