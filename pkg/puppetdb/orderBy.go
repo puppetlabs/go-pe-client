@@ -2,7 +2,7 @@ package puppetdb
 
 import "fmt"
 
-func (o OrderBy) toOrderParam() map[string]string {
+func (o OrderBy) toParams() map[string]string {
 	orderPram := map[string]string{}
 
 	orderPram["order_by"] = fmt.Sprintf(`[{"field": "%s", "order": "%s"}]`, o.Field, o.Order)

@@ -13,7 +13,7 @@ func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) (
 		req.SetQueryParams(pagination.toParams())
 	}
 	if orderBy != nil {
-		req.SetQueryParams(orderBy.toOrderParam())
+		req.SetQueryParams(orderBy.toParams())
 	}
 
 	r, err := req.Get("/pdb/query/v4/nodes")
