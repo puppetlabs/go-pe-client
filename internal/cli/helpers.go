@@ -99,11 +99,31 @@ func createPaginationStruct(options []string) (result puppetdb.Pagination) {
 	return pagination
 }
 
+func createOrderByStruct(options []string) (result puppetdb.OrderBy) {
+	orderBy := puppetdb.OrderBy{}
+	for _, option := range options {
+		re := regexp.MustCompile(`field: "(\w*)"`)
+		field := re.FindStringSubmatch(option)
+
+		re2 := regexp.MustCompile(`order: "(\w*)"`)
+		order := re2.FindStringSubmatch(option)
+
+		if len(field) >= 1 {
+			orderBy.Field = field[1]
+		}
+
+		if len(order) >= 1 {
+			orderBy.Order = order[1]
+		}
+	}
+	return orderBy
+}
+
 // ParseInput is used to split the users entered query into the relevant parts and returns each part as a string
 // For example "nodes ["=", "certname", "jenkins-compose.example.net"] Limit=5 Offset=10"
 // Would return "nodes" "["=", "certname", "jenkins-compose.example.net"]" "Limit=5 Offset=10"
-// "nodes", "nodes Limit=10", "nodes []", "nodes ["=", "certname", "jenkins-compose.example.net"]" are all accepted by this func
-func ParseInput(command string) (string, string, puppetdb.Pagination) {
+// "nodes", "nodes Limit=10 OrderBy={field: "certname", order: "asc"}", "nodes []", "nodes ["=", "certname", "jenkins-compose.example.net"]" are all accepted by this func
+func ParseInput(command string) (string, string, puppetdb.Pagination, puppetdb.OrderBy) {
 
 	checkForQuery, err := regexp.Match(`[\w+]`, []byte(command))
 	var query string
@@ -130,5 +150,11 @@ func ParseInput(command string) (string, string, puppetdb.Pagination) {
 	options := rex.FindAllString(querylessCommand, -1)
 	pagination := createPaginationStruct(options)
 
-	return api, query, pagination
+	order := extractString(command, "{", "}")
+	var rex2 = regexp.MustCompile(`(\w+): "(\w+)"`)
+	options2 := rex2.FindAllString(order, -1)
+
+	orderBy := createOrderByStruct(options2)
+
+	return api, query, pagination, orderBy
 }

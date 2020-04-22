@@ -3,7 +3,7 @@ package puppetdb
 import "fmt"
 
 // Nodes will return all nodes matching the given query. Deactivated and expired nodes aren’t included in the response.
-func (c *Client) Nodes(query string, pagination *Pagination) ([]Node, error) {
+func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) ([]Node, error) {
 	payload := []Node{}
 	req := c.resty.R().SetResult(&payload)
 	if query != "" {
@@ -12,10 +12,9 @@ func (c *Client) Nodes(query string, pagination *Pagination) ([]Node, error) {
 	if pagination != nil {
 		req.SetQueryParams(pagination.toParams())
 	}
-
-	orderPram := map[string]string{}
-	orderPram["order_by"] = `[{"field": "certname", "order": "asc"}]`
-	req.SetQueryParams(orderPram)
+	if orderBy != nil {
+		req.SetQueryParams(orderBy.toOrderParam())
+	}
 
 	r, err := req.Get("/pdb/query/v4/nodes")
 	if err != nil {
