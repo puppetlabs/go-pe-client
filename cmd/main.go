@@ -23,14 +23,14 @@ func main() {
 	orchClient := orch.NewInsecureClient(orchHostURL, token)
 	fmt.Println("Connecting to: ", peServer)
 
-	nodes, err := pdbClient.Nodes("", nil)
+	nodes, err := pdbClient.Nodes("", nil, nil)
 	if err != nil {
 		panic(err)
 	}
 	spew.Dump(nodes)
 	fmt.Println()
 
-	nodes, err = pdbClient.Nodes(fmt.Sprintf(`["=", "certname", "%s"]`, peServer), nil)
+	nodes, err = pdbClient.Nodes(fmt.Sprintf(`["=", "certname", "%s"]`, peServer), nil, nil)
 	if err != nil {
 		panic(err)
 	}
