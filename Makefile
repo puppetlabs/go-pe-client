@@ -50,6 +50,6 @@ build:
 
 $(GOPATH)/bin/golangci-lint:
 	@echo "🔘 Installing golangci-lint... (`date '+%H:%M:%S'`)"
-	@GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.24.0
 
 .PHONY: $(PHONY)
