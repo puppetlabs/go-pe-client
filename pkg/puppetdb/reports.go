@@ -43,6 +43,7 @@ type Report struct {
 	Metrics              Metrics        `json:"metrics"`
 	Logs                 Logs           `json:"logs"`
 	Count                int            `json:"count"`
+	CorrectiveChange     bool           `json:"corrective_change"`
 }
 
 // ResourceEvents ...
