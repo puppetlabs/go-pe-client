@@ -50,7 +50,7 @@ func executor(in string) {
 	in = strings.TrimSpace(in)
 
 	// Parse the input and extract the API call + query
-	var api, query, pagination = cli.ParseInput(in)
+	var api, query, pagination, orderBy = cli.ParseInput(in)
 	// If a api has been selected, then execute it with the provided query
 	// the command should be recorded in history and the response printed to
 	// stdout
@@ -59,11 +59,11 @@ func executor(in string) {
 		if err != nil {
 			logrus.Warnf("Unable to write history to %s because : %s", historyFile.Name(), err)
 		}
-		execute(api, query, pagination)
+		execute(api, query, pagination, orderBy)
 	}
 }
 
-func execute(api string, query string, pagination puppetdb.Pagination) {
+func execute(api string, query string, pagination puppetdb.Pagination, orderBy puppetdb.OrderBy) {
 	fmt.Printf("Executing Query '%s %s'\n", api, query)
 	var err error
 	var data interface{}
@@ -71,7 +71,7 @@ func execute(api string, query string, pagination puppetdb.Pagination) {
 	switch api {
 	case "nodes":
 		fmt.Printf("Nodes")
-		data, err = client.Nodes(query, &pagination)
+		data, err = client.Nodes(query, &pagination, &orderBy)
 	case "facts":
 		data, err = client.Facts(query, &pagination)
 	case "inventory":

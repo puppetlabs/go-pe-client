@@ -10,14 +10,14 @@ func TestTasks(t *testing.T) {
 
 	// Test without query
 	setupGetResponder(t, "/pdb/query/v4/nodes", "", "nodes-response.json")
-	actual, err := pdbClient.Nodes("", nil)
+	actual, err := pdbClient.Nodes("", nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedNodes, actual)
 
 	// Test with query
 	query := `["=", "certname", "lenient-veranda.delivery.puppetlabs.net"]`
 	setupGetResponder(t, "/pdb/query/v4/nodes", "query="+query, "nodes-response.json")
-	actual, err = pdbClient.Nodes(query, nil)
+	actual, err = pdbClient.Nodes(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedNodes, actual)
 
