@@ -1,6 +1,8 @@
 
 all: build test lint format tidy
 
+GOPATH := $(shell go env GOPATH)
+
 PHONY+= clean
 clean:
 	@echo "🔘 Cleaning build dir..."
