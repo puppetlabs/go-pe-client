@@ -60,6 +60,23 @@ func main() {
 	spew.Dump(jobID)
 	fmt.Println()
 
+	scheduledJobID, err := orchClient.CommandScheduleTask(&orch.ScheduleTaskRequest{
+		Task: "package",
+		Params: map[string]string{
+			"action": "status",
+			"name":   "openssl",
+		},
+		Scope: orch.Scope{
+			Nodes: []string{peServer},
+		},
+		ScheduledTime: "2027-05-05T19:50:08Z",
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(scheduledJobID)
+	fmt.Println()
+
 	job, err := orchClient.Job(jobID.Job.Name)
 	if err != nil {
 		panic(err)

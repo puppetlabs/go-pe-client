@@ -1,0 +1,6 @@
+{
+  "scheduled_job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/scheduled_jobs/2",
+    "name" : "1234"
+  }
+}
