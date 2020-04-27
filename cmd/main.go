@@ -77,6 +77,17 @@ func main() {
 	spew.Dump(scheduledJobID)
 	fmt.Println()
 
+	taskTargetJobID, err := orchClient.CommandTaskTarget(&orch.TaskTargetRequest{
+		DisplayName: "foo",
+		AllTasks:    true,
+		Nodes:       []string{"node1", "node2", "node3"},
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(taskTargetJobID)
+	fmt.Println()
+
 	job, err := orchClient.Job(jobID.Job.Name)
 	if err != nil {
 		panic(err)

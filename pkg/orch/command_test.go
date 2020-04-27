@@ -74,3 +74,31 @@ var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
 	ID   string "json:\"id\""
 	Name string "json:\"name\""
 }{ID: "https://orchestrator.example.com:8143/orchestrator/v1/scheduled_jobs/2", Name: "1234"}}
+
+func TestCommandTaskTarget(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, "/orchestrator/v1/command/task_target", "command-task_target-request.json", "command-task_target-response.json")
+	taskTargetRequest := &TaskTargetRequest{
+		DisplayName: "1",
+		NodeGroups:  []string{"3c4df64f-7609-4d31-9c2d-acfa52ed66ec", "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"},
+		Nodes:       []string{"wss6c3w9wngpycg", "jjj2h5w8gpycgwn"},
+		PQLQuery:    "nodes[certname] { catalog_environment = \"production\" }",
+		Tasks:       []string{"package::install", "exec"},
+	}
+
+	actual, err := orchClient.CommandTaskTarget(taskTargetRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandTaskTargetResponse, actual)
+
+	// Test error
+	setupErrorResponder(t, "/orchestrator/v1/command/task_target")
+	actual, err = orchClient.CommandTaskTarget(taskTargetRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+var expectedCommandTaskTargetResponse = &TaskTargetJobID{TaskTargetJob: struct {
+	ID   string "json:\"id\""
+	Name string "json:\"name\""
+}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/1", Name: "1"}}
