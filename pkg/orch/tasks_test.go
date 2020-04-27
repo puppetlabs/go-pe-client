@@ -54,46 +54,13 @@ var expectedTask = &Task{ID: "https://orchestrator.example.com:8143/orchestrator
 	Name   string "json:\"name,omitempty\""
 	CodeID string "json:\"code_id,omitempty\""
 }{Name: "production", CodeID: "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"}, Metadata: struct {
-	Description  string "json:\"description,omitempty\""
-	SupportsNoop bool   "json:\"supports_noop,omitempty\""
-	InputMethod  string "json:\"input_method,omitempty\""
-	Parameters   struct {
-		Name struct {
-			Description string "json:\"description,omitempty\""
-			Type        string "json:\"type,omitempty\""
-		} "json:\"name,omitempty\""
-		Provider struct {
-			Description string "json:\"description,omitempty\""
-			Type        string "json:\"type,omitempty\""
-		} "json:\"provider,omitempty\""
-		Version struct {
-			Description string "json:\"description,omitempty\""
-			Type        string "json:\"type,omitempty\""
-		} "json:\"version,omitempty\""
-	} "json:\"parameters,omitempty\""
-}{Description: "Install a package", SupportsNoop: true, InputMethod: "stdin", Parameters: struct {
-	Name struct {
-		Description string "json:\"description,omitempty\""
-		Type        string "json:\"type,omitempty\""
-	} "json:\"name,omitempty\""
-	Provider struct {
-		Description string "json:\"description,omitempty\""
-		Type        string "json:\"type,omitempty\""
-	} "json:\"provider,omitempty\""
-	Version struct {
-		Description string "json:\"description,omitempty\""
-		Type        string "json:\"type,omitempty\""
-	} "json:\"version,omitempty\""
-}{Name: struct {
-	Description string "json:\"description,omitempty\""
-	Type        string "json:\"type,omitempty\""
-}{Description: "The package to install", Type: "String[1]"}, Provider: struct {
-	Description string "json:\"description,omitempty\""
-	Type        string "json:\"type,omitempty\""
-}{Description: "The provider to use to install the package", Type: "Optional[String[1]]"}, Version: struct {
-	Description string "json:\"description,omitempty\""
-	Type        string "json:\"type,omitempty\""
-}{Description: "The version of the package to install, defaults to latest", Type: "Optional[String[1]]"}}}, Files: []struct {
+	Description     string                 "json:\"description,omitempty\""
+	SupportsNoop    bool                   "json:\"supports_noop,omitempty\""
+	InputMethod     string                 "json:\"input_method,omitempty\""
+	Parameters      map[string]TaskParam   "json:\"parameters,omitempty\""
+	Extensions      map[string]interface{} "json:\"extensions,omitempty\""
+	Implementations []TaskImplementation   "json:\"implementations\""
+}{Description: "Bootstrap a node with puppet-agent", SupportsNoop: false, InputMethod: "stdin", Parameters: map[string]TaskParam{"cacert_content": TaskParam{Description: "The expected CA certificate content for the master", Type: "Optional[String]"}, "certname": TaskParam{Description: "The certname with which the node should be bootstrapped", Type: "Optional[String]"}, "custom_attribute": TaskParam{Description: "This setting is added to puppet.conf and included in the custom_attributes section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "dns_alt_names": TaskParam{Description: "The DNS alt names with which the agent certificate should be generated", Type: "Optional[String]"}, "environment": TaskParam{Description: "The environment in which the node should be bootstrapped", Type: "Optional[String]"}, "extension_request": TaskParam{Description: "This setting is added to puppet.conf and included in the extension_requests section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "master": TaskParam{Description: "The fqdn of the master from which the puppet-agent should be bootstrapped", Type: "String"}, "set_noop": TaskParam{Description: "The noop setting in the [agent] section of puppet.conf", Type: "Optional[Boolean]"}}, Extensions: map[string]interface{}{"discovery": map[string]interface{}{"friendlyName": "Install Puppet agent", "parameters": map[string]interface{}{"cacert_content": map[string]interface{}{"placeholder": "-----BEGIN CERTIFICATE---- ... -----END CERTIFICATE-----"}, "master": map[string]interface{}{"placeholder": "master.company.net"}}, "puppetInstall": true, "type": []interface{}{"host"}}}, Implementations: []TaskImplementation{TaskImplementation{Name: "windows.ps1", Requirements: []string{"powershell"}, InputMethod: "powershell"}, TaskImplementation{Name: "linux.sh", Requirements: []string{"shell"}, InputMethod: "environment"}}}, Files: []struct {
 	Filename string "json:\"filename,omitempty\""
 	URI      struct {
 		Path   string "json:\"path,omitempty\""

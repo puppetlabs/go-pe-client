@@ -60,23 +60,12 @@ type Task struct {
 		CodeID string `json:"code_id,omitempty"`
 	} `json:"environment,omitempty"`
 	Metadata struct {
-		Description  string `json:"description,omitempty"`
-		SupportsNoop bool   `json:"supports_noop,omitempty"`
-		InputMethod  string `json:"input_method,omitempty"`
-		Parameters   struct {
-			Name struct {
-				Description string `json:"description,omitempty"`
-				Type        string `json:"type,omitempty"`
-			} `json:"name,omitempty"`
-			Provider struct {
-				Description string `json:"description,omitempty"`
-				Type        string `json:"type,omitempty"`
-			} `json:"provider,omitempty"`
-			Version struct {
-				Description string `json:"description,omitempty"`
-				Type        string `json:"type,omitempty"`
-			} `json:"version,omitempty"`
-		} `json:"parameters,omitempty"`
+		Description     string                 `json:"description,omitempty"`
+		SupportsNoop    bool                   `json:"supports_noop,omitempty"`
+		InputMethod     string                 `json:"input_method,omitempty"`
+		Parameters      map[string]TaskParam   `json:"parameters,omitempty"`
+		Extensions      map[string]interface{} `json:"extensions,omitempty"`
+		Implementations []TaskImplementation   `json:"implementations"`
 	} `json:"metadata,omitempty"`
 	Files []struct {
 		Filename string `json:"filename,omitempty"`
@@ -89,4 +78,17 @@ type Task struct {
 		Sha256    string `json:"sha256,omitempty"`
 		SizeBytes int    `json:"size_bytes,omitempty"`
 	} `json:"files,omitempty"`
+}
+
+// TaskParam in the task metadata
+type TaskParam struct {
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type,omitempty"`
+}
+
+// TaskImplementation in the task metadata
+type TaskImplementation struct {
+	Name         string   `json:"name"`
+	Requirements []string `json:"requirements"`
+	InputMethod  string   `json:"input_method"`
 }
