@@ -6,33 +6,87 @@
         "code_id": "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"
     },
     "metadata": {
-        "description": "Install a package",
-        "supports_noop": true,
+        "description": "Bootstrap a node with puppet-agent",
         "input_method": "stdin",
         "parameters": {
-            "name": {
-                "description": "The package to install",
-                "type": "String[1]"
+            "master": {
+                "description": "The fqdn of the master from which the puppet-agent should be bootstrapped",
+                "type": "String"
             },
-            "provider": {
-                "description": "The provider to use to install the package",
-                "type": "Optional[String[1]]"
+            "cacert_content": {
+                "description": "The expected CA certificate content for the master",
+                "type": "Optional[String]"
             },
-            "version": {
-                "description": "The version of the package to install, defaults to latest",
-                "type": "Optional[String[1]]"
-            }
-        }
-    },
-    "files": [{
-        "filename": "install",
-        "uri": {
-            "path": "/package/tasks/install",
-            "params": {
-                "environment": "production"
+            "certname": {
+                "description": "The certname with which the node should be bootstrapped",
+                "type": "Optional[String]"
+            },
+            "environment": {
+                "description": "The environment in which the node should be bootstrapped",
+                "type": "Optional[String]"
+            },
+            "set_noop": {
+                "description": "The noop setting in the [agent] section of puppet.conf",
+                "type": "Optional[Boolean]"
+            },
+            "dns_alt_names": {
+                "description": "The DNS alt names with which the agent certificate should be generated",
+                "type": "Optional[String]"
+            },
+            "custom_attribute": {
+                "description": "This setting is added to puppet.conf and included in the custom_attributes section of csr_attributes.yaml",
+                "type": "Optional[Array[Pattern[/\\w+=\\w+/]]]"
+            },
+            "extension_request": {
+                "description": "This setting is added to puppet.conf and included in the extension_requests section of csr_attributes.yaml",
+                "type": "Optional[Array[Pattern[/\\w+=\\w+/]]]"
             }
         },
-        "sha256": "a9089b5b9720dca38a49db6f164cf8a053a7ea528711325da1c23de94672980f",
-        "size_bytes": 693
-    }]
+        "extensions": {
+            "discovery": {
+                "friendlyName": "Install Puppet agent",
+                "puppetInstall": true,
+                "type": [
+                    "host"
+                ],
+                "parameters": {
+                    "master": {
+                        "placeholder": "master.company.net"
+                    },
+                    "cacert_content": {
+                        "placeholder": "-----BEGIN CERTIFICATE---- ... -----END CERTIFICATE-----"
+                    }
+                }
+            }
+        },
+        "implementations": [
+            {
+                "name": "windows.ps1",
+                "requirements": [
+                    "powershell"
+                ],
+                "input_method": "powershell"
+            },
+            {
+                "name": "linux.sh",
+                "requirements": [
+                    "shell"
+                ],
+                "input_method": "environment"
+            }
+        ]
+    },
+    "files": [
+        {
+            "filename": "install",
+            "uri": {
+                "path": "/package/tasks/install",
+                "params": {
+                    "environment": "production"
+                }
+            },
+            "sha256": "a9089b5b9720dca38a49db6f164cf8a053a7ea528711325da1c23de94672980f",
+            "size_bytes": 693
+        }
+    ]
 }
