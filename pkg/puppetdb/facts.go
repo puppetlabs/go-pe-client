@@ -1,21 +1,21 @@
 package puppetdb
 
 const (
-	factnames = "/pdb/query/v4/fact-names"
+	factNames = "/pdb/query/v4/fact-names"
 	facts     = "/pdb/query/v4/facts"
 )
 
 // FactNames will return an alphabetical list of all known fact names, including those which are known only for deactivated nodes.
-func (c *Client) FactNames(pagination *Pagination) ([]string, error) {
+func (c *Client) FactNames(pagination *Pagination, orderBy *OrderBy) ([]string, error) {
 	payload := []string{}
-	err := getRequest(c, factnames, "", pagination, &payload)
+	err := getRequest(c, factNames, "", pagination, orderBy, &payload)
 	return payload, err
 }
 
 // Facts will return all facts matching the given query. Facts for deactivated nodes are not included in the response.
-func (c *Client) Facts(query string, pagination *Pagination) ([]Fact, error) {
+func (c *Client) Facts(query string, pagination *Pagination, orderBy *OrderBy) ([]Fact, error) {
 	payload := []Fact{}
-	err := getRequest(c, facts, query, pagination, &payload)
+	err := getRequest(c, facts, query, pagination, orderBy, &payload)
 	return payload, err
 }
 
@@ -29,4 +29,5 @@ type Fact struct {
 	Value       interface{} `json:"value"`
 	Certname    string      `json:"certname"`
 	Environment string      `json:"environment"`
+	Count       int         `json:"count"`
 }

@@ -1,29 +1,12 @@
 package puppetdb
 
-import "fmt"
+const nodes = "/pdb/query/v4/nodes"
 
 // Nodes will return all nodes matching the given query. Deactivated and expired nodes aren’t included in the response.
 func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) ([]Node, error) {
 	payload := []Node{}
-	req := c.resty.R().SetResult(&payload)
-	if query != "" {
-		req.SetQueryParam("query", query)
-	}
-	if pagination != nil {
-		req.SetQueryParams(pagination.toParams())
-	}
-	if orderBy != nil {
-		req.SetQueryParams(orderBy.toParams())
-	}
-
-	r, err := req.Get("/pdb/query/v4/nodes")
-	if err != nil {
-		return nil, err
-	}
-	if r.IsError() {
-		return nil, fmt.Errorf("%s: %s", r.Status(), r.Body())
-	}
-	return payload, nil
+	err := getRequest(c, nodes, query, pagination, orderBy, &payload)
+	return payload, err
 }
 
 // Node is a PuppetDB node

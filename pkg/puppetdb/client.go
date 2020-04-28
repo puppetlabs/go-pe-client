@@ -34,14 +34,21 @@ func (c *Client) SetTransport(tripper http.RoundTripper) {
 // getRequest uses the Given client to make a HTTP GET request to the given path, providing
 // the query.  The result of the request is marshalled into the response type. e.g.
 // var payload *[]Fact
-// getRequest(client, "/pdb/query/v4/facts", query, &payload)
-func getRequest(client *Client, path string, query string, pagination *Pagination, response interface{}) error {
+// getRequest(client, "/pdb/query/v4/facts",
+//				query,
+//				&Pagination{Limit: 10, Offset: 20},
+//				&OrderBy{Field: "certname", Order: "asc",},
+//				&payload)
+func getRequest(client *Client, path string, query string, pagination *Pagination, orderBy *OrderBy, response interface{}) error {
 	req := client.resty.R().SetResult(&response)
 	if query != "" {
 		req.SetQueryParam("query", query)
 	}
 	if pagination != nil {
 		req.SetQueryParams(pagination.toParams())
+	}
+	if orderBy != nil {
+		req.SetQueryParams(orderBy.toParams())
 	}
 	r, err := req.Get(path)
 	if err != nil {
