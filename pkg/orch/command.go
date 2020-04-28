@@ -64,3 +64,37 @@ type ScheduleTaskRequest struct {
 	Scope         Scope             `json:"scope"`
 	ScheduledTime string            `json:"scheduled_time"`
 }
+
+// CommandTaskTarget creates a new task-target (POST /command/task_target)
+func (c *Client) CommandTaskTarget(taskTargetRequest *TaskTargetRequest) (*TaskTargetJobID, error) {
+	payload := TaskTargetJobID{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetBody(taskTargetRequest).
+		Post("/orchestrator/v1/command/task_target")
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return &payload, nil
+}
+
+// TaskTargetJobID identifies a task_target job
+type TaskTargetJobID struct {
+	TaskTargetJob struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"task_target"`
+}
+
+// TaskTargetRequest is a collection of tasks, nodes and node groups that define a permission group
+type TaskTargetRequest struct {
+	DisplayName string   `json:"display_name"`
+	Tasks       []string `json:"tasks,omitempty"`
+	AllTasks    bool     `json:"all_tasks,omitempty"`
+	Nodes       []string `json:"nodes"`
+	NodeGroups  []string `json:"node_groups"`
+	PQLQuery    string   `json:"pql_query,omitempty"`
+}

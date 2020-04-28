@@ -1,0 +1,17 @@
+{
+    "display_name": "1",
+    "tasks": [
+        "package::install",
+        "exec"
+        ],
+    "nodes": [
+        "wss6c3w9wngpycg",
+        "jjj2h5w8gpycgwn"
+        ],
+    "node_groups":[
+        "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+        "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"
+        ],
+    "pql_query": "nodes[certname] { catalog_environment = \"production\" }"
+}
+   
