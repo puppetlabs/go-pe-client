@@ -11,7 +11,7 @@ import (
 func TestReports(t *testing.T) {
 	query := `["=", "certname", "foobar.delivery.puppetlabs.net"]`
 	setupGetResponder(t, reports, "query="+query, "reports.json")
-	actual, err := pdbClient.Reports(query, nil)
+	actual, err := pdbClient.Reports(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedReport, actual)
 }

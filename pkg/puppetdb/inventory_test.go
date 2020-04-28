@@ -10,7 +10,7 @@ import (
 func TestInventory(t *testing.T) {
 	query := `["=", "certname", "foobar.delivery.puppetlabs.net"]`
 	setupGetResponder(t, inventory, "query="+query, "inventory.json")
-	actual, err := pdbClient.Inventory(query, nil)
+	actual, err := pdbClient.Inventory(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedInventory, actual)
 }

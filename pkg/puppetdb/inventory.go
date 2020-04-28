@@ -6,9 +6,9 @@ const (
 
 // Inventory enables an alternative query syntax for digging into structured facts, and can be used instead of the facts,
 // fact-contents, and factsets endpoints for most fact-related queries.
-func (c *Client) Inventory(query string, pagination *Pagination) ([]Inventory, error) {
+func (c *Client) Inventory(query string, pagination *Pagination, orderBy *OrderBy) ([]Inventory, error) {
 	payload := []Inventory{}
-	err := getRequest(c, inventory, query, pagination, &payload)
+	err := getRequest(c, inventory, query, pagination, orderBy, &payload)
 	return payload, err
 }
 
@@ -19,4 +19,5 @@ type Inventory struct {
 	Environment string                 `json:"environment"`
 	Facts       map[string]interface{} `json:"facts"`
 	Trusted     map[string]interface{} `json:"trusted"`
+	Count       int                    `json:"count"`
 }

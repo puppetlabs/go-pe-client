@@ -9,8 +9,8 @@ import (
 // TestFactNames performs a test on the FactNames endpoint and verifies the expected response is returned.
 func TestFactNames(t *testing.T) {
 	// Test FactNames
-	setupGetResponder(t, factnames, "", "factnames-response.json")
-	actual, err := pdbClient.FactNames(nil)
+	setupGetResponder(t, factNames, "", "factnames-response.json")
+	actual, err := pdbClient.FactNames(nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFactNames, actual)
 }
@@ -20,7 +20,7 @@ func TestFacts(t *testing.T) {
 	// Test with query
 	query := `["=", "certname", "foobar.puppetlabs.net"]`
 	setupGetResponder(t, facts, "query="+query, "facts-response.json")
-	actual, err := pdbClient.Facts(query, nil)
+	actual, err := pdbClient.Facts(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFacts, actual)
 }
