@@ -50,6 +50,30 @@ func TestTask(t *testing.T) {
 
 }
 
+func TestTaskByID(t *testing.T) {
+
+	id := "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade"
+
+	// Test without environment
+	setupGetResponder(t, "/orchestrator/v1/tasks/package/upgrade", "", "task-response.json")
+	actual, err := orchClient.TaskByID("", id)
+	require.Nil(t, err)
+	require.Equal(t, expectedTask, actual)
+
+	// Test with environment
+	setupGetResponder(t, "/orchestrator/v1/tasks/package/upgrade", "environment=myenv", "task-response.json")
+	actual, err = orchClient.TaskByID("myenv", id)
+	require.Nil(t, err)
+	require.Equal(t, expectedTask, actual)
+
+	// Test error
+	setupErrorResponder(t, "/orchestrator/v1/tasks/package/upgrade")
+	actual, err = orchClient.TaskByID("myenv", id)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+
+}
+
 var expectedTask = &Task{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install", Environment: struct {
 	Name   string "json:\"name,omitempty\""
 	CodeID string "json:\"code_id,omitempty\""
