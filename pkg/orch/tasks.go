@@ -1,5 +1,12 @@
 package orch
 
+import (
+	"fmt"
+	"regexp"
+)
+
+var idRegex = regexp.MustCompile(`http.*\/orchestrator\/v1\/tasks\/(.*)/(.*)`)
+
 // Tasks lists all tasks in a given environment (GET /tasks)
 func (c *Client) Tasks(environment string) (*Tasks, error) {
 	payload := &Tasks{}
@@ -15,6 +22,17 @@ func (c *Client) Tasks(environment string) (*Tasks, error) {
 		return nil, r.Error().(error)
 	}
 	return payload, nil
+}
+
+// TaskByID extracts the module and taskname from the supplied ID and calls Task(...)
+func (c *Client) TaskByID(environment, taskID string) (*Task, error) {
+	results := idRegex.FindStringSubmatch(taskID)
+	if len(results) != 3 {
+		return nil, fmt.Errorf("unknown task ID format: %s", taskID)
+	}
+	module := results[1]
+	taskname := results[2]
+	return c.Task(environment, module, taskname)
 }
 
 // Task returns data about a specified task, including metadata and file information. For the default task in a module, taskname is init. (GET /tasks/:module/:taskname)
