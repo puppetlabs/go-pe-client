@@ -7,6 +7,7 @@
     },
     "metadata": {
         "description": "Bootstrap a node with puppet-agent",
+        "private": true,
         "input_method": "stdin",
         "parameters": {
             "master": {
