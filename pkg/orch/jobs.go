@@ -76,18 +76,22 @@ type Jobs struct {
 
 // Job contains data about a single job
 type Job struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	Command     string      `json:"command"`
-	Options     Options     `json:"options"`
-	NodeCount   int         `json:"node_count"`
-	Owner       Owner       `json:"owner"`
-	Description string      `json:"description"`
-	Timestamp   string      `json:"timestamp"`
-	Environment Environment `json:"environment"`
-	Status      []Status    `json:"status"`
-	Nodes       Nodes       `json:"nodes"`
-	Report      Report      `json:"report"`
+	ID          string                 `json:"id"`
+	Name        string                 `json:"name"`
+	State       string                 `json:"state"`
+	Type        string                 `json:"type"`
+	Command     string                 `json:"command"`
+	Options     map[string]interface{} `json:"options"`
+	NodeCount   int                    `json:"node_count"`
+	NodeStates  NodeStates             `json:"node_states"`
+	Owner       map[string]interface{} `json:"owner"`
+	Description string                 `json:"description"`
+	Timestamp   string                 `json:"timestamp"`
+	Environment Environment            `json:"environment"`
+	Status      []Status               `json:"status"`
+	Nodes       Nodes                  `json:"nodes"`
+	Events      Events                 `json:"events"`
+	Report      Report                 `json:"report"`
 }
 
 // Environment in the current job
@@ -123,20 +127,6 @@ type NodeStates struct {
 	Errored  int `json:"errored"`
 	Failed   int `json:"failed"`
 	Running  int `json:"running"`
-}
-
-// Options for the current job
-type Options struct {
-	Concurrency        interface{} `json:"concurrency"`
-	Noop               bool        `json:"noop"`
-	Trace              bool        `json:"trace"`
-	Debug              bool        `json:"debug"`
-	Scope              Scope       `json:"scope"`
-	EnforceEnvironment bool        `json:"enforce_environment"`
-	Environment        string      `json:"environment"`
-	Evaltrace          bool        `json:"evaltrace"`
-	Target             interface{} `json:"target"`
-	Description        string      `json:"description"`
 }
 
 // JobReport contains the report for a single job
