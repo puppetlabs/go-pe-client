@@ -77,25 +77,32 @@ type Task struct {
 		Name   string `json:"name,omitempty"`
 		CodeID string `json:"code_id,omitempty"`
 	} `json:"environment,omitempty"`
-	Metadata struct {
-		Description     string                 `json:"description,omitempty"`
-		SupportsNoop    bool                   `json:"supports_noop,omitempty"`
-		InputMethod     string                 `json:"input_method,omitempty"`
-		Parameters      map[string]TaskParam   `json:"parameters,omitempty"`
-		Extensions      map[string]interface{} `json:"extensions,omitempty"`
-		Implementations []TaskImplementation   `json:"implementations"`
-	} `json:"metadata,omitempty"`
-	Files []struct {
-		Filename string `json:"filename,omitempty"`
-		URI      struct {
-			Path   string `json:"path,omitempty"`
-			Params struct {
-				Environment string `json:"environment,omitempty"`
-			} `json:"params,omitempty"`
-		} `json:"uri,omitempty"`
-		Sha256    string `json:"sha256,omitempty"`
-		SizeBytes int    `json:"size_bytes,omitempty"`
-	} `json:"files,omitempty"`
+	Metadata TaskMetadata `json:"metadata,omitempty"`
+	Files    []TaskFile   `json:"files,omitempty"`
+}
+
+// TaskMetadata ...
+type TaskMetadata struct {
+	Description     string                 `json:"description,omitempty"`
+	Private         bool                   `json:"private,omitempty"`
+	SupportsNoop    bool                   `json:"supports_noop,omitempty"`
+	InputMethod     string                 `json:"input_method,omitempty"`
+	Parameters      map[string]TaskParam   `json:"parameters,omitempty"`
+	Extensions      map[string]interface{} `json:"extensions,omitempty"`
+	Implementations []TaskImplementation   `json:"implementations"`
+}
+
+// TaskFile ...
+type TaskFile struct {
+	Filename string `json:"filename,omitempty"`
+	URI      struct {
+		Path   string `json:"path,omitempty"`
+		Params struct {
+			Environment string `json:"environment,omitempty"`
+		} `json:"params,omitempty"`
+	} `json:"uri,omitempty"`
+	Sha256    string `json:"sha256,omitempty"`
+	SizeBytes int    `json:"size_bytes,omitempty"`
 }
 
 // TaskParam in the task metadata
