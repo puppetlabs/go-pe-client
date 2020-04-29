@@ -1,0 +1,9 @@
+{
+  "plan_name" : "canary",
+  "description" : "Start the canary plan on node1 and node2",
+  "params" : {
+    "nodes" : ["node1.example.com", "node2.example.com"],
+    "command" : "whoami",
+    "canary" : 1
+  }
+}
