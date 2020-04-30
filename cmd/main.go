@@ -60,6 +60,15 @@ func main() {
 	spew.Dump(jobID)
 	fmt.Println()
 
+	stopJobID, err := orchClient.CommandStop(&orch.StopRequest{
+		Job: jobID.Job.Name, // Stops the previous task
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(stopJobID)
+	fmt.Println()
+
 	scheduledJobID, err := orchClient.CommandScheduleTask(&orch.ScheduleTaskRequest{
 		Task: "package",
 		Params: map[string]string{

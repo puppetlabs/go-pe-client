@@ -127,3 +127,33 @@ type PlanRunRequest struct {
 	Environment string                 `json:"environment,omitempty"`
 	Description string                 `json:"description,omitempty"`
 }
+
+// CommandStop stops a orchestrator job that is currently in progress (POST /command/stop)
+func (c *Client) CommandStop(stopRequest *StopRequest) (*StopJobID, error) {
+	payload := StopJobID{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetBody(stopRequest).
+		Post("/orchestrator/v1/command/stop")
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return &payload, nil
+}
+
+// StopJobID describes jobs that were stopped successfully
+type StopJobID struct {
+	Job struct {
+		ID    string         `json:"id"`
+		Name  string         `json:"name"`
+		Nodes map[string]int `json:"nodes"`
+	} `json:"job"`
+}
+
+// StopRequest describes a stop request
+type StopRequest struct {
+	Job string `json:"job"`
+}

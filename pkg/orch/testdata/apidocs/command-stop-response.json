@@ -1,0 +1,14 @@
+{
+  "job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+    "name" : "1234",
+    "nodes" : {
+      "new" : 5,
+      "running" : 8,
+      "failed"  : 3,
+      "errored" : 1,
+      "skipped" : 2,
+      "finished": 5
+    }
+  }
+}

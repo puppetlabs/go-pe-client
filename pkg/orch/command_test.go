@@ -130,3 +130,29 @@ func TestCommandPlanRun(t *testing.T) {
 var expectedCommandPlanRunResponse = &PlanRunJobID{
 	Name: "1234",
 }
+
+func TestCommandStop(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, "/orchestrator/v1/command/stop", "command-stop-request.json", "command-stop-response.json")
+	stopRequest := &StopRequest{
+		Job: "1234",
+	}
+
+	actual, err := orchClient.CommandStop(stopRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandStopResponse, actual)
+
+	// Test error
+	setupErrorResponder(t, "/orchestrator/v1/command/stop")
+	actual, err = orchClient.CommandStop(stopRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+var expectedCommandStopResponse = &StopJobID{Job: struct {
+	ID    string         `json:"id"`
+	Name  string         `json:"name"`
+	Nodes map[string]int `json:"nodes"`
+}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234", Name: "1234",
+	Nodes: map[string]int{"new": 5, "errored": 1, "failed": 3, "finished": 5, "running": 8, "skipped": 2}}}
