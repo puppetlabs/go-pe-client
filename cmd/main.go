@@ -88,6 +88,22 @@ func main() {
 	spew.Dump(taskTargetJobID)
 	fmt.Println()
 
+	planRunJobID, err := orchClient.CommandPlanRun(&orch.PlanRunRequest{
+		Name:        "foo",
+		Environment: "production",
+		Description: "Optional description",
+		Params: map[string]interface{}{
+			"string": "test",
+			"number": 111,
+			"list":   []string{"one", "two", "three"},
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(planRunJobID)
+	fmt.Println()
+
 	job, err := orchClient.Job(jobID.Job.Name)
 	if err != nil {
 		panic(err)

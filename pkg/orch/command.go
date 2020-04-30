@@ -98,3 +98,32 @@ type TaskTargetRequest struct {
 	NodeGroups  []string `json:"node_groups"`
 	PQLQuery    string   `json:"pql_query,omitempty"`
 }
+
+// CommandPlanRun runs a plan via the plan executor (POST /command/plan_run)
+func (c *Client) CommandPlanRun(planRunRequest *PlanRunRequest) (*PlanRunJobID, error) {
+	payload := PlanRunJobID{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetBody(planRunRequest).
+		Post("/orchestrator/v1/command/plan_run")
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return &payload, nil
+}
+
+// PlanRunJobID identifies a plan_run job
+type PlanRunJobID struct {
+	Name string `json:"name"`
+}
+
+// PlanRunRequest describes a plan_run request
+type PlanRunRequest struct {
+	Name        string                 `json:"plan_name"`
+	Params      map[string]interface{} `json:"params"`
+	Environment string                 `json:"environment,omitempty"`
+	Description string                 `json:"description,omitempty"`
+}

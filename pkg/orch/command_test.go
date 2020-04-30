@@ -102,3 +102,31 @@ var expectedCommandTaskTargetResponse = &TaskTargetJobID{TaskTargetJob: struct {
 	ID   string "json:\"id\""
 	Name string "json:\"name\""
 }{ID: "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/1", Name: "1"}}
+
+func TestCommandPlanRun(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, "/orchestrator/v1/command/plan_run", "command-plan_run-request.json", "command-plan_run-response.json")
+	planRunRequest := &PlanRunRequest{
+		Description: "Start the canary plan on node1 and node2",
+		Params: map[string]interface{}{
+			"canary":  1,
+			"command": "whoami",
+			"nodes":   []string{"node1.example.com", "node2.example.com"},
+		},
+		Name: "canary"}
+
+	actual, err := orchClient.CommandPlanRun(planRunRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandPlanRunResponse, actual)
+
+	// Test error
+	setupErrorResponder(t, "/orchestrator/v1/command/plan_run")
+	actual, err = orchClient.CommandPlanRun(planRunRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+var expectedCommandPlanRunResponse = &PlanRunJobID{
+	Name: "1234",
+}
