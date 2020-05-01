@@ -23,4 +23,5 @@ type Pagination struct {
 	Limit        int
 	Offset       int
 	IncludeTotal bool
+	Total        int
 }
