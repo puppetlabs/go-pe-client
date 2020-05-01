@@ -1,51 +1,77 @@
 {
-    "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
-    "name": "1234",
-    "command": "deploy",
-    "options": {
-        "concurrency": null,
-        "noop": false,
-        "trace": false,
-        "debug": false,
-        "scope": {
-            "application": "Wordpress_app"
+    "description": "task run",
+    "report": {
+        "id": "https://stable-syringa.delivery.puppetlabs.net:8143/orchestrator/v1/jobs/1/report"
+    },
+    "name": "1",
+    "events": {
+        "id": "https://stable-syringa.delivery.puppetlabs.net:8143/orchestrator/v1/jobs/1/events"
+    },
+    "command": "task",
+    "type": "task",
+    "state": "finished",
+    "nodes": {
+        "id": "https://stable-syringa.delivery.puppetlabs.net:8143/orchestrator/v1/jobs/1/nodes"
+    },
+    "status": [
+        {
+            "state": "ready",
+            "enter_time": "2020-04-23T16:21:16Z",
+            "exit_time": "2020-04-23T16:21:16Z"
         },
-        "enforce_environment": true,
-        "environment": "production",
-        "evaltrace": false,
-        "target": null
-    },
-    "node_count": 5,
-    "owner": {
-        "id": "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec",
-        "login": "admin"
-    },
-    "description": "deploy the web app",
-    "timestamp": "2016-05-20T16:45:31Z",
+        {
+            "state": "running",
+            "enter_time": "2020-04-23T16:21:16Z",
+            "exit_time": "2020-04-23T16:21:19Z"
+        },
+        {
+            "state": "finished",
+            "enter_time": "2020-04-23T16:21:19Z",
+            "exit_time": "2020-04-23T16:21:19Z"
+        }
+    ],
+    "id": "https://stable-syringa.delivery.puppetlabs.net:8143/orchestrator/v1/jobs/1",
     "environment": {
         "name": "production"
     },
-    "status": [{
-        "state": "new",
-        "enter_time": "2016-04-11T18:44:31Z",
-        "exit_time": "2016-04-11T18:44:31Z"
-    }, {
-        "state": "ready",
-        "enter_time": "2016-04-11T18:44:31Z",
-        "exit_time": "2016-04-11T18:44:31Z"
-    }, {
-        "state": "running",
-        "enter_time": "2016-04-11T18:44:31Z",
-        "exit_time": "2016-04-11T18:45:31Z"
-    }, {
-        "state": "finished",
-        "enter_time": "2016-04-11T18:45:31Z",
-        "exit_time": null
-    }],
-    "nodes": {
-        "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234/nodes"
+    "options": {
+        "description": "options",
+        "transport": "pxp",
+        "noop": true,
+        "task": "package",
+        "sensitive": [],
+        "scheduled-job-id": "123",
+        "params": {
+            "name": "openssl",
+            "action": "status"
+        },
+        "scope": {
+            "nodes": [
+                "stable-syringa.delivery.puppetlabs.net"
+            ]
+        },
+        "environment": "production"
     },
-    "report": {
-        "id": "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234/report"
+    "timestamp": "2020-04-23T16:21:19Z",
+    "owner": {
+        "email": "",
+        "is_revoked": true,
+        "last_login": "2020-04-23T16:20:04.357Z",
+        "is_remote": true,
+        "login": "admin",
+        "is_superuser": true,
+        "id": "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+        "role_ids": [
+            1
+        ],
+        "display_name": "Administrator",
+        "is_group": true
+    },
+    "node_count": 1,
+    "node_states": {
+        "finished": 2,
+        "errored": 1,
+        "failed": 1,
+        "running": 1
     }
 }

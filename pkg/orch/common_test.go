@@ -13,6 +13,7 @@ import (
 
 func init() {
 	orchClient = NewInsecureClient(orchHostURL, "xxxx")
+	orchClient.strict = true
 	httpmock.Activate()
 	httpmock.ActivateNonDefault(orchClient.resty.GetClient())
 }
