@@ -157,3 +157,34 @@ type StopJobID struct {
 type StopRequest struct {
 	Job string `json:"job"`
 }
+
+// CommandDeploy runs the orchestrator across all nodes in an environment (POST /command/deploy)
+func (c *Client) CommandDeploy(deployRequest *DeployRequest) (*JobID, error) {
+	payload := JobID{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetBody(deployRequest).
+		Post("/orchestrator/v1/command/deploy")
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		return nil, r.Error().(error)
+	}
+	return &payload, nil
+}
+
+// DeployRequest describes a deploy request
+type DeployRequest struct {
+	Environment        string `json:"environment"`
+	Scope              Scope  `json:"scope,omitempty"`
+	Description        string `json:"description,omitempty"`
+	Noop               bool   `json:"noop,omitempty"`
+	NoNoop             bool   `json:"no_noop,omitempty"`
+	Concurrency        int    `json:"concurrency,omitempty"`
+	EnforceEnvironment bool   `json:"enforce_environment,omitempty"`
+	Debug              bool   `json:"debug,omitempty"`
+	Trace              bool   `json:"trace,omitempty"`
+	Evaltrace          bool   `json:"evaltrace,omitempty"`
+	Target             string `json:"target,omitempty"`
+}

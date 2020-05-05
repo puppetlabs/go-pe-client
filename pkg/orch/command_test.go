@@ -156,3 +156,31 @@ var expectedCommandStopResponse = &StopJobID{Job: struct {
 	Nodes map[string]int `json:"nodes"`
 }{ID: "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234", Name: "1234",
 	Nodes: map[string]int{"new": 5, "errored": 1, "failed": 3, "finished": 5, "running": 8, "skipped": 2}}}
+
+func TestCommandDeploy(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, "/orchestrator/v1/command/deploy", "command-deploy-request.json", "command-deploy-response.json")
+	deployRequest := &DeployRequest{
+		Environment: "production",
+		Noop:        true,
+		Scope: Scope{
+			Nodes: []string{"node1.example.com"},
+		},
+	}
+
+	actual, err := orchClient.CommandDeploy(deployRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandDeployResponse, actual)
+
+	// Test error
+	setupErrorResponder(t, "/orchestrator/v1/command/deploy")
+	actual, err = orchClient.CommandDeploy(deployRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+var expectedCommandDeployResponse = &JobID{Job: struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234", Name: "1234"}}
