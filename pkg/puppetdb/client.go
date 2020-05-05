@@ -3,7 +3,9 @@ package puppetdb
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -37,7 +39,7 @@ func (c *Client) SetTransport(tripper http.RoundTripper) {
 // getRequest(client, "/pdb/query/v4/facts",
 //				query,
 //				&Pagination{Limit: 10, Offset: 20},
-//				&OrderBy{Field: "certname", Order: "asc",},
+//				&OrderBy{Field: "certname", Order: "asc"},
 //				&payload)
 func getRequest(client *Client, path string, query string, pagination *Pagination, orderBy *OrderBy, response interface{}) error {
 	req := client.resty.R().SetResult(&response)
@@ -50,6 +52,7 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 	if orderBy != nil {
 		req.SetQueryParams(orderBy.toParams())
 	}
+
 	r, err := req.Get(path)
 	if err != nil {
 		return err
@@ -58,5 +61,21 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 		return fmt.Errorf("%s: %s", r.Status(), r.Body())
 	}
 
+	if pagination != nil && pagination.IncludeTotal {
+		pagination.Total = getTotal(r.Header().Get("X-Records"))
+	}
+
 	return nil
+}
+
+// getTotal extracts the total from the X-Records header
+func getTotal(records string) int {
+	if records != "" {
+		count, err := strconv.Atoi(records)
+		if err == nil {
+			return count
+		}
+		logrus.Warnf("Unable to convert X-Records %s to int", records)
+	}
+	return 0
 }
