@@ -21,7 +21,7 @@ func main() {
 	pdbClient := puppetdb.NewInsecureClient(pdbHostURL, token)
 	orchHostURL := "https://" + peServer + ":8143"
 	orchClient := orch.NewInsecureClient(orchHostURL, token)
-	fmt.Println("Connecting to: ", peServer)
+	fmt.Println("Connecting to:", peServer)
 
 	nodes, err := pdbClient.Nodes("", nil, nil)
 	if err != nil {
