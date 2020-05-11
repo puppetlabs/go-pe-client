@@ -2,10 +2,13 @@ package puppetdb
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/http"
+	"net/url"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -55,10 +58,18 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 
 	r, err := req.Get(path)
 	if err != nil {
-		return err
+		var ue *url.Error
+		if errors.As(err, &ue) {
+			return fmt.Errorf("%s %s: %w", client.resty.HostURL, path, ue.Err)
+		}
+		return fmt.Errorf("%s %s: %w", client.resty.HostURL, path, err)
 	}
 	if r.IsError() {
-		return fmt.Errorf("%s: %s", r.Status(), r.Body())
+		re := r.Error()
+		if re == nil {
+			return fmt.Errorf("%s %s: %s: \"%s\"", client.resty.HostURL, path, r.Status(), r.Body())
+		}
+		return fmt.Errorf("%s %s: %s: \"%s\": %v", client.resty.HostURL, path, r.Status(), r.Body(), re)
 	}
 
 	if pagination != nil && pagination.IncludeTotal {
