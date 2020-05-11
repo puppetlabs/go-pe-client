@@ -60,6 +60,15 @@ func main() {
 	spew.Dump(jobID)
 	fmt.Println()
 
+	stopJobID, err := orchClient.CommandStop(&orch.StopRequest{
+		Job: jobID.Job.Name, // Stops the previous task
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(stopJobID)
+	fmt.Println()
+
 	scheduledJobID, err := orchClient.CommandScheduleTask(&orch.ScheduleTaskRequest{
 		Task: "package",
 		Params: map[string]string{
@@ -102,6 +111,25 @@ func main() {
 		panic(err)
 	}
 	spew.Dump(planRunJobID)
+	fmt.Println()
+
+	JobID, err := orchClient.CommandDeploy(&orch.DeployRequest{
+		Environment: "production",
+		Noop:        true,
+		NoNoop:      false,
+		Scope: orch.Scope{
+			Nodes: []string{"node1.example.com"},
+		},
+		Concurrency:        2,
+		Description:        "Description of this job",
+		EnforceEnvironment: true,
+		Trace:              true,
+		Evaltrace:          false,
+	})
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(JobID)
 	fmt.Println()
 
 	job, err := orchClient.Job(jobID.Job.Name)
