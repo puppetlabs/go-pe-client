@@ -1,5 +1,5 @@
 
-all: build test lint format tidy
+all: build test format lint sec tidy
 
 GOPATH := $(shell go env GOPATH)
 
@@ -37,10 +37,19 @@ format:
 PHONY+= lint
 lint: $(GOPATH)/bin/golangci-lint
 	@echo "🔘 Linting $(1) (`date '+%H:%M:%S'`)"
-	@lint=`golangci-lint run $(LINTFLAGS) $(1)`; \
+	@lint=`golangci-lint run`; \
 	if [ "$$lint" != "" ]; \
 	then echo "🔴 Lint found"; echo "$$lint"; exit 1;\
 	else echo "✅ Lint-free (`date '+%H:%M:%S'`)"; \
+	fi
+
+PHONY+= sec
+sec: $(GOPATH)/bin/gosec
+	@echo "🔘 Checking for security problems ... (`date '+%H:%M:%S'`)"
+	@sec=`gosec -quiet ./...`; \
+	if [ "$$sec" != "" ]; \
+	then echo "🔴 Problems found"; echo "$$sec";\
+	else echo "✅ No problems found (`date '+%H:%M:%S'`)"; \
 	fi
 
 PHONY+= build
@@ -52,6 +61,18 @@ build:
 
 $(GOPATH)/bin/golangci-lint:
 	@echo "🔘 Installing golangci-lint... (`date '+%H:%M:%S'`)"
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.24.0
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
+
+$(GOPATH)/bin/gosec:
+	@echo "🔘 Installing gosec ... (`date '+%H:%M:%S'`)"
+	@curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(GOPATH)/bin
+
+PHONY+= update-tools
+update-tools: delete-tools $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/gosec
+
+PHONY+= delete-tools
+delete-tools:
+	@rm $(GOPATH)/bin/golangci-lint
+	@rm $(GOPATH)/bin/gosec
 
 .PHONY: $(PHONY)
