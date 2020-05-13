@@ -14,10 +14,12 @@ type Client struct {
 	strict bool
 }
 
-// NewInsecureClient access the orchestrator API in an insecure manner
-func NewInsecureClient(hostURL, token string) *Client {
+// NewClient access the orchestrator API via TLS
+func NewClient(hostURL, token string, tlsConfig *tls.Config) *Client {
 	r := resty.New()
-	r.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+	if tlsConfig != nil {
+		r.SetTLSClientConfig(tlsConfig)
+	}
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
 	r.SetError(OrchestratorError{})

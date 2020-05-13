@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"os"
 
@@ -18,9 +19,9 @@ func main() {
 	peServer := os.Args[1]
 	token := os.Args[2]
 	pdbHostURL := "https://" + peServer + ":8081"
-	pdbClient := puppetdb.NewInsecureClient(pdbHostURL, token)
+	pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	orchHostURL := "https://" + peServer + ":8143"
-	orchClient := orch.NewInsecureClient(orchHostURL, token)
+	orchClient := orch.NewClient(orchHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	fmt.Println("Connecting to:", peServer)
 
 	nodes, err := pdbClient.Nodes("", nil, nil)

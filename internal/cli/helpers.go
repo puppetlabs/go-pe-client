@@ -13,16 +13,18 @@ import (
 	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
 )
 
+// InitHistoryFile ...
 func InitHistoryFile() (*os.File, error) {
 	usr, err := user.Current()
 	if err != nil {
-		return nil, fmt.Errorf("Unable to get users home directory.   The command history wont be saved.")
+		return nil, fmt.Errorf("unable to get users home directory - the command history wont be saved")
 	}
 
 	filename := fmt.Sprintf("%s/.pdb_history", usr.HomeDir)
-	return os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0655)
+	return os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
 }
 
+// WriteHistory ...
 func WriteHistory(historyFile *os.File, cmd string) error {
 	if historyFile != nil {
 		_, err := historyFile.WriteString(fmt.Sprintf("%s\n", cmd))
@@ -33,6 +35,7 @@ func WriteHistory(historyFile *os.File, cmd string) error {
 	return nil
 }
 
+// ReadHistory ...
 func ReadHistory(historyFile *os.File) []string {
 	var lines []string
 	if historyFile != nil {
@@ -45,6 +48,7 @@ func ReadHistory(historyFile *os.File) []string {
 	return lines
 }
 
+// PrintString ...
 func PrintString(data interface{}) {
 	jsonString, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {

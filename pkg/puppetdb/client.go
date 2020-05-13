@@ -8,9 +8,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/go-resty/resty/v2"
+	"github.com/sirupsen/logrus"
 )
 
 // Client for the Orchestrator API
@@ -18,16 +17,15 @@ type Client struct {
 	resty *resty.Client
 }
 
-// NewInsecureClient access the orchestrator API in an insecure manner
-func NewInsecureClient(hostURL, token string) *Client {
+// NewClient access the orchestrator API via TLS
+func NewClient(hostURL, token string, tlsConfig *tls.Config) *Client {
 	r := resty.New()
-	r.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+	if tlsConfig != nil {
+		r.SetTLSClientConfig(tlsConfig)
+	}
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
-
-	return &Client{
-		resty: r,
-	}
+	return &Client{resty: r}
 }
 
 // SetTransport lets the caller overwrite the default transport used by the client.
