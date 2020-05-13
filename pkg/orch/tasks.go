@@ -3,6 +3,12 @@ package orch
 import (
 	"fmt"
 	"regexp"
+	"strings"
+)
+
+const (
+	orchTasks    = "/orchestrator/v1/tasks"
+	orchTaskName = "/orchestrator/v1/tasks/{module}/{taskname}"
 )
 
 var idRegex = regexp.MustCompile(`http.*\/orchestrator\/v1\/tasks\/(.*)/(.*)`)
@@ -14,12 +20,15 @@ func (c *Client) Tasks(environment string) (*Tasks, error) {
 	if environment != "" {
 		req.SetQueryParam("environment", environment)
 	}
-	r, err := req.Get("/orchestrator/v1/tasks")
+	r, err := req.Get(orchTasks)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchTasks, r.Status())
 	}
 	return payload, nil
 }
@@ -47,12 +56,16 @@ func (c *Client) Task(environment, module, taskname string) (*Task, error) {
 	if environment != "" {
 		req.SetQueryParam("environment", environment)
 	}
-	r, err := req.Get("/orchestrator/v1/tasks/{module}/{taskname}")
+	r, err := req.Get(orchTaskName)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		replacer := strings.NewReplacer("{module}", module, "{taskname}", taskname)
+		return nil, fmt.Errorf("%s error: %s", replacer.Replace(orchTaskName), r.Status())
 	}
 	return payload, nil
 }

@@ -1,21 +1,29 @@
 package orch
 
+import (
+	"fmt"
+	"strings"
+)
+
 const (
-	job       = "/orchestrator/v1/jobs/{job-id}"
-	jobNodes  = "/orchestrator/v1/jobs/{job-id}/nodes"
-	jobReport = "/orchestrator/v1/jobs/{job-id}/report"
-	jobs      = "/orchestrator/v1/jobs"
+	orchJob       = "/orchestrator/v1/jobs/{job-id}"
+	orchJobNodes  = "/orchestrator/v1/jobs/{job-id}/nodes"
+	orchJobReport = "/orchestrator/v1/jobs/{job-id}/report"
+	orchJobs      = "/orchestrator/v1/jobs"
 )
 
 // Jobs lists all of the jobs known to the orchestrator (GET /jobs)
 func (c *Client) Jobs() (*Jobs, error) {
 	payload := &Jobs{}
-	r, err := c.resty.R().SetResult(&payload).Get(jobs)
+	r, err := c.resty.R().SetResult(&payload).Get(orchJobs)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchJobs, r.Status())
 	}
 	return payload, nil
 }
@@ -26,12 +34,16 @@ func (c *Client) Job(jobID string) (*Job, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetPathParams(map[string]string{"job-id": jobID}).
-		Get(job)
+		Get(orchJob)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		orchJobID := strings.ReplaceAll(orchJob, "{job-id}", jobID)
+		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
 	}
 	return payload, nil
 }
@@ -42,12 +54,16 @@ func (c *Client) JobReport(jobID string) (*JobReport, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetPathParams(map[string]string{"job-id": jobID}).
-		Get(jobReport)
+		Get(orchJobReport)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		orchJobID := strings.ReplaceAll(orchJobReport, "{job-id}", jobID)
+		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
 	}
 	return payload, nil
 }
@@ -58,12 +74,16 @@ func (c *Client) JobNodes(jobID string) (*JobNodes, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetPathParams(map[string]string{"job-id": jobID}).
-		Get(jobNodes)
+		Get(orchJobNodes)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		orchJobID := strings.ReplaceAll(orchJobNodes, "{job-id}", jobID)
+		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
 	}
 	return payload, nil
 }

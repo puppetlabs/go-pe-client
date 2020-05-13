@@ -1,6 +1,7 @@
 package orch
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -9,19 +10,19 @@ import (
 func TestTasks(t *testing.T) {
 
 	// Test without environment
-	setupGetResponder(t, "/orchestrator/v1/tasks", "", "tasks-response.json")
+	setupGetResponder(t, orchTasks, "", "tasks-response.json")
 	actual, err := orchClient.Tasks("")
 	require.Nil(t, err)
 	require.Equal(t, expectedTasks, actual)
 
 	// Test with environment
-	setupGetResponder(t, "/orchestrator/v1/tasks", "environment=myenv", "tasks-response.json")
+	setupGetResponder(t, orchTasks, "environment=myenv", "tasks-response.json")
 	actual, err = orchClient.Tasks("myenv")
 	require.Nil(t, err)
 	require.Equal(t, expectedTasks, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/tasks")
+	setupErrorResponder(t, orchTasks)
 	actual, err = orchClient.Tasks("")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -30,20 +31,23 @@ func TestTasks(t *testing.T) {
 
 func TestTask(t *testing.T) {
 
+	replacer := strings.NewReplacer("{module}", "foo", "{taskname}", "bar")
+	orchTaskFooBar := replacer.Replace(orchTaskName)
+
 	// Test without environment
-	setupGetResponder(t, "/orchestrator/v1/tasks/foo/bar", "", "task-response.json")
+	setupGetResponder(t, orchTaskFooBar, "", "task-response.json")
 	actual, err := orchClient.Task("", "foo", "bar")
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test with environment
-	setupGetResponder(t, "/orchestrator/v1/tasks/foo/bar", "environment=myenv", "task-response.json")
+	setupGetResponder(t, orchTaskFooBar, "environment=myenv", "task-response.json")
 	actual, err = orchClient.Task("myenv", "foo", "bar")
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/tasks/foo/bar")
+	setupErrorResponder(t, orchTaskFooBar)
 	actual, err = orchClient.Task("myenv", "foo", "bar")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -51,23 +55,25 @@ func TestTask(t *testing.T) {
 }
 
 func TestTaskByID(t *testing.T) {
+	replacer := strings.NewReplacer("{module}", "package", "{taskname}", "upgrade")
+	orchTaskPackageUpgrade := replacer.Replace(orchTaskName)
 
-	id := "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade"
+	id := "https://orchestrator.example.com:8143" + orchTaskPackageUpgrade
 
 	// Test without environment
-	setupGetResponder(t, "/orchestrator/v1/tasks/package/upgrade", "", "task-response.json")
+	setupGetResponder(t, orchTaskPackageUpgrade, "", "task-response.json")
 	actual, err := orchClient.TaskByID("", id)
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test with environment
-	setupGetResponder(t, "/orchestrator/v1/tasks/package/upgrade", "environment=myenv", "task-response.json")
+	setupGetResponder(t, orchTaskPackageUpgrade, "environment=myenv", "task-response.json")
 	actual, err = orchClient.TaskByID("myenv", id)
 	require.Nil(t, err)
 	require.Equal(t, expectedTask, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/tasks/package/upgrade")
+	setupErrorResponder(t, orchTaskPackageUpgrade)
 	actual, err = orchClient.TaskByID("myenv", id)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)

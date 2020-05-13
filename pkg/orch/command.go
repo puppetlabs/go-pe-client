@@ -1,17 +1,33 @@
 package orch
 
+import (
+	"fmt"
+)
+
+const (
+	orchCommandTask         = "/orchestrator/v1/command/task"
+	orchCommandScheduleTask = "/orchestrator/v1/command/schedule_task"
+	orchCommandTaskTarget   = "/orchestrator/v1/command/task_target"
+	orchCommandPlanRun      = "/orchestrator/v1/command/plan_run"
+	orchCommandStop         = "/orchestrator/v1/command/stop"
+	orchCommandDeploy       = "/orchestrator/v1/command/deploy"
+)
+
 // CommandTask runs a permitted task job across a set of nodes (POST /command/task)
 func (c *Client) CommandTask(taskRequest *TaskRequest) (*JobID, error) {
 	payload := JobID{}
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(taskRequest).
-		Post("/orchestrator/v1/command/task")
+		Post(orchCommandTask)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandTask, r.Status())
 	}
 	return &payload, nil
 }
@@ -38,12 +54,15 @@ func (c *Client) CommandScheduleTask(scheduleTaskRequest *ScheduleTaskRequest) (
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(scheduleTaskRequest).
-		Post("/orchestrator/v1/command/schedule_task")
+		Post(orchCommandScheduleTask)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandScheduleTask, r.Status())
 	}
 	return &payload, nil
 }
@@ -71,12 +90,15 @@ func (c *Client) CommandTaskTarget(taskTargetRequest *TaskTargetRequest) (*TaskT
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(taskTargetRequest).
-		Post("/orchestrator/v1/command/task_target")
+		Post(orchCommandTaskTarget)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandTaskTarget, r.Status())
 	}
 	return &payload, nil
 }
@@ -105,12 +127,15 @@ func (c *Client) CommandPlanRun(planRunRequest *PlanRunRequest) (*PlanRunJobID, 
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(planRunRequest).
-		Post("/orchestrator/v1/command/plan_run")
+		Post(orchCommandPlanRun)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandPlanRun, r.Status())
 	}
 	return &payload, nil
 }
@@ -134,12 +159,15 @@ func (c *Client) CommandStop(stopRequest *StopRequest) (*StopJobID, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(stopRequest).
-		Post("/orchestrator/v1/command/stop")
+		Post(orchCommandStop)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandStop, r.Status())
 	}
 	return &payload, nil
 }
@@ -164,12 +192,15 @@ func (c *Client) CommandDeploy(deployRequest *DeployRequest) (*JobID, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(deployRequest).
-		Post("/orchestrator/v1/command/deploy")
+		Post(orchCommandDeploy)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchCommandDeploy, r.Status())
 	}
 	return &payload, nil
 }
