@@ -1,14 +1,27 @@
 package orch
 
+import (
+	"fmt"
+	"strings"
+)
+
+const (
+	orchInventory     = "/orchestrator/v1/inventory"
+	orchInventoryNode = "/orchestrator/v1/inventory/{node}"
+)
+
 // Inventory lists all nodes that are connected to the PCP broker (GET /inventory)
 func (c *Client) Inventory() ([]InventoryNode, error) {
 	payload := map[string][]InventoryNode{}
-	r, err := c.resty.R().SetResult(&payload).Get("/orchestrator/v1/inventory")
+	r, err := c.resty.R().SetResult(&payload).Get(orchInventory)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchInventory, r.Status())
 	}
 	inventoryNodes := payload["items"]
 	return inventoryNodes, nil
@@ -22,12 +35,16 @@ func (c *Client) InventoryNode(node string) (*InventoryNode, error) {
 		SetPathParams(map[string]string{
 			"node": node,
 		})
-	r, err := req.Get("/orchestrator/v1/inventory/{node}")
+	r, err := req.Get(orchInventoryNode)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		inventoryNode := strings.ReplaceAll(orchInventoryNode, "{node}", node)
+		return nil, fmt.Errorf("%s error: %s", inventoryNode, r.Status())
 	}
 	return payload, nil
 }
@@ -38,12 +55,15 @@ func (c *Client) InventoryCheck(nodes []string) ([]InventoryNode, error) {
 	r, err := c.resty.R().
 		SetResult(&payload).
 		SetBody(map[string]interface{}{"nodes": nodes}).
-		Post("/orchestrator/v1/inventory")
+		Post(orchInventory)
 	if err != nil {
 		return nil, err
 	}
 	if r.IsError() {
-		return nil, r.Error().(error)
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", orchInventory, r.Status())
 	}
 	inventoryNodes := payload["items"]
 	return inventoryNodes, nil

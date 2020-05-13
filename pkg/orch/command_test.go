@@ -9,7 +9,7 @@ import (
 func TestCommandTask(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/task", "command-task-request.json", "command-task-response.json")
+	setupPostResponder(t, orchCommandTask, "command-task-request.json", "command-task-response.json")
 	taskRequest := &TaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
@@ -30,7 +30,7 @@ func TestCommandTask(t *testing.T) {
 	require.Equal(t, expectedCommandTaskResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/task")
+	setupErrorResponder(t, orchCommandTask)
 	actual, err = orchClient.CommandTask(taskRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -45,7 +45,7 @@ var expectedCommandTaskResponse = &JobID{Job: struct {
 func TestCommandScheduleTask(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/schedule_task", "command-schedule_task-request.json", "command-schedule_task-response.json")
+	setupPostResponder(t, orchCommandScheduleTask, "command-schedule_task-request.json", "command-schedule_task-response.json")
 	scheduleTaskRequest := &ScheduleTaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
@@ -64,7 +64,7 @@ func TestCommandScheduleTask(t *testing.T) {
 	require.Equal(t, expectedCommandScheduleTaskResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/schedule_task")
+	setupErrorResponder(t, orchCommandScheduleTask)
 	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -78,7 +78,7 @@ var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
 func TestCommandTaskTarget(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/task_target", "command-task_target-request.json", "command-task_target-response.json")
+	setupPostResponder(t, orchCommandTaskTarget, "command-task_target-request.json", "command-task_target-response.json")
 	taskTargetRequest := &TaskTargetRequest{
 		DisplayName: "1",
 		NodeGroups:  []string{"3c4df64f-7609-4d31-9c2d-acfa52ed66ec", "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"},
@@ -92,7 +92,7 @@ func TestCommandTaskTarget(t *testing.T) {
 	require.Equal(t, expectedCommandTaskTargetResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/task_target")
+	setupErrorResponder(t, orchCommandTaskTarget)
 	actual, err = orchClient.CommandTaskTarget(taskTargetRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -106,7 +106,7 @@ var expectedCommandTaskTargetResponse = &TaskTargetJobID{TaskTargetJob: struct {
 func TestCommandPlanRun(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/plan_run", "command-plan_run-request.json", "command-plan_run-response.json")
+	setupPostResponder(t, orchCommandPlanRun, "command-plan_run-request.json", "command-plan_run-response.json")
 	planRunRequest := &PlanRunRequest{
 		Description: "Start the canary plan on node1 and node2",
 		Params: map[string]interface{}{
@@ -121,7 +121,7 @@ func TestCommandPlanRun(t *testing.T) {
 	require.Equal(t, expectedCommandPlanRunResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/plan_run")
+	setupErrorResponder(t, orchCommandPlanRun)
 	actual, err = orchClient.CommandPlanRun(planRunRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -134,7 +134,7 @@ var expectedCommandPlanRunResponse = &PlanRunJobID{
 func TestCommandStop(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/stop", "command-stop-request.json", "command-stop-response.json")
+	setupPostResponder(t, orchCommandStop, "command-stop-request.json", "command-stop-response.json")
 	stopRequest := &StopRequest{
 		Job: "1234",
 	}
@@ -144,7 +144,7 @@ func TestCommandStop(t *testing.T) {
 	require.Equal(t, expectedCommandStopResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/stop")
+	setupErrorResponder(t, orchCommandStop)
 	actual, err = orchClient.CommandStop(stopRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -160,7 +160,7 @@ var expectedCommandStopResponse = &StopJobID{Job: struct {
 func TestCommandDeploy(t *testing.T) {
 
 	// Test success
-	setupPostResponder(t, "/orchestrator/v1/command/deploy", "command-deploy-request.json", "command-deploy-response.json")
+	setupPostResponder(t, orchCommandDeploy, "command-deploy-request.json", "command-deploy-response.json")
 	deployRequest := &DeployRequest{
 		Environment: "production",
 		Noop:        true,
@@ -174,7 +174,7 @@ func TestCommandDeploy(t *testing.T) {
 	require.Equal(t, expectedCommandDeployResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, "/orchestrator/v1/command/deploy")
+	setupErrorResponder(t, orchCommandDeploy)
 	actual, err = orchClient.CommandDeploy(deployRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)

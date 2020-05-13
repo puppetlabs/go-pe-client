@@ -12,13 +12,13 @@ import (
 func TestJobs(t *testing.T) {
 
 	// Test success
-	setupGetResponder(t, jobs, "", "jobs-response.json")
+	setupGetResponder(t, orchJobs, "", "jobs-response.json")
 	actual, err := orchClient.Jobs()
 	require.Nil(t, err)
 	require.False(t, structs.HasZero(actual), spew.Sdump(actual))
 
 	// Test error
-	setupErrorResponder(t, jobs)
+	setupErrorResponder(t, orchJobs)
 	actual, err = orchClient.Jobs()
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
@@ -27,7 +27,7 @@ func TestJobs(t *testing.T) {
 
 func TestJob(t *testing.T) {
 
-	testURL := strings.ReplaceAll(job, "{job-id}", "123")
+	testURL := strings.ReplaceAll(orchJob, "{job-id}", "123")
 
 	// Test success
 	setupGetResponder(t, testURL, "", "job-response.json")
@@ -45,7 +45,7 @@ func TestJob(t *testing.T) {
 
 func TestJobReport(t *testing.T) {
 
-	testURL := strings.ReplaceAll(jobReport, "{job-id}", "123")
+	testURL := strings.ReplaceAll(orchJobReport, "{job-id}", "123")
 
 	// Test success
 	setupGetResponder(t, testURL, "", "job-report-response.json")
@@ -63,7 +63,7 @@ func TestJobReport(t *testing.T) {
 
 func TestJobNodes(t *testing.T) {
 
-	testURL := strings.ReplaceAll(jobNodes, "{job-id}", "123")
+	testURL := strings.ReplaceAll(orchJobNodes, "{job-id}", "123")
 
 	// Test success
 	setupGetResponder(t, testURL, "", "jobs-nodes-response.json")
