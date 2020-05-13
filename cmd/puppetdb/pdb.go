@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/url"
 	"os"
@@ -111,7 +112,7 @@ func processArgs() (*puppetdb.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	pdb := puppetdb.NewInsecureClient(u.String(), token)
+	pdb := puppetdb.NewClient(u.String(), token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this tool is private and for development purpose
 	return pdb, nil
 }
 
@@ -129,14 +130,18 @@ func main() {
 	if err != nil {
 		logrus.Warnf("Unable to create history file because : %s", err)
 	}
-	defer historyFile.Close()
+	history := cli.ReadHistory(historyFile)
+	err = historyFile.Close()
+	if err != nil {
+		logrus.Warnf("failed to close history file: %s", err)
+	}
 
 	prompter = prompt.New(
 		executor,
 		completer,
 		prompt.OptionPrefix("pdb> "),
 		prompt.OptionTitle("puppet-db"),
-		prompt.OptionHistory(cli.ReadHistory(historyFile)),
+		prompt.OptionHistory(history),
 	)
 	prompter.Run()
 }

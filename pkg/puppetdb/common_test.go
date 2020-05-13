@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	pdbClient = NewInsecureClient(hostURL, "xxxx")
+	pdbClient = NewClient(hostURL, "xxxx", nil)
 	httpmock.Activate()
 	httpmock.ActivateNonDefault(pdbClient.resty.GetClient())
 }

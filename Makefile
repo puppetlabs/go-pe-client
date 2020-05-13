@@ -37,18 +37,22 @@ format:
 PHONY+= lint
 lint: $(GOPATH)/bin/golangci-lint
 	@echo "🔘 Linting $(1) (`date '+%H:%M:%S'`)"
+	@lint=`golint ./...`; \
+	if [ "$$lint" != "" ]; \
+	then echo "🔴 Lint found by golint"; echo "$$lint"; exit 1;\
+	fi
 	@lint=`golangci-lint run`; \
 	if [ "$$lint" != "" ]; \
-	then echo "🔴 Lint found"; echo "$$lint"; exit 1;\
-	else echo "✅ Lint-free (`date '+%H:%M:%S'`)"; \
+	then echo "🔴 Lint found by golangci-lint"; echo "$$lint"; exit 1;\
 	fi
+	@echo "✅ Lint-free (`date '+%H:%M:%S'`)"
 
 PHONY+= sec
 sec: $(GOPATH)/bin/gosec
 	@echo "🔘 Checking for security problems ... (`date '+%H:%M:%S'`)"
 	@sec=`gosec -quiet ./...`; \
 	if [ "$$sec" != "" ]; \
-	then echo "🔴 Problems found"; echo "$$sec";\
+	then echo "🔴 Problems found"; echo "$$sec"; exit 1;\
 	else echo "✅ No problems found (`date '+%H:%M:%S'`)"; \
 	fi
 
