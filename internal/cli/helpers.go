@@ -21,7 +21,7 @@ func InitHistoryFile() (*os.File, error) {
 	}
 
 	filename := fmt.Sprintf("%s/.pdb_history", usr.HomeDir)
-	return os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
+	return os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0700)
 }
 
 // WriteHistory ...
