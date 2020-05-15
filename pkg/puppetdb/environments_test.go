@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestFactNames performs a test on the FactNames endpoint and verifies the expected response is returned.
 func TestEnvironment(t *testing.T) {
 	setupGetResponder(t, environments, "", "environments-response.json")
 	actual, err := pdbClient.Environments()
