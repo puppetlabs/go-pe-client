@@ -41,6 +41,10 @@ lint: $(GOPATH)/bin/golangci-lint
 	if [ "$$lint" != "" ]; \
 	then echo "🔴 Lint found by golint"; echo "$$lint"; exit 1;\
 	fi
+	@lint=`go vet ./...`; \
+	if [ "$$lint" != "" ]; \
+	then echo "🔴 Lint found by go vet"; echo "$$lint"; exit 1;\
+	fi
 	@lint=`golangci-lint run`; \
 	if [ "$$lint" != "" ]; \
 	then echo "🔴 Lint found by golangci-lint"; echo "$$lint"; exit 1;\
