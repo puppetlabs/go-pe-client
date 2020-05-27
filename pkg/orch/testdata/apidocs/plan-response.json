@@ -1,0 +1,10 @@
+{
+    "id": "https://orchestrator.example.com:8143/orchestrator/v1/plans/package/install",
+    "name": "canary::random",
+    "environment": {
+      "name": "production",
+      "code_id": null
+    },
+    "metadata": {},
+    "permitted": true
+  }
