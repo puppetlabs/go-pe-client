@@ -1,0 +1,22 @@
+{
+    "environment": {
+        "name": "production",
+        "code_id": "null"
+    },
+    "items": [{
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/plans/profile/firewall",
+        "name": "profile::firewall",
+        "permitted": true
+      },
+      {
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/plans/profile/rolling_update",
+        "name": "profile::rolling_update",
+        "permitted": true
+      },
+      {
+        "id": "https://orchestrator.example.com:8143/orchestrator/v1/plans/canary/random",
+        "name": "canary::random",
+        "permitted": false
+      }
+    ]
+}

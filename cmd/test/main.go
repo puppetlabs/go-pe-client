@@ -154,4 +154,15 @@ func main() {
 	spew.Dump(jobNodes)
 	fmt.Println()
 
+	tasks, err := orchClient.Tasks("production")
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(tasks)
+
+	plans, err := orchClient.Plans("production")
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(plans)
 }
