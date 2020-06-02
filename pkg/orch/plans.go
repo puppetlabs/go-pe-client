@@ -91,10 +91,6 @@ type Plan struct {
 		Name   string `json:"name,omitempty"`
 		CodeID string `json:"code_id,omitempty" structs:"-"`
 	} `json:"environment,omitempty"`
-	Metadata  PlanMetadata `json:"metadata,omitempty"`
-	Permitted bool         `json:"permitted,omitempty"`
-}
-
-// PlanMetadata (always an empty object)
-type PlanMetadata struct {
+	Metadata  map[string]interface{} `json:"metadata,omitempty"`
+	Permitted bool                   `json:"permitted,omitempty"`
 }
