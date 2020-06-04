@@ -8,14 +8,45 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/puppetlabs/go-pe-client/pkg/orch"
 	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
+	"github.com/puppetlabs/go-pe-client/pkg/rbac"
 )
+
+func tokenGesture(peServer string, login string, password string) {
+
+	rbacHostURL := "https://" + peServer + ":4433"
+	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	fmt.Println("Connecting to:", peServer)
+	request := &rbac.RequestKeys{
+		Login:    login,
+		Password: password,
+		Label:    "go-pe-client",
+	}
+
+	token, err := rbacClient.GetRBACToken(request)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(token)
+	fmt.Println()
+}
 
 func main() {
 
 	if len(os.Args) < 3 {
-		panic("usage: go run cmd/main.go <pe-server> <token> e.g. go run cmd/main.go pe.puppetlabs.net aabbccddeeff")
+		msg := `Runs through a gamut of PDB and Orchestration queries or returns an RBAC token
+Run the queries: go run cmd/main.go <pe-server> <token> e.g. go run cmd/main.go pe.puppetlabs.net aabbccddeeff
+or
+Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go run cmd/main.go pe.puppetlabs.net admin pazzw0rd`
+		panic(msg)
 	}
 
+	if len(os.Args) == 4 {
+		peServer := os.Args[1]
+		login := os.Args[2]
+		password := os.Args[3]
+		tokenGesture(peServer, login, password)
+		os.Exit(0)
+	}
 	peServer := os.Args[1]
 	token := os.Args[2]
 	pdbHostURL := "https://" + peServer + ":8081"

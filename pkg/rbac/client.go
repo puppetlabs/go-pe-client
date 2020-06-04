@@ -1,4 +1,4 @@
-package orch
+package rbac
 
 import (
 	"bytes"
@@ -8,21 +8,20 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-// Client for the Orchestrator API
+// Client for the RBAC API
 type Client struct {
 	resty  *resty.Client
 	strict bool
 }
 
-// NewClient access the orchestrator API via TLS
-func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
+// NewClient access the RBAC API via TLS
+func NewClient(hostURL string, tlsConfig *tls.Config) *Client {
 	r := resty.New()
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
 	r.SetHostURL(hostURL)
-	r.SetHeader("X-Authentication", token)
-	r.SetError(OrchestratorError{})
+	r.SetError(APIError{})
 	client := Client{resty: r}
 	r.JSONUnmarshal = func(data []byte, v interface{}) error {
 		d := json.NewDecoder(bytes.NewReader(data))
@@ -34,12 +33,12 @@ func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
 	return &client
 }
 
-// OrchestratorError represents an error response from the Orchestrator API
-type OrchestratorError struct {
+// APIError represents an error response from the RBAC API
+type APIError struct {
 	Kind string `json:"kind"`
 	Msg  string `json:"msg"`
 }
 
-func (oe *OrchestratorError) Error() string {
+func (oe *APIError) Error() string {
 	return oe.Msg
 }

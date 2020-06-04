@@ -5,21 +5,33 @@
 Currently a small subset of the Orchestrator and PuppetDB APIs are supported:
 * https://puppet.com/docs/pe/latest/orchestrator_api_usage_endpoint.html
 * https://puppet.com/docs/puppetdb/latest/api/index.html
+* https://puppet.com/docs/pe/latest/rbac_api_v1.html
 
 ## Running the command line
-* Go to your pe server cli and generate an rbac token. Be sure to set the correct username and password.
+* Assuming you have go installed. Run the following to get an RBAC token from a PE device:
 
-`curl -k -X POST -H 'Content-Type: application/json' -d '{"login": "admin", "password": "compliance", "lifetime": "4h", "label": "four-hour token"}' https://localhost:4433/rbac-api/v1/auth/token
-{"token":"APz9o8g392dTK0yEIOLk1Vl-rr2fVWGp0mnhgFH52PMf"}`
-
-* Assuming you have go installed. Run the following:
-
-` go run cmd/main.go <pe-server> <token>`
+`go run cmd/test/main.go <pe-server> <login> <password>`
 
 EG
 
 ```
-go run cmd/main.go brown-solidity.delivery.puppetlabs.net APz9o8g392dTK0yEIOLk1Vl-rr2fVWGp0mnhgFH52PMf
+go run cmd/test/main.go cometary-plot.delivery.puppetlabs.net admin pazzw0rd
+
+Connecting to: cometary-plot.delivery.puppetlabs.net
+(*rbac.Token)(0xc000098de0)({
+ Token: (string) (len=44) "0OVHPFr4izm980Ll2g0eVikOm53wBizGHdMJ3cbF_8IM"
+})
+
+```
+
+* Then you can see example calls to the Orchestrator and PuppetDB:
+
+`go run cmd/test/main.go <pe-server> <token>`
+
+EG
+
+```
+go run cmd/test/main.go brown-solidity.delivery.puppetlabs.net APz9o8g392dTK0yEIOLk1Vl-rr2fVWGp0mnhgFH52PMf
 
 Connecting to:  brown-solidity.delivery.puppetlabs.net
 (*[]puppetdb.Node)(0xc0000a63c0)((len=7 cap=9) {
