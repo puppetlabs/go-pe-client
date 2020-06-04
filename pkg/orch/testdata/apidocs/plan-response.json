@@ -3,8 +3,21 @@
     "name": "canary::random",
     "environment": {
       "name": "production",
-      "code_id": null
+      "code_id": ""
     },
-    "metadata": {},
+    "metadata": {
+      "description": "A plan that prints basic OS information for the specified targets. It first\nruns the facts task to retrieve facts from the targets, then compiles the\ndesired OS information from the os fact value of each targets.\n\nThe $targets parameter is a list of the targets for which to print the OS\ninformation. This plan primarily provides readable formatting, and ignores\ntargets that error.",
+      "private": false,
+      "supports_noop": false,
+      "input_method": "",
+      "parameters": {
+       "targets": {
+        "description": "",
+        "type": "TargetSpec"
+       }
+      },
+      "extensions": null,
+      "implementations": null
+    },
     "permitted": true
   }

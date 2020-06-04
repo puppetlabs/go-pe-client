@@ -74,7 +74,7 @@ func (c *Client) Plan(environment, module, planname string) (*Plan, error) {
 type Plans struct {
 	Environment struct {
 		Name   string `json:"name,omitempty"`
-		CodeID string `json:"code_id,omitempty"`
+		CodeID string `json:"code_id,omitempty" structs:"-"`
 	} `json:"environment,omitempty"`
 	Items []struct {
 		ID        string `json:"id,omitempty"`
@@ -91,6 +91,6 @@ type Plan struct {
 		Name   string `json:"name,omitempty"`
 		CodeID string `json:"code_id,omitempty" structs:"-"`
 	} `json:"environment,omitempty"`
-	Metadata  map[string]interface{} `json:"metadata,omitempty"`
-	Permitted bool                   `json:"permitted,omitempty"`
+	Metadata  TaskMetadata `json:"metadata,omitempty" structs:"-"`
+	Permitted bool         `json:"permitted,omitempty"`
 }
