@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/puppetlabs/go-pe-client/pkg/classifier"
 	"os"
 
 	"github.com/davecgh/go-spew/spew"
@@ -53,6 +54,8 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	orchHostURL := "https://" + peServer + ":8143"
 	orchClient := orch.NewClient(orchHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	classifierHostURL := "https://" + peServer + ":4433"
+	classifierClient := classifier.NewClient(classifierHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	fmt.Println("Connecting to:", peServer)
 
 	nodes, err := pdbClient.Nodes("", nil, nil)
@@ -196,4 +199,11 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 		panic(err)
 	}
 	spew.Dump(plans)
+
+	groups, err := classifierClient.Groups(nil)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(groups)
+	fmt.Println()
 }
