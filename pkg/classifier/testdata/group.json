@@ -1,0 +1,24 @@
+{
+  "description": "Production nodes",
+  "parent": "d1fc626d-222a-4616-be89-cc67ef1f8b3a",
+  "environment_trumps": true,
+  "name": "Production environment",
+  "rule": [
+    "and",
+    [
+      "=",
+      [
+        "trusted",
+        "extensions",
+        "pp_environment"
+      ],
+      "production"
+    ]
+  ],
+  "variables": {},
+  "id": "913e54b7-b09c-4543-9f74-daff5e51a49f",
+  "environment": "production",
+  "serial_number": 1,
+  "classes": {},
+  "config_data": {}
+}
