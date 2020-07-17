@@ -62,3 +62,28 @@ func getRequest(client *Client, path string, pagination *Pagination, response in
 
 	return nil
 }
+
+func postRequest(client *Client, path string, body string, response interface{}) error {
+	req := client.resty.R().
+		SetResult(&response).
+		SetHeader("Content-Type", "application/json").
+		SetBody(body)
+
+	r, err := req.Post(path)
+	if err != nil {
+		var ue *url.Error
+		if errors.As(err, &ue) {
+			return fmt.Errorf("%s %s: %w", client.resty.HostURL, path, ue.Err)
+		}
+		return fmt.Errorf("%s %s: %w", client.resty.HostURL, path, err)
+	}
+	if r.IsError() {
+		re := r.Error()
+		if re == nil {
+			return fmt.Errorf("%s %s: %s: \"%s\"", client.resty.HostURL, path, r.Status(), r.Body())
+		}
+		return fmt.Errorf("%s %s: %s: \"%s\": %v", client.resty.HostURL, path, r.Status(), r.Body(), re)
+	}
+
+	return nil
+}
