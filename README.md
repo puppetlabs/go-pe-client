@@ -110,6 +110,76 @@ Connecting to:  brown-solidity.delivery.puppetlabs.net
 })
 ```
 
+* Also you can see calls to the Classifier:
+
+To hit the classifier node endpoint run :
+
+`go run cmd/test/main.go classifier node <pe-server> <nodename> <token>`
+
+To hit the classifier group endpoint run :
+
+`go run cmd/test/main.go classifier groups <pe-server> <token>`
+
+EG
+
+```
+(classifier.Node) {
+ Name: (string) (len=37) "anomic-cabana.delivery.puppetlabs.net",
+ Environment: (string) (len=10) "production",
+ Groups: ([]string) (len=3 cap=4) {
+  (string) (len=36) "00000000-0000-4000-8000-000000000000",
+  (string) (len=36) "805b4e23-6bb7-445f-914f-1fe3ea48239f",
+  (string) (len=36) "c4513bd2-a792-4060-aeff-a3c511329e4b"
+ },
+ Classes: (struct {}) {
+ },
+ Parameters: (struct {}) {
+ },
+ ConfigData: (struct {}) {
+ }
+}
+```
+
+## Examples
+
+There are examples available to run to show how the PE client hangs together.
+
+```bash
+examples/
+```
+
+This is running the classifer example
+
+```bash
+# greghardy @ UisceBeatha in ~/go/src/github.com/puppetlabs/go-pe-client on git:classifier_node x [9:10:07]
+$ examples/classifier.sh custom-kimono.delivery.puppetlabs.net
+Aquiring token
+Token=AOHJvizy1My65MFDq1METTq6X-f5nqlvLMc_-L1yMxR9
+Selecting a node from PDB
+Selecting a classified node from the result=irate-sphere.delivery.puppetlabs.net
+Performing the classifier API call on node=irate-sphere.delivery.puppetlabs.net
+Responses=(classifier.Node) {
+ Name: (string) (len=36) "irate-sphere.delivery.puppetlabs.net",
+ Environment: (string) (len=10) "production",
+ Groups: ([]struct { ID string "json:\"id\""; Name string "json:\"name\"" }) (len=2 cap=4) {
+  (struct { ID string "json:\"id\""; Name string "json:\"name\"" }) {
+   ID: (string) (len=36) "173a9bba-c683-4d10-a2d8-16aa7208fd42",
+   Name: (string) (len=16) "All Environments"
+  },
+  (struct { ID string "json:\"id\""; Name string "json:\"name\"" }) {
+   ID: (string) (len=36) "00000000-0000-4000-8000-000000000000",
+   Name: (string) (len=9) "All Nodes"
+  }
+ },
+ Classes: (struct {}) {
+ },
+ Parameters: (struct {}) {
+ },
+ ConfigData: (struct {}) {
+ }
+}
+```
+
 ## Supporting new endpoints
 
 To add support for a new endpoint, you can:

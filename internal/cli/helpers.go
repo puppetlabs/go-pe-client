@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,8 +21,8 @@ func InitHistoryFile() (*os.File, error) {
 		return nil, fmt.Errorf("unable to get users home directory - the command history wont be saved")
 	}
 
-	filename := fmt.Sprintf("%s/.pdb_history", usr.HomeDir)
-	return os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
+	filename := filepath.Join(usr.HomeDir, ".pdb_history")
+	return os.OpenFile(filepath.Clean(filename), os.O_RDWR|os.O_CREATE, 0600)
 }
 
 // WriteHistory ...
