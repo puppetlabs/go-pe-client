@@ -4,13 +4,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/require"
 )
 
 func init() {
-	pdbClient = NewClient(hostURL, "xxxx", nil)
+	pdbClient = NewClient(hostURL, "xxxx", nil, time.Second*1000)
 	httpmock.Activate()
 	httpmock.ActivateNonDefault(pdbClient.resty.GetClient())
 }
