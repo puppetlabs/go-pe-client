@@ -57,8 +57,8 @@ func TestInventoryCheck(t *testing.T) {
 
 }
 
-var expectedInventory = []InventoryNode{InventoryNode{Name: "foo.example.com", Connected: true, Broker: "pcp://broker1.example.com/server", Timestamp: "2016-010-22T13:36:41.449Z"}, InventoryNode{Name: "bar.example.com", Connected: true, Broker: "pcp://broker2.example.com/server", Timestamp: "2016-010-22T13:39:16.377Z"}}
+var expectedInventory = []InventoryNode{{Name: "foo.example.com", Connected: true, Broker: "pcp://broker1.example.com/server", Timestamp: "2016-010-22T13:36:41.449Z"}, {Name: "bar.example.com", Connected: true, Broker: "pcp://broker2.example.com/server", Timestamp: "2016-010-22T13:39:16.377Z"}}
 
 var expectedInventoryNode = &InventoryNode{Name: "foo.example.com", Connected: true, Broker: "pcp://broker.example.com/server", Timestamp: "2017-03-29T21:48:09.633Z"}
 
-var expectedInventoryCheck = []InventoryNode{InventoryNode{Name: "foo.example.com", Connected: true, Broker: "pcp://broker.example.com/server", Timestamp: "2017-07-14T15:57:33.640Z"}, InventoryNode{Name: "bar.example.com", Connected: false, Broker: "", Timestamp: ""}, InventoryNode{Name: "baz.example.com", Connected: true, Broker: "pcp://broker.example.com/server", Timestamp: "2017-07-14T15:41:19.242Z"}}
+var expectedInventoryCheck = []InventoryNode{{Name: "foo.example.com", Connected: true, Broker: "pcp://broker.example.com/server", Timestamp: "2017-07-14T15:57:33.640Z"}, {Name: "bar.example.com", Connected: false, Broker: "", Timestamp: ""}, {Name: "baz.example.com", Connected: true, Broker: "pcp://broker.example.com/server", Timestamp: "2017-07-14T15:41:19.242Z"}}

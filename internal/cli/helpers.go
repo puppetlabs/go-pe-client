@@ -151,7 +151,7 @@ func ParseInput(command string) (string, string, puppetdb.Pagination, puppetdb.O
 		os.Exit(0)
 	}
 
-	var rex = regexp.MustCompile(`(\w+)=(\w+)`) //nolint
+	var rex = regexp.MustCompile(`(\w+)=(\w+)`)
 	options := rex.FindAllString(querylessCommand, -1)
 	pagination := createPaginationStruct(options)
 

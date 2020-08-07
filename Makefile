@@ -35,30 +35,35 @@ format:
 	@echo "✅ Checking go fmt complete"
 
 PHONY+= lint
-lint: $(GOPATH)/bin/golangci-lint
+lint: $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/golint
 	@echo "🔘 Linting $(1) (`date '+%H:%M:%S'`)"
-	@lint=`golint ./...`; \
-	if [ "$$lint" != "" ]; \
-	then echo "🔴 Lint found by golint"; echo "$$lint"; exit 1;\
-	fi
-	@lint=`go vet ./...`; \
-	if [ "$$lint" != "" ]; \
-	then echo "🔴 Lint found by go vet"; echo "$$lint"; exit 1;\
-	fi
-	@lint=`golangci-lint run`; \
-	if [ "$$lint" != "" ]; \
-	then echo "🔴 Lint found by golangci-lint"; echo "$$lint"; exit 1;\
-	fi
+	@golint -set_exit_status ./...
+	@go vet ./...
+	@golangci-lint run \
+		-E asciicheck \
+		-E bodyclose \
+		-E exhaustive \
+		-E exportloopref \
+		-E gci \
+		-E gofmt \
+		-E goimports \
+		-E goimports \
+		-E gosec \
+		-E noctx \
+		-E nolintlint \
+		-E rowserrcheck \
+		-E scopelint \
+		-E sqlclosecheck \
+		-E stylecheck \
+		-E unconvert \
+		-E unparam
 	@echo "✅ Lint-free (`date '+%H:%M:%S'`)"
 
 PHONY+= sec
 sec: $(GOPATH)/bin/gosec
 	@echo "🔘 Checking for security problems ... (`date '+%H:%M:%S'`)"
-	@sec=`gosec -quiet ./...`; \
-	if [ "$$sec" != "" ]; \
-	then echo "🔴 Problems found"; echo "$$sec"; exit 1;\
-	else echo "✅ No problems found (`date '+%H:%M:%S'`)"; \
-	fi
+	@gosec -quiet ./...
+	@echo "✅ No problems found (`date '+%H:%M:%S'`)"; \
 
 PHONY+= build
 build:
@@ -71,12 +76,16 @@ $(GOPATH)/bin/golangci-lint:
 	@echo "🔘 Installing golangci-lint... (`date '+%H:%M:%S'`)"
 	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
+$(GOPATH)/bin/golint:
+	@echo "🔘 Installing golint ... (`date '+%H:%M:%S'`)"
+	@GO111MODULE=off go get -u golang.org/x/lint/golint
+
 $(GOPATH)/bin/gosec:
 	@echo "🔘 Installing gosec ... (`date '+%H:%M:%S'`)"
 	@curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
 PHONY+= update-tools
-update-tools: delete-tools $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/gosec
+update-tools: delete-tools $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/golint $(GOPATH)/bin/gosec
 
 PHONY+= delete-tools
 delete-tools:

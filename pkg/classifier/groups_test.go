@@ -2,12 +2,12 @@ package classifier
 
 import (
 	"fmt"
-	"github.com/jarcoal/httpmock"
 	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
 
+	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -44,6 +44,7 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	} else {
 		httpmock.RegisterResponderWithQuery(http.MethodGet, hostURL+url, query, httpmock.ResponderFromResponse(response))
 	}
+	response.Body.Close()
 }
 
 var pdbClient *Client

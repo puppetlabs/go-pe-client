@@ -27,6 +27,7 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	} else {
 		httpmock.RegisterResponderWithQuery(http.MethodGet, hostURL+url, query, httpmock.ResponderFromResponse(response))
 	}
+	response.Body.Close()
 }
 
 var pdbClient *Client
