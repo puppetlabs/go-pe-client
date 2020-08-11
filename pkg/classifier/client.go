@@ -4,9 +4,10 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/go-resty/resty/v2"
 	"net/http"
 	"net/url"
+
+	"github.com/go-resty/resty/v2"
 )
 
 // Client for the Orchestrator API
@@ -86,4 +87,21 @@ func postRequest(client *Client, path string, body string, response interface{})
 	}
 
 	return nil
+}
+
+// PostRequest posts a request to the specified uri
+func PostRequest(client *Client, uri string) ([]byte, error) {
+	r, err := client.resty.R().
+		Post(uri)
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", uri, r.Status())
+	}
+
+	return r.Body(), nil
 }

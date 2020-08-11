@@ -3,8 +3,9 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/puppetlabs/go-pe-client/pkg/classifier"
 	"os"
+
+	"github.com/puppetlabs/go-pe-client/pkg/classifier"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/puppetlabs/go-pe-client/pkg/orch"
@@ -13,7 +14,6 @@ import (
 )
 
 func tokenGesture(peServer string, login string, password string) {
-
 	rbacHostURL := "https://" + peServer + ":4433"
 	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	fmt.Println("Connecting to:", peServer)
@@ -23,6 +23,8 @@ func tokenGesture(peServer string, login string, password string) {
 		Label:    "go-pe-client",
 	}
 
+	spew.Dump(request)
+
 	token, err := rbacClient.GetRBACToken(request)
 	if err != nil {
 		panic(err)
@@ -31,14 +33,76 @@ func tokenGesture(peServer string, login string, password string) {
 	fmt.Println()
 }
 
-func main() {
+func handleClassifierNodes(peServer string, certname string, token string) {
+	classifierHostURL := "https://" + peServer + ":4433"
+	classifierClient := classifier.NewClient(classifierHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	node, err := classifierClient.Node(certname)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(node)
+	fmt.Println()
+}
 
+func handlerClassifierGroups(peServer string, token string) {
+	classifierHostURL := "https://" + peServer + ":4433"
+	classifierClient := classifier.NewClient(classifierHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	groups, err := classifierClient.Groups(nil)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(groups)
+	fmt.Println()
+}
+
+func main() {
 	if len(os.Args) < 3 {
 		msg := `Runs through a gamut of PDB and Orchestration queries or returns an RBAC token
 Run the queries: go run cmd/main.go <pe-server> <token> e.g. go run cmd/main.go pe.puppetlabs.net aabbccddeeff
 or
+Run a classifier query: go run cmd/main.go classifier [nodes/groups] <pe-server> [nodename] <token>
 Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go run cmd/main.go pe.puppetlabs.net admin pazzw0rd`
 		panic(msg)
+	}
+
+	if os.Args[1] == "classifier" {
+		if len(os.Args) < 4 {
+			eMsg := ` Usage: go run cmd/main.go classifier nodes <pe-server> <nodename> <token>
+	Usage: go run cmd/main.go classifier groups <pe-server> <token>`
+			panic(eMsg)
+		}
+
+		if os.Args[2] == "node" {
+			// Format : <pe_server> <host> <token>
+			handleClassifierNodes(os.Args[3], os.Args[4], os.Args[5])
+		} else if os.Args[2] == "groups" {
+			// Format : <pe_server> <token>
+			handlerClassifierGroups(os.Args[3], os.Args[4])
+		} else {
+			panic("Usage: go run cmd/main.go classifier [nodes|groups]")
+		}
+		os.Exit(0)
+	}
+
+	// Format : pdb nodes <pe_server> <client>
+	if os.Args[1] == "pdb" {
+		if len(os.Args) < 4 {
+			eMsg := `Usage: go run cmd/main.go pdb nodes <pe-server> <token>`
+			panic(eMsg)
+		}
+		peServer := os.Args[3]
+		token := os.Args[4]
+		pdbHostURL := "https://" + peServer + ":8081"
+		pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+
+		nodes, err := pdbClient.Nodes("", nil, nil)
+		if err != nil {
+			panic(err)
+		}
+		spew.Dump(nodes)
+		fmt.Println()
+
+		os.Exit(0)
 	}
 
 	if len(os.Args) == 4 {
