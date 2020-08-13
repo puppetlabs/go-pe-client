@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	prompt "github.com/c-bata/go-prompt"
 	"github.com/puppetlabs/go-pe-client/internal/cli"
@@ -16,6 +17,7 @@ import (
 var client *puppetdb.Client
 var prompter *prompt.Prompt
 var historyFile *os.File
+var pdbTimeout = time.Second * 30
 
 var suggestions = []prompt.Suggest{
 	//  Methods
@@ -112,7 +114,7 @@ func processArgs() (*puppetdb.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	pdb := puppetdb.NewClient(u.String(), token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this tool is private and for development purpose
+	pdb := puppetdb.NewClient(u.String(), token, &tls.Config{InsecureSkipVerify: true}, pdbTimeout) // #nosec - this tool is private and for development purpose
 	return pdb, nil
 }
 

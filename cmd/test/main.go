@@ -4,14 +4,16 @@ import (
 	"crypto/tls"
 	"fmt"
 	"os"
-
-	"github.com/puppetlabs/go-pe-client/pkg/classifier"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/puppetlabs/go-pe-client/pkg/classifier"
 	"github.com/puppetlabs/go-pe-client/pkg/orch"
 	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
 	"github.com/puppetlabs/go-pe-client/pkg/rbac"
 )
+
+var pdbTimeout = time.Second * 30
 
 func tokenGesture(peServer string, login string, password string) {
 	rbacHostURL := "https://" + peServer + ":4433"
@@ -93,7 +95,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 		peServer := os.Args[3]
 		token := os.Args[4]
 		pdbHostURL := "https://" + peServer + ":8081"
-		pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+		pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}, pdbTimeout) // #nosec - this main() is private and for development purpose
 
 		nodes, err := pdbClient.Nodes("", nil, nil)
 		if err != nil {
@@ -115,7 +117,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	peServer := os.Args[1]
 	token := os.Args[2]
 	pdbHostURL := "https://" + peServer + ":8081"
-	pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}, pdbTimeout) // #nosec - this main() is private and for development purpose
 	orchHostURL := "https://" + peServer + ":8143"
 	orchClient := orch.NewClient(orchHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	classifierHostURL := "https://" + peServer + ":4433"

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
@@ -17,14 +18,17 @@ type Client struct {
 	resty *resty.Client
 }
 
-// NewClient access the orchestrator API via TLS
-func NewClient(hostURL, token string, tlsConfig *tls.Config) *Client {
+// NewClient access the orchestrator API via TLS. N.B. The timeout is the resty http client timeout so is all encompassing
+// and will incorporate connect, TLS handshake, http/s header receipt and general data transfer. The value used for this in
+// ER is 5 seconds which seems reasonable.
+func NewClient(hostURL, token string, tlsConfig *tls.Config, timeout time.Duration) *Client {
 	r := resty.New()
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
+	r.SetTimeout(timeout)
 	return &Client{resty: r}
 }
 
