@@ -83,7 +83,7 @@ func TestTaskByID(t *testing.T) {
 var expectedTask = &Task{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install", Environment: struct {
 	Name   string "json:\"name,omitempty\""
 	CodeID string "json:\"code_id,omitempty\""
-}{Name: "production", CodeID: "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"}, Metadata: TaskMetadata{Description: "Bootstrap a node with puppet-agent", Private: true, SupportsNoop: false, InputMethod: "stdin", Parameters: map[string]TaskParam{"cacert_content": TaskParam{Description: "The expected CA certificate content for the master", Type: "Optional[String]"}, "certname": TaskParam{Description: "The certname with which the node should be bootstrapped", Type: "Optional[String]"}, "custom_attribute": TaskParam{Description: "This setting is added to puppet.conf and included in the custom_attributes section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "dns_alt_names": TaskParam{Description: "The DNS alt names with which the agent certificate should be generated", Type: "Optional[String]"}, "environment": TaskParam{Description: "The environment in which the node should be bootstrapped", Type: "Optional[String]"}, "extension_request": TaskParam{Description: "This setting is added to puppet.conf and included in the extension_requests section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "master": TaskParam{Description: "The fqdn of the master from which the puppet-agent should be bootstrapped", Type: "String"}, "set_noop": TaskParam{Description: "The noop setting in the [agent] section of puppet.conf", Type: "Optional[Boolean]"}}, Extensions: map[string]interface{}{"discovery": map[string]interface{}{"friendlyName": "Install Puppet agent", "parameters": map[string]interface{}{"cacert_content": map[string]interface{}{"placeholder": "-----BEGIN CERTIFICATE---- ... -----END CERTIFICATE-----"}, "master": map[string]interface{}{"placeholder": "master.company.net"}}, "puppetInstall": true, "type": []interface{}{"host"}}}, Implementations: []TaskImplementation{TaskImplementation{Name: "windows.ps1", Requirements: []string{"powershell"}, InputMethod: "powershell"}, TaskImplementation{Name: "linux.sh", Requirements: []string{"shell"}, InputMethod: "environment"}}}, Files: []TaskFile{TaskFile{Filename: "install", URI: struct {
+}{Name: "production", CodeID: "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"}, Metadata: TaskMetadata{Description: "Bootstrap a node with puppet-agent", Private: true, SupportsNoop: false, InputMethod: "stdin", Parameters: map[string]TaskParam{"cacert_content": {Description: "The expected CA certificate content for the master", Type: "Optional[String]"}, "certname": {Description: "The certname with which the node should be bootstrapped", Type: "Optional[String]"}, "custom_attribute": {Description: "This setting is added to puppet.conf and included in the custom_attributes section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "dns_alt_names": {Description: "The DNS alt names with which the agent certificate should be generated", Type: "Optional[String]"}, "environment": {Description: "The environment in which the node should be bootstrapped", Type: "Optional[String]"}, "extension_request": {Description: "This setting is added to puppet.conf and included in the extension_requests section of csr_attributes.yaml", Type: "Optional[Array[Pattern[/\\w+=\\w+/]]]"}, "master": {Description: "The fqdn of the master from which the puppet-agent should be bootstrapped", Type: "String"}, "set_noop": {Description: "The noop setting in the [agent] section of puppet.conf", Type: "Optional[Boolean]"}}, Extensions: map[string]interface{}{"discovery": map[string]interface{}{"friendlyName": "Install Puppet agent", "parameters": map[string]interface{}{"cacert_content": map[string]interface{}{"placeholder": "-----BEGIN CERTIFICATE---- ... -----END CERTIFICATE-----"}, "master": map[string]interface{}{"placeholder": "master.company.net"}}, "puppetInstall": true, "type": []interface{}{"host"}}}, Implementations: []TaskImplementation{{Name: "windows.ps1", Requirements: []string{"powershell"}, InputMethod: "powershell"}, {Name: "linux.sh", Requirements: []string{"shell"}, InputMethod: "environment"}}}, Files: []TaskFile{{Filename: "install", URI: struct {
 	Path   string "json:\"path,omitempty\""
 	Params struct {
 		Environment string "json:\"environment,omitempty\""
@@ -98,13 +98,10 @@ var expectedTasks = &Tasks{Environment: struct {
 }{Name: "production", CodeID: "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"}, Items: []struct {
 	ID   string "json:\"id,omitempty\""
 	Name string "json:\"name,omitempty\""
-}{struct {
-	ID   string "json:\"id,omitempty\""
-	Name string "json:\"name,omitempty\""
-}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install"}, struct {
-	ID   string "json:\"id,omitempty\""
-	Name string "json:\"name,omitempty\""
-}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade", Name: "package::upgrade"}, struct {
-	ID   string "json:\"id,omitempty\""
-	Name string "json:\"name,omitempty\""
-}{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/exec/init", Name: "exec"}}}
+}{
+
+	{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install"},
+
+	{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade", Name: "package::upgrade"},
+
+	{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/exec/init", Name: "exec"}}}

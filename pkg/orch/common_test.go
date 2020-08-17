@@ -29,6 +29,7 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	} else {
 		httpmock.RegisterResponderWithQuery(http.MethodGet, orchHostURL+url, query, httpmock.ResponderFromResponse(response))
 	}
+	response.Body.Close()
 }
 
 func setupPostResponder(t *testing.T, url, requestFilename, responseFilename string) {
