@@ -22,7 +22,7 @@ type Client struct {
 // and will incorporate connect, TLS handshake, http/s header receipt and general data transfer. The value used for this in
 // ER is 5 seconds which seems reasonable.
 func NewClient(hostURL, token string, tlsConfig *tls.Config, timeout time.Duration) *Client {
-	r := resty.New()
+	r := resty.New().EnableTrace()
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
@@ -73,6 +73,9 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 		}
 		return fmt.Errorf("%s %s: %s: \"%s\": %v", client.resty.HostURL, path, r.Status(), r.Body(), re)
 	}
+
+	traceInfo := req.TraceInfo()
+	logrus.Debugf("Request took: %s. Acquiring connection took %s. Server took %s to reply.", traceInfo.TotalTime, traceInfo.ConnTime, traceInfo.ServerTime)
 
 	if pagination != nil && pagination.IncludeTotal {
 		pagination.Total = getTotal(r.Header().Get("X-Records"))
