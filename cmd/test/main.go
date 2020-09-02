@@ -9,6 +9,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/puppetlabs/go-pe-client/pkg/classifier"
 	"github.com/puppetlabs/go-pe-client/pkg/orch"
+	"github.com/puppetlabs/go-pe-client/pkg/pe"
 	"github.com/puppetlabs/go-pe-client/pkg/puppetdb"
 	"github.com/puppetlabs/go-pe-client/pkg/rbac"
 )
@@ -122,7 +123,16 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	orchClient := orch.NewClient(orchHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	classifierHostURL := "https://" + peServer + ":4433"
 	classifierClient := classifier.NewClient(classifierHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+	peHostURL := "https://" + peServer
+	peClient := pe.NewClient(peHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 	fmt.Println("Connecting to:", peServer)
+
+	environments, err := peClient.Environments()
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(environments)
+	fmt.Println()
 
 	nodes, err := pdbClient.Nodes("", nil, nil)
 	if err != nil {
