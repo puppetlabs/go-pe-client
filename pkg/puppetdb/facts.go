@@ -13,7 +13,7 @@ func (c *Client) FactNames(pagination *Pagination, orderBy *OrderBy) ([]string, 
 	return payload, err
 }
 
-// FactPaths will return an alphabetical list of all known fact names, including those which are known only for deactivated nodes.
+// FactPaths will return a set of all known fact paths for all known nodes, and is intended as a counterpart to the fact-names endpoint.
 func (c *Client) FactPaths(query string, pagination *Pagination, orderBy *OrderBy) ([]FactPath, error) {
 	payload := []FactPath{}
 	err := getRequest(c, factPaths, query, pagination, orderBy, &payload)
