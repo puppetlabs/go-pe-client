@@ -35,7 +35,7 @@ func TestFacts(t *testing.T) {
 }
 
 var expectedFactNames = []string{"agent_canary", "agent_specified_environment", "aio_agent_build", "aio_agent_version"}
-var expectedFactPaths = []FactPath{FactPath{Path: []string{"partitions", "sda3", "mount"}, Type: "string"}, FactPath{Path: []string{"partitions", "sda3", "size"}, Type: "string"}, FactPath{Path: []string{"partitions", "sda3", "uuid"}, Type: "string"}}
+var expectedFactPaths = []FactPath{{Path: []string{"partitions", "sda3", "mount"}, Type: "string"}, {Path: []string{"partitions", "sda3", "size"}, Type: "string"}, {Path: []string{"partitions", "sda3", "uuid"}, Type: "string"}}
 var expectedFacts = []Fact{
 	{Name: "id", Value: "root", Certname: "foobar.puppetlabs.net", Environment: "production"},
 	{Name: "os", Value: map[string]interface{}{"architecture": "x86_64", "distro": map[string]interface{}{"codename": "Core", "description": "CentOS Linux release 7.4.1708 (Core)", "id": "CentOS", "release": map[string]interface{}{"full": "7.4.1708", "major": "7", "minor": "4"}, "specification": ":core-4.1-amd64:core-4.1-noarch"}, "family": "RedHat", "hardware": "x86_64", "name": "CentOS", "release": map[string]interface{}{"full": "7.4.1708", "major": "7", "minor": "4"}, "selinux": map[string]interface{}{"config_mode": "permissive", "config_policy": "targeted", "current_mode": "permissive", "enabled": true, "enforced": false, "policy_version": "28"}}, Certname: "foobar.puppetlabs.net", Environment: "production"},
