@@ -44,6 +44,6 @@ type Fact struct {
 // Path ([]string): an array of the parts that make up the path
 // Type (string): the type of the fact, string, integer etc
 type FactPath struct {
-	Path []string    `json:"path"`
-	Type interface{} `json:"type"`
+	Path []string `json:"path"`
+	Type string   `json:"type"`
 }
