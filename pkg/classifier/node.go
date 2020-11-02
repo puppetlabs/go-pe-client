@@ -13,10 +13,13 @@ const (
 // certname is the hostname of the node to query.
 func (c *Client) Node(certname string) (Node, error) {
 	payload, err := PostRequest(c, fmt.Sprintf("%s/%s", uri, certname))
-	var node Node
-	if err := json.Unmarshal(payload, &node); err != nil {
-		panic(err)
+
+	if err != nil {
+		return Node{}, err
 	}
+
+	var node Node
+	err = json.Unmarshal(payload, &node)
 	return node, err
 }
 
