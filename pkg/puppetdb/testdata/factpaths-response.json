@@ -1,0 +1,10 @@
+[ {
+  "path" : [ "partitions", "sda3", "mount" ],
+  "type" : "string"
+}, {
+  "path" : [ "partitions", "sda3", "size" ],
+  "type" : "string"
+}, {
+  "path" : [ "partitions", "sda3", "uuid" ],
+  "type" : "string"
+} ]

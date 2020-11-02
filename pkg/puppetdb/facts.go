@@ -2,6 +2,7 @@ package puppetdb
 
 const (
 	factNames = "/pdb/query/v4/fact-names"
+	factPaths = "/pdb/query/v4/fact-paths"
 	facts     = "/pdb/query/v4/facts"
 )
 
@@ -9,6 +10,13 @@ const (
 func (c *Client) FactNames(pagination *Pagination, orderBy *OrderBy) ([]string, error) {
 	payload := []string{}
 	err := getRequest(c, factNames, "", pagination, orderBy, &payload)
+	return payload, err
+}
+
+// FactPaths will return a set of all known fact paths for all known nodes, and is intended as a counterpart to the fact-names endpoint.
+func (c *Client) FactPaths(query string, pagination *Pagination, orderBy *OrderBy) ([]FactPath, error) {
+	payload := []FactPath{}
+	err := getRequest(c, factPaths, query, pagination, orderBy, &payload)
 	return payload, err
 }
 
@@ -30,4 +38,12 @@ type Fact struct {
 	Certname    string      `json:"certname"`
 	Environment string      `json:"environment"`
 	Count       int         `json:"count"`
+}
+
+// FactPath represents a fact-path returned by the facts-paths endpoint.
+// Path ([]string): an array of the parts that make up the path
+// Type (string): the type of the fact, string, integer etc
+type FactPath struct {
+	Path []string    `json:"path"`
+	Type interface{} `json:"type"`
 }
