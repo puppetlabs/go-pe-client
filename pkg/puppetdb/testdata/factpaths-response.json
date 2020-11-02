@@ -7,4 +7,7 @@
 }, {
   "path" : [ "partitions", "sda3", "uuid" ],
   "type" : "string"
+}, {
+  "type" : "string",
+  "path" : ["apt_package_dist_updates",90]
 } ]
