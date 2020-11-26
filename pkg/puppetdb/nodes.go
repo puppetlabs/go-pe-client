@@ -1,12 +1,39 @@
 package puppetdb
 
-const nodes = "/pdb/query/v4/nodes"
+import (
+	"fmt"
+	"strings"
+)
+
+const (
+	nodes = "/pdb/query/v4/nodes"
+	node  = "/pdb/query/v4/nodes/{certname}"
+)
 
 // Nodes will return all nodes matching the given query. Deactivated and expired nodes aren’t included in the response.
 func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) ([]Node, error) {
 	payload := []Node{}
 	err := getRequest(c, nodes, query, pagination, orderBy, &payload)
 	return payload, err
+}
+
+// Node will return a single node by certname
+func (c *Client) Node(certname string) (*Node, error) {
+	payload := &Node{}
+	r, err := c.resty.R().
+		SetResult(&payload).
+		SetPathParams(map[string]string{"certname": certname}).
+		Get(node)
+	if err != nil {
+		return nil, err
+	}
+	if r.IsError() {
+		if r.Error() != nil {
+			return nil, r.Error().(error)
+		}
+		return nil, fmt.Errorf("%s error: %s", strings.ReplaceAll(node, "{certname}", certname), r.Status())
+	}
+	return payload, nil
 }
 
 // Node is a PuppetDB node
