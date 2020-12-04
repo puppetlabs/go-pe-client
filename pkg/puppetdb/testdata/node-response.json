@@ -1,0 +1,18 @@
+ {
+     "deactivated": null,
+     "latest_report_hash": null,
+     "facts_environment": "production",
+     "cached_catalog_status": null,
+     "report_environment": null,
+     "latest_report_corrective_change": null,
+     "catalog_environment": null,
+     "facts_timestamp": "2020-03-20T10:10:28.949Z",
+     "latest_report_noop": null,
+     "expired": null,
+     "latest_report_noop_pending": null,
+     "report_timestamp": null,
+     "certname": "inland-ancestor.delivery.puppetlabs.net",
+     "catalog_timestamp": null,
+     "latest_report_job_id": null,
+     "latest_report_status": null
+ }

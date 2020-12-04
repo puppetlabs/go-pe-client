@@ -148,6 +148,13 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	spew.Dump(nodes)
 	fmt.Println()
 
+	node, err := pdbClient.Node(peServer)
+	if err != nil {
+		panic(err)
+	}
+	spew.Dump(node)
+	fmt.Println()
+
 	inv, err := orchClient.Inventory()
 	if err != nil {
 		panic(err)
