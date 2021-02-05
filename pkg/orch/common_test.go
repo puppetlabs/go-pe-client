@@ -60,8 +60,12 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 }
 
 func setupErrorResponder(t *testing.T, url string) {
+	setupResponderWithStatusCode(t, url, http.StatusBadRequest)
+}
+
+func setupResponderWithStatusCode(t *testing.T, url string, statusCode int) {
 	httpmock.Reset()
-	responder, err := httpmock.NewJsonResponder(400, expectedError)
+	responder, err := httpmock.NewJsonResponder(statusCode, expectedError)
 	require.Nil(t, err)
 	httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, responder)
 	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
