@@ -1,8 +1,12 @@
 package orch
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"strings"
+
+	"github.com/go-resty/resty/v2"
 )
 
 const (
@@ -11,6 +15,27 @@ const (
 	orchJobReport = "/orchestrator/v1/jobs/{job-id}/report"
 	orchJobs      = "/orchestrator/v1/jobs"
 )
+
+//ErrJobNotFound will be returned when we get a 404 from PE for the specific job.
+var ErrJobNotFound = errors.New("job not found")
+
+//processJobResponse will process the response for specific jobs and return the
+//special case of not found if the job does not exist on PE.
+func processJobResponse(r *resty.Response, message string) error {
+	if r.IsError() {
+		var err error
+		if r.StatusCode() == http.StatusNotFound {
+			err = fmt.Errorf("%s error: %w", message, ErrJobNotFound)
+		} else {
+			if r.Error() != nil {
+				return r.Error().(error)
+			}
+			err = fmt.Errorf("%s error: %s", message, r.Status())
+		}
+		return err
+	}
+	return nil
+}
 
 // Jobs lists all of the jobs known to the orchestrator (GET /jobs)
 func (c *Client) Jobs() (*Jobs, error) {
@@ -38,13 +63,10 @@ func (c *Client) Job(jobID string) (*Job, error) {
 	if err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		orchJobID := strings.ReplaceAll(orchJob, "{job-id}", jobID)
-		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
+	if err = processJobResponse(r, strings.ReplaceAll(orchJob, "{job-id}", jobID)); err != nil {
+		return nil, err
 	}
+
 	return payload, nil
 }
 
@@ -58,12 +80,8 @@ func (c *Client) JobReport(jobID string) (*JobReport, error) {
 	if err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		orchJobID := strings.ReplaceAll(orchJobReport, "{job-id}", jobID)
-		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
+	if err = processJobResponse(r, strings.ReplaceAll(orchJobReport, "{job-id}", jobID)); err != nil {
+		return nil, err
 	}
 	return payload, nil
 }
@@ -78,12 +96,8 @@ func (c *Client) JobNodes(jobID string) (*JobNodes, error) {
 	if err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		orchJobID := strings.ReplaceAll(orchJobNodes, "{job-id}", jobID)
-		return nil, fmt.Errorf("%s error: %s", orchJobID, r.Status())
+	if err = processJobResponse(r, strings.ReplaceAll(orchJobNodes, "{job-id}", jobID)); err != nil {
+		return nil, err
 	}
 	return payload, nil
 }

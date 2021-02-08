@@ -1,6 +1,8 @@
 package orch
 
 import (
+	"errors"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -40,6 +42,13 @@ func TestJob(t *testing.T) {
 	actual, err = orchClient.Job("123")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+	require.False(t, errors.Is(err, ErrJobNotFound))
+
+	//test job not found
+	setupResponderWithStatusCode(t, testURL, http.StatusNotFound)
+	actual, err = orchClient.Job("123")
+	require.Nil(t, actual)
+	require.True(t, errors.Is(err, ErrJobNotFound))
 
 }
 
@@ -58,6 +67,13 @@ func TestJobReport(t *testing.T) {
 	actual, err = orchClient.JobReport("123")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+	require.False(t, errors.Is(err, ErrJobNotFound))
+
+	//test job report not found
+	setupResponderWithStatusCode(t, testURL, http.StatusNotFound)
+	actual, err = orchClient.JobReport("123")
+	require.Nil(t, actual)
+	require.True(t, errors.Is(err, ErrJobNotFound))
 
 }
 
@@ -76,5 +92,12 @@ func TestJobNodes(t *testing.T) {
 	actual, err = orchClient.JobNodes("123")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+	require.False(t, errors.Is(err, ErrJobNotFound))
+
+	//test job report not found
+	setupResponderWithStatusCode(t, testURL, http.StatusNotFound)
+	actual, err = orchClient.JobNodes("123")
+	require.Nil(t, actual)
+	require.True(t, errors.Is(err, ErrJobNotFound))
 
 }
