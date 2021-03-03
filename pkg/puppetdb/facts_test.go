@@ -39,7 +39,7 @@ func TestFactContents(t *testing.T) {
 	// Test with query
 	query := `[ "extract", [ "value", [ "function", "count" ] ], [ "=", "path", [ "os", "name" ] ], [ "group_by", "value" ] ]`
 	setupGetResponder(t, factContents, "query="+query, "factcontents-response.json")
-	actual, err := pdbClient.Facts(query, nil, nil)
+	actual, err := pdbClient.FactContents(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFactContents, actual)
 }
