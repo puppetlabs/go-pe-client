@@ -41,6 +41,7 @@ func (c *Client) FactContents(query string, pagination *Pagination, orderBy *Ord
 // Value (string, numeric, Boolean): the value of the fact.
 // Certname (string): the node associated with the fact.
 // Environment (string): the environment associated with the fact.
+// Path ([]interface{}): an array of the parts that make up the path. (string or int array index)
 type Fact struct {
 	Name        string        `json:"name"`
 	Value       interface{}   `json:"value"`
@@ -51,7 +52,7 @@ type Fact struct {
 }
 
 // FactPath represents a fact-path returned by the facts-paths endpoint.
-// Path ([]string): an array of the parts that make up the path
+// Path ([]interface{}): an array of the parts that make up the path. (string or int array index)
 // Type (string): the type of the fact, string, integer etc
 type FactPath struct {
 	Name  string        `json:"name"`
