@@ -1,9 +1,10 @@
 package puppetdb
 
 const (
-	factNames = "/pdb/query/v4/fact-names"
-	factPaths = "/pdb/query/v4/fact-paths"
-	facts     = "/pdb/query/v4/facts"
+	factNames    = "/pdb/query/v4/fact-names"
+	factPaths    = "/pdb/query/v4/fact-paths"
+	factContents = "/pdb/query/v4/fact-contents"
+	facts        = "/pdb/query/v4/facts"
 )
 
 // FactNames will return an alphabetical list of all known fact names, including those which are known only for deactivated nodes.
@@ -27,21 +28,31 @@ func (c *Client) Facts(query string, pagination *Pagination, orderBy *OrderBy) (
 	return payload, err
 }
 
-// Fact represents a fact returned by the Facts endpoint.
+// FactContents will return all facts matching the given query on the fact-contents endpoint. Facts for deactivated nodes are not included in the response.
+// - https://puppet.com/docs/puppetdb/latest/api/query/v4/fact-contents.html
+func (c *Client) FactContents(query string, pagination *Pagination, orderBy *OrderBy) ([]Fact, error) {
+	payload := []Fact{}
+	err := getRequest(c, factContents, query, pagination, orderBy, &payload)
+	return payload, err
+}
+
+// Fact represents a fact returned by the Facts or FactContents endpoint.
 // Name (string): the name of the fact.
 // Value (string, numeric, Boolean): the value of the fact.
 // Certname (string): the node associated with the fact.
 // Environment (string): the environment associated with the fact.
+// Path ([]interface{}): an array of the parts that make up the path. (string or int array index)
 type Fact struct {
-	Name        string      `json:"name"`
-	Value       interface{} `json:"value"`
-	Certname    string      `json:"certname"`
-	Environment string      `json:"environment"`
-	Count       int         `json:"count"`
+	Name        string        `json:"name"`
+	Value       interface{}   `json:"value"`
+	Certname    string        `json:"certname"`
+	Environment string        `json:"environment"`
+	Count       int           `json:"count"`
+	Path        []interface{} `json:"path,omitempty"`
 }
 
 // FactPath represents a fact-path returned by the facts-paths endpoint.
-// Path ([]string): an array of the parts that make up the path
+// Path ([]interface{}): an array of the parts that make up the path. (string or int array index)
 // Type (string): the type of the fact, string, integer etc
 type FactPath struct {
 	Name  string        `json:"name"`
