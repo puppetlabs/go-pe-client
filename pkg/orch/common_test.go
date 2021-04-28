@@ -76,6 +76,13 @@ var orchClient *Client
 var orchHostURL = "https://test-host:8143"
 
 var expectedError = &OrchestratorError{
-	Kind: "puppetlabs.orchestrator/unknown-environment",
-	Msg:  "Unknown environment doesnotexist",
+	Kind:       "puppetlabs.orchestrator/unknown-environment",
+	Msg:        "Unknown environment doesnotexist",
+	StatusCode: 400,
+}
+
+var expectedJobNotFoundErr = &OrchestratorError{
+	Kind:       "puppetlabs.orchestrator/unknown-environment",
+	Msg:        "/orchestrator/v1/jobs/123 error: job not found",
+	StatusCode: 404,
 }

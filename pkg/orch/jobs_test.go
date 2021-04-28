@@ -42,14 +42,13 @@ func TestJob(t *testing.T) {
 	actual, err = orchClient.Job("123")
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
-	require.False(t, errors.Is(err, ErrJobNotFound))
+	require.False(t, errors.Is(err, expectedJobNotFoundErr))
 
 	//test job not found
 	setupResponderWithStatusCode(t, testURL, http.StatusNotFound)
 	actual, err = orchClient.Job("123")
 	require.Nil(t, actual)
-	require.True(t, errors.Is(err, ErrJobNotFound))
-
+	require.Equal(t, err, expectedJobNotFoundErr)
 }
 
 func TestJobReport(t *testing.T) {
