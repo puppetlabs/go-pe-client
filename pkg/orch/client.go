@@ -36,8 +36,9 @@ func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
 
 // OrchestratorError represents an error response from the Orchestrator API
 type OrchestratorError struct {
-	Kind string `json:"kind"`
-	Msg  string `json:"msg"`
+	Kind       string `json:"kind"`
+	Msg        string `json:"msg"`
+	StatusCode int
 }
 
 func (oe *OrchestratorError) Error() string {
