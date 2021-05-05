@@ -71,6 +71,14 @@ func setupResponderWithStatusCode(t *testing.T, url string, statusCode int) {
 	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
 }
 
+func setupResponderWithStatusInvalidBody(t *testing.T, url string, statusCode int) {
+	httpmock.Reset()
+	responder, err := httpmock.NewJsonResponder(statusCode, []byte(`{"kind":255}`))
+	require.Nil(t, err)
+	httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, responder)
+	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
+}
+
 var orchClient *Client
 
 var orchHostURL = "https://test-host:8143"

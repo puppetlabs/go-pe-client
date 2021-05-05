@@ -61,10 +61,10 @@ func (c *Client) Job(jobID string) (*Job, error) {
 		SetPathParams(map[string]string{"job-id": jobID}).
 		Get(orchJob)
 	if err != nil {
-		return nil, FormatOrchError(r, err.Error())
+		return nil, FormatError(r, err.Error())
 	}
 	if err = processJobResponse(r, strings.ReplaceAll(orchJob, "{job-id}", jobID)); err != nil {
-		return nil, FormatOrchError(r, err.Error())
+		return nil, FormatError(r, err.Error())
 	}
 
 	return payload, nil

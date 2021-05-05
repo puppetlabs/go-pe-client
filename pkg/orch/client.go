@@ -34,6 +34,12 @@ func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
 	return &client
 }
 
+// GetStatusCodeError represents an interface which is an error with the ability to get the status code.
+type GetStatusCodeError interface {
+	GetStatusCode() int
+	Error() string
+}
+
 // OrchestratorError represents an error response from the Orchestrator API
 type OrchestratorError struct {
 	Kind       string `json:"kind"`
@@ -43,4 +49,24 @@ type OrchestratorError struct {
 
 func (oe *OrchestratorError) Error() string {
 	return oe.Msg
+}
+
+// GetStatusCode will return the status code.
+func (oe *OrchestratorError) GetStatusCode() int {
+	return oe.StatusCode
+}
+
+// HTTPError represents an error with the HTTP response code
+type HTTPError struct {
+	msg        string
+	statusCode int
+}
+
+func (he *HTTPError) Error() string {
+	return he.msg
+}
+
+// GetStatusCode will return the HTTP status code.
+func (he *HTTPError) GetStatusCode() int {
+	return he.statusCode
 }

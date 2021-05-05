@@ -1,6 +1,7 @@
 package orch
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -65,6 +66,34 @@ func TestCommandScheduleTask(t *testing.T) {
 
 	// Test error
 	setupErrorResponder(t, orchCommandScheduleTask)
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+func TestCommandScheduleTaskTestResponse(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, orchCommandScheduleTask, "command-schedule_task-request.json", "command-schedule_task-response.json")
+	scheduleTaskRequest := &ScheduleTaskRequest{
+		Environment: "test-env-1",
+		Task:        "package",
+		Params: map[string]string{
+			"action":  "install",
+			"package": "httpd",
+		},
+		Scope: Scope{
+			Nodes: []string{"node1.example.com"},
+		},
+		ScheduledTime: "2027-05-05T19:50:08Z",
+	}
+
+	actual, err := orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandScheduleTaskResponse, actual)
+
+	// Test error
+	setupResponderWithStatusInvalidBody(t, orchCommandScheduleTask, http.StatusBadRequest)
 	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
