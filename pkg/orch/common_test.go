@@ -64,11 +64,22 @@ func setupErrorResponder(t *testing.T, url string) {
 }
 
 func setupResponderWithStatusCode(t *testing.T, url string, statusCode int) {
+	setupResponderWithStatusCodeAndBody(t, url, statusCode, expectedError)
+}
+
+func setupResponderWithStatusCodeAndBody(t *testing.T, url string, statusCode int, response interface{}) {
 	httpmock.Reset()
-	responder, err := httpmock.NewJsonResponder(statusCode, expectedError)
+	responder, err := httpmock.NewJsonResponder(statusCode, response)
 	require.Nil(t, err)
 	httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, responder)
 	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
+}
+
+func getExpectedHTTPError(statusCode int, msg string) *HTTPError {
+	return &HTTPError{
+		StatusCode: statusCode,
+		Msg:        msg,
+	}
 }
 
 var orchClient *Client

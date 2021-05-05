@@ -37,10 +37,30 @@ func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
 // OrchestratorError represents an error response from the Orchestrator API
 type OrchestratorError struct {
 	Kind       string `json:"kind"`
-	Msg        string `json:"msg"`
+	Msg        string `json:"Msg"`
 	StatusCode int
 }
 
 func (oe *OrchestratorError) Error() string {
 	return oe.Msg
+}
+
+// GetStatusCode will return the status code.
+func (oe *OrchestratorError) GetStatusCode() int {
+	return oe.StatusCode
+}
+
+// HTTPError represents an error with the HTTP response code
+type HTTPError struct {
+	Msg        string
+	StatusCode int
+}
+
+func (he *HTTPError) Error() string {
+	return he.Msg
+}
+
+// GetStatusCode will return the HTTP status code.
+func (he *HTTPError) GetStatusCode() int {
+	return he.StatusCode
 }

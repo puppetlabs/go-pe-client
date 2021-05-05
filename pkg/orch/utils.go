@@ -2,30 +2,40 @@ package orch
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/go-resty/resty/v2"
 )
 
-// FormatOrchError takes the resty response and a possible resty err and tries to create an
+func newHTTPError(statusCode int, msg string) *HTTPError {
+	return &HTTPError{
+		StatusCode: statusCode,
+		Msg:        msg,
+	}
+}
+
+// FormatError takes the resty response and a possible resty err and tries to create an
 // OrchestratorError with as much info as possible
-func FormatOrchError(r *resty.Response, customError ...string) error {
+func FormatError(r *resty.Response, customError ...string) error {
 
-	orchErr, ok := r.Error().(*OrchestratorError)
+	msg := strings.Join(customError, ", ")
 
-	if !ok {
-		return fmt.Errorf("unable to unmarshal an OrchestratorError, StatusCode: %s", r.Status())
+	if orchErr, ok := r.Error().(*OrchestratorError); ok {
+		if reflect.DeepEqual(&OrchestratorError{}, orchErr) {
+			return newHTTPError(r.StatusCode(), msg)
+		}
+
+		orchErr.StatusCode = r.StatusCode()
+		if len(msg) > 0 {
+			orchErr.Msg = msg
+		}
+
+		return orchErr
+
+	} else if r.IsError() {
+		return newHTTPError(r.StatusCode(), msg)
 	}
 
-	if len(customError) > 0 {
-		orchErr.Msg = strings.Join(customError, ", ")
-	}
-
-	x := &OrchestratorError{
-		StatusCode: r.StatusCode(),
-		Kind:       orchErr.Kind,
-		Msg:        orchErr.Msg,
-	}
-
-	return x
+	return fmt.Errorf("%s", msg)
 }
