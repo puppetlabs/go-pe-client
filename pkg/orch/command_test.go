@@ -1,8 +1,10 @@
 package orch
 
 import (
+	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,11 +31,23 @@ func TestCommandTask(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, expectedCommandTaskResponse, actual)
 
-	// Test error
+	// Test Orchestrator error
 	setupErrorResponder(t, orchCommandTask)
 	actual, err = orchClient.CommandTask(taskRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandTask, http.StatusBadRequest, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandTask(taskRequest)
+	assert.Error(t, err)
+	require.Nil(t, actual)
+	testExpectError := getExpectedHTTPError(http.StatusBadRequest, "ignorefornow")
+	httpErr, ok := err.(*HTTPError)
+	if !ok {
+		t.Error("Error returned is not of type HTTP error.")
+	}
+	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
 
 }
 
@@ -67,6 +81,25 @@ func TestCommandScheduleTask(t *testing.T) {
 	setupErrorResponder(t, orchCommandScheduleTask)
 	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
 	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandScheduleTask, http.StatusBadRequest, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	assert.Error(t, err)
+	require.Nil(t, actual)
+	testExpectError := getExpectedHTTPError(http.StatusBadRequest, "ignorefornow")
+	httpErr, ok := err.(*HTTPError)
+	if !ok {
+		t.Error("Error returned is not of type HTTP error.")
+	}
+	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
+
+	//Test Orchestrator error
+	setupErrorResponder(t, orchCommandScheduleTask)
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, actual)
+	assert.Error(t, err)
 	require.Equal(t, expectedError, err)
 }
 

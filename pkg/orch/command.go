@@ -21,13 +21,13 @@ func (c *Client) CommandTask(taskRequest *TaskRequest) (*JobID, error) {
 		SetBody(taskRequest).
 		Post(orchCommandTask)
 	if err != nil {
-		return nil, FormatOrchError(r, err.Error())
+		return nil, FormatError(r, err.Error())
 	}
 	if r.IsError() {
 		if r.Error() != nil {
-			return nil, FormatOrchError(r)
+			return nil, FormatError(r)
 		}
-		return nil, FormatOrchError(r)
+		return nil, FormatError(r)
 	}
 	return &payload, nil
 }
@@ -56,13 +56,13 @@ func (c *Client) CommandScheduleTask(scheduleTaskRequest *ScheduleTaskRequest) (
 		SetBody(scheduleTaskRequest).
 		Post(orchCommandScheduleTask)
 	if err != nil {
-		return nil, FormatOrchError(r, err.Error())
+		return nil, FormatError(r, err.Error())
 	}
 	if r.IsError() {
 		if r.Error() != nil {
-			return nil, FormatOrchError(r)
+			return nil, FormatError(r)
 		}
-		return nil, FormatOrchError(r)
+		return nil, FormatError(r)
 	}
 	return &payload, nil
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/fatih/structs"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -49,6 +50,18 @@ func TestJob(t *testing.T) {
 	actual, err = orchClient.Job("123")
 	require.Nil(t, actual)
 	require.Equal(t, err, expectedJobNotFoundErr)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, testURL, http.StatusBadRequest, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Job("123")
+	assert.Error(t, err)
+	require.Nil(t, actual)
+	testExpectError := getExpectedHTTPError(http.StatusBadRequest, "ignorefornow")
+	httpErr, ok := err.(*HTTPError)
+	if !ok {
+		t.Error("Error returned is not of type HTTP error.")
+	}
+	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
 }
 
 func TestJobReport(t *testing.T) {
