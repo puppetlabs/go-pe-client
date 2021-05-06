@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,6 +74,17 @@ func setupResponderWithStatusCodeAndBody(t *testing.T, url string, statusCode in
 	require.Nil(t, err)
 	httpmock.RegisterResponder(http.MethodGet, orchHostURL+url, responder)
 	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url, responder)
+}
+
+func testHTTPError(t *testing.T, actual interface{}, err error, statusCode int) {
+	assert.Error(t, err)
+	require.Nil(t, actual)
+	testExpectError := getExpectedHTTPError(statusCode, "ignorefornow")
+	httpErr, ok := err.(*HTTPError)
+	if !ok {
+		t.Error("Error returned is not of type HTTP error.")
+	}
+	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
 }
 
 func getExpectedHTTPError(statusCode int, msg string) *HTTPError {

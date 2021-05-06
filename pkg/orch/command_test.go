@@ -37,17 +37,10 @@ func TestCommandTask(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
-	// Test HTTP error
-	setupResponderWithStatusCodeAndBody(t, orchCommandTask, http.StatusBadRequest, []byte(`{"StatusCode": 400}`))
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandTask, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.CommandTask(taskRequest)
-	assert.Error(t, err)
-	require.Nil(t, actual)
-	testExpectError := getExpectedHTTPError(http.StatusBadRequest, "ignorefornow")
-	httpErr, ok := err.(*HTTPError)
-	if !ok {
-		t.Error("Error returned is not of type HTTP error.")
-	}
-	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 
 }
 
@@ -101,6 +94,11 @@ func TestCommandScheduleTask(t *testing.T) {
 	require.Nil(t, actual)
 	assert.Error(t, err)
 	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandScheduleTask, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
@@ -129,6 +127,11 @@ func TestCommandTaskTarget(t *testing.T) {
 	actual, err = orchClient.CommandTaskTarget(taskTargetRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandTaskTarget, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandTaskTarget(taskTargetRequest)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 var expectedCommandTaskTargetResponse = &TaskTargetJobID{TaskTargetJob: struct {
@@ -158,6 +161,11 @@ func TestCommandPlanRun(t *testing.T) {
 	actual, err = orchClient.CommandPlanRun(planRunRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandPlanRun, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandPlanRun(planRunRequest)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 var expectedCommandPlanRunResponse = &PlanRunJobID{
@@ -181,6 +189,11 @@ func TestCommandStop(t *testing.T) {
 	actual, err = orchClient.CommandStop(stopRequest)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandStop, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandStop(stopRequest)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 var expectedCommandStopResponse = &StopJobID{Job: struct {

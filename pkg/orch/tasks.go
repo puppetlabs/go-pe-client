@@ -21,15 +21,11 @@ func (c *Client) Tasks(environment string) (*Tasks, error) {
 		req.SetQueryParam("environment", environment)
 	}
 	r, err := req.Get(orchTasks)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchTasks, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchTasks, r.Status())
-	}
+
 	return payload, nil
 }
 
@@ -56,17 +52,17 @@ func (c *Client) Task(environment, module, taskname string) (*Task, error) {
 	if environment != "" {
 		req.SetQueryParam("environment", environment)
 	}
+
+	replacer := strings.NewReplacer("{module}", module, "{taskname}", taskname)
+
 	r, err := req.Get(orchTaskName)
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", replacer.Replace(orchTaskName), r.Status())); err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		replacer := strings.NewReplacer("{module}", module, "{taskname}", taskname)
-		return nil, fmt.Errorf("%s error: %s", replacer.Replace(orchTaskName), r.Status())
-	}
+
 	return payload, nil
 }
 

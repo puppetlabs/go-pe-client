@@ -20,15 +20,11 @@ func (c *Client) CommandTask(taskRequest *TaskRequest) (*JobID, error) {
 		SetResult(&payload).
 		SetBody(taskRequest).
 		Post(orchCommandTask)
-	if err != nil {
-		return nil, FormatError(r, err.Error())
+
+	if err = ProcessError(r, err, ""); err != nil {
+		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, FormatError(r)
-		}
-		return nil, FormatError(r)
-	}
+
 	return &payload, nil
 }
 
@@ -55,15 +51,11 @@ func (c *Client) CommandScheduleTask(scheduleTaskRequest *ScheduleTaskRequest) (
 		SetResult(&payload).
 		SetBody(scheduleTaskRequest).
 		Post(orchCommandScheduleTask)
-	if err != nil {
-		return nil, FormatError(r, err.Error())
+
+	if err = ProcessError(r, err, ""); err != nil {
+		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, FormatError(r)
-		}
-		return nil, FormatError(r)
-	}
+
 	return &payload, nil
 }
 
@@ -91,15 +83,11 @@ func (c *Client) CommandTaskTarget(taskTargetRequest *TaskTargetRequest) (*TaskT
 		SetResult(&payload).
 		SetBody(taskTargetRequest).
 		Post(orchCommandTaskTarget)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchCommandTaskTarget, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchCommandTaskTarget, r.Status())
-	}
+
 	return &payload, nil
 }
 
@@ -128,15 +116,11 @@ func (c *Client) CommandPlanRun(planRunRequest *PlanRunRequest) (*PlanRunJobID, 
 		SetResult(&payload).
 		SetBody(planRunRequest).
 		Post(orchCommandPlanRun)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchCommandPlanRun, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchCommandPlanRun, r.Status())
-	}
+
 	return &payload, nil
 }
 
@@ -160,15 +144,11 @@ func (c *Client) CommandStop(stopRequest *StopRequest) (*StopJobID, error) {
 		SetResult(&payload).
 		SetBody(stopRequest).
 		Post(orchCommandStop)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchCommandStop, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchCommandStop, r.Status())
-	}
+
 	return &payload, nil
 }
 
@@ -193,15 +173,11 @@ func (c *Client) CommandDeploy(deployRequest *DeployRequest) (*JobID, error) {
 		SetResult(&payload).
 		SetBody(deployRequest).
 		Post(orchCommandDeploy)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchCommandDeploy, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchCommandDeploy, r.Status())
-	}
+
 	return &payload, nil
 }
 

@@ -3,7 +3,6 @@ package orch
 import (
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -15,27 +14,34 @@ func newHTTPError(statusCode int, msg string) *HTTPError {
 	}
 }
 
-// FormatError takes the resty response and a possible resty err and tries to create an
-// OrchestratorError with as much info as possible
-func FormatError(r *resty.Response, customError ...string) error {
-
-	msg := strings.Join(customError, ", ")
-
-	if orchErr, ok := r.Error().(*OrchestratorError); ok {
-		if reflect.DeepEqual(&OrchestratorError{}, orchErr) {
-			return newHTTPError(r.StatusCode(), msg)
+// ProcessError will process the response for RESTY and thow an error accordingly
+func ProcessError(r *resty.Response, err error, errorString string) error {
+	//Return HTTP error detail if we have enough.
+	if r.IsError() {
+		var message string
+		if len(errorString) > 0 {
+			message = errorString
+		} else {
+			message = r.Status()
 		}
+		if orchErr, ok := r.Error().(*OrchestratorError); ok {
+			if reflect.DeepEqual(&OrchestratorError{}, orchErr) {
+				return newHTTPError(r.StatusCode(), message)
+			}
 
-		orchErr.StatusCode = r.StatusCode()
-		if len(msg) > 0 {
-			orchErr.Msg = msg
+			orchErr.StatusCode = r.StatusCode()
+			return orchErr
 		}
-
-		return orchErr
-
-	} else if r.IsError() {
-		return newHTTPError(r.StatusCode(), msg)
+		return newHTTPError(r.StatusCode(), message)
 	}
 
-	return fmt.Errorf("%s", msg)
+	//Cater for an error which didn't come from a HTTP response. (e.g. host not listening)
+	if err != nil {
+		if len(errorString) > 0 {
+			return fmt.Errorf("%s", errorString)
+		}
+		return err
+	}
+
+	return nil
 }

@@ -20,16 +20,12 @@ func (c *Client) Plans(environment string) (*Plans, error) {
 	if environment != "" {
 		req.SetQueryParam("environment", environment)
 	}
+
 	r, err := req.Get(orchPlans)
-	if err != nil {
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchPlans, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchPlans, r.Status())
-	}
+
 	return payload, nil
 }
 
@@ -56,17 +52,14 @@ func (c *Client) Plan(environment, module, planname string) (*Plan, error) {
 	if environment != "" {
 		req.SetQueryParam("environment", environment)
 	}
+
+	replacer := strings.NewReplacer("{module}", module, "{planname}", planname)
+
 	r, err := req.Get(orchPlanName)
-	if err != nil {
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", replacer.Replace(orchPlanName), r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		replacer := strings.NewReplacer("{module}", module, "{planname}", planname)
-		return nil, fmt.Errorf("%s error: %s", replacer.Replace(orchPlanName), r.Status())
-	}
+
 	return payload, nil
 }
 
