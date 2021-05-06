@@ -14,15 +14,11 @@ const (
 func (c *Client) Inventory() ([]InventoryNode, error) {
 	payload := map[string][]InventoryNode{}
 	r, err := c.resty.R().SetResult(&payload).Get(orchInventory)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchInventory, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchInventory, r.Status())
-	}
+
 	inventoryNodes := payload["items"]
 	return inventoryNodes, nil
 }
@@ -36,16 +32,12 @@ func (c *Client) InventoryNode(node string) (*InventoryNode, error) {
 			"node": node,
 		})
 	r, err := req.Get(orchInventoryNode)
-	if err != nil {
+	inventoryNode := strings.ReplaceAll(orchInventoryNode, "{node}", node)
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", inventoryNode, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		inventoryNode := strings.ReplaceAll(orchInventoryNode, "{node}", node)
-		return nil, fmt.Errorf("%s error: %s", inventoryNode, r.Status())
-	}
+
 	return payload, nil
 }
 
@@ -56,15 +48,11 @@ func (c *Client) InventoryCheck(nodes []string) ([]InventoryNode, error) {
 		SetResult(&payload).
 		SetBody(map[string]interface{}{"nodes": nodes}).
 		Post(orchInventory)
-	if err != nil {
+
+	if err = ProcessError(r, err, fmt.Sprintf("%s error: %s", orchInventory, r.Status())); err != nil {
 		return nil, err
 	}
-	if r.IsError() {
-		if r.Error() != nil {
-			return nil, r.Error().(error)
-		}
-		return nil, fmt.Errorf("%s error: %s", orchInventory, r.Status())
-	}
+
 	inventoryNodes := payload["items"]
 	return inventoryNodes, nil
 }

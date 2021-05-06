@@ -1,6 +1,7 @@
 package orch
 
 import (
+	"net/http"
 	"strings"
 	"testing"
 
@@ -21,6 +22,11 @@ func TestInventory(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchInventory, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Inventory()
+	testHTTPError(t, actual, err, http.StatusNotFound)
+
 }
 
 func TestInventoryNode(t *testing.T) {
@@ -39,6 +45,11 @@ func TestInventoryNode(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchInventoryNodeFoo, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.InventoryNode("foo")
+	testHTTPError(t, actual, err, http.StatusNotFound)
+
 }
 
 func TestInventoryCheck(t *testing.T) {
@@ -54,6 +65,11 @@ func TestInventoryCheck(t *testing.T) {
 	actual, err = orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchInventory, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
+	testHTTPError(t, actual, err, http.StatusNotFound)
 
 }
 

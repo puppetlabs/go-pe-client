@@ -1,6 +1,7 @@
 package orch
 
 import (
+	"net/http"
 	"strings"
 	"testing"
 
@@ -27,6 +28,11 @@ func TestTasks(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchTasks, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Tasks("")
+	testHTTPError(t, actual, err, http.StatusNotFound)
+
 }
 
 func TestTask(t *testing.T) {
@@ -52,6 +58,10 @@ func TestTask(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchTaskFooBar, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Task("myenv", "foo", "bar")
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 func TestTaskByID(t *testing.T) {
@@ -77,6 +87,11 @@ func TestTaskByID(t *testing.T) {
 	actual, err = orchClient.TaskByID("myenv", id)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchTaskPackageUpgrade, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.TaskByID("myenv", id)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 
 }
 

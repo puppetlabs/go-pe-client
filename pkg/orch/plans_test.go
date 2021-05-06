@@ -1,6 +1,7 @@
 package orch
 
 import (
+	"net/http"
 	"strings"
 	"testing"
 
@@ -29,6 +30,11 @@ func TestPlans(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchPlans, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Plans("")
+	testHTTPError(t, actual, err, http.StatusNotFound)
+
 }
 
 func TestPlan(t *testing.T) {
@@ -54,6 +60,10 @@ func TestPlan(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchPlanPackageInstall, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.Plan("myenv", "package", "install")
+	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
 func TestPlanByID(t *testing.T) {
@@ -79,5 +89,10 @@ func TestPlanByID(t *testing.T) {
 	actual, err = orchClient.PlanByID("myenv", id)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
+
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchPlanPackageUpgrade, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.PlanByID("myenv", id)
+	testHTTPError(t, actual, err, http.StatusNotFound)
 
 }
