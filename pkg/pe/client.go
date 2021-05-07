@@ -22,6 +22,8 @@ func NewClient(hostURL string, token string, tlsConfig *tls.Config) *Client {
 	}
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
+	r.SetRedirectPolicy(resty.NoRedirectPolicy())
+
 	client := Client{resty: r}
 	r.JSONUnmarshal = func(data []byte, v interface{}) error {
 		d := json.NewDecoder(bytes.NewReader(data))

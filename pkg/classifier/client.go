@@ -23,6 +23,8 @@ func NewClient(hostURL, token string, tlsConfig *tls.Config) *Client {
 	}
 	r.SetHostURL(hostURL)
 	r.SetHeader("X-Authentication", token)
+	r.SetRedirectPolicy(resty.NoRedirectPolicy())
+
 	return &Client{resty: r}
 }
 
