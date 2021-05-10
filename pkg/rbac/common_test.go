@@ -58,6 +58,7 @@ var rbacClient *Client
 var rbacHostURL = "https://test-host:4433"
 
 var expectedError = &APIError{
-	Kind: "puppetlabs.rbac/unknown-environment",
-	Msg:  "Unknown environment doesnotexist",
+	Kind:       "puppetlabs.rbac/unknown-environment",
+	Msg:        "Unknown environment doesnotexist",
+	StatusCode: 400,
 }
