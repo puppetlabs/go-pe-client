@@ -37,10 +37,16 @@ func NewClient(hostURL string, tlsConfig *tls.Config) *Client {
 
 // APIError represents an error response from the RBAC API
 type APIError struct {
-	Kind string `json:"kind"`
-	Msg  string `json:"msg"`
+	Kind       string `json:"kind"`
+	Msg        string `json:"msg"`
+	StatusCode int
 }
 
 func (oe *APIError) Error() string {
 	return oe.Msg
+}
+
+// GetStatusCode will return the HTTP status code.
+func (oe *APIError) GetStatusCode() int {
+	return oe.StatusCode
 }

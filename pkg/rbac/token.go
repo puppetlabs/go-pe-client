@@ -1,9 +1,5 @@
 package rbac
 
-import (
-	"fmt"
-)
-
 const (
 	requestAuthTokenURI = "/rbac-api/v1/auth/token" // #nosec - this is the uri to get RBAC tokens
 )
@@ -16,13 +12,13 @@ func (c *Client) GetRBACToken(authRequest *RequestKeys) (*Token, error) {
 		SetBody(authRequest).
 		Post(requestAuthTokenURI)
 	if err != nil {
-		return nil, err
+		return nil, FormatError(r, err.Error())
 	}
 	if r.IsError() {
 		if r.Error() != nil {
-			return nil, r.Error().(error)
+			return nil, FormatError(r)
 		}
-		return nil, fmt.Errorf("%s error: %s", requestAuthTokenURI, r.Status())
+		return nil, FormatError(r)
 	}
 	return &payload, nil
 }
