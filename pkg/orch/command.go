@@ -189,7 +189,7 @@ type DeployRequest struct {
 	Noop               bool   `json:"noop,omitempty"`
 	NoNoop             bool   `json:"no_noop,omitempty"`
 	Concurrency        int    `json:"concurrency,omitempty"`
-	EnforceEnvironment bool   `json:"enforce_environment,omitempty"`
+	EnforceEnvironment bool   `json:"enforce_environment"`
 	Debug              bool   `json:"debug,omitempty"`
 	Trace              bool   `json:"trace,omitempty"`
 	Evaltrace          bool   `json:"evaltrace,omitempty"`
