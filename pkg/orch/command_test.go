@@ -208,8 +208,9 @@ func TestCommandDeploy(t *testing.T) {
 	// Test success
 	setupPostResponder(t, orchCommandDeploy, "command-deploy-request.json", "command-deploy-response.json")
 	deployRequest := &DeployRequest{
-		Environment: "production",
-		Noop:        true,
+		Environment:        "production",
+		EnforceEnvironment: true,
+		Noop:               true,
 		Scope: Scope{
 			Nodes: []string{"node1.example.com"},
 		},

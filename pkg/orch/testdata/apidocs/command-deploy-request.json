@@ -1,7 +1,10 @@
 {
-  "environment" : "production",
-  "noop" : true,
-  "scope" : {
-    "nodes" : ["node1.example.com"]
+  "environment": "production",
+  "enforce_environment": true,
+  "noop": true,
+  "scope": {
+    "nodes": [
+      "node1.example.com"
+    ]
   }
 }
