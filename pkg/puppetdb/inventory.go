@@ -12,6 +12,14 @@ func (c *Client) Inventory(query string, pagination *Pagination, orderBy *OrderB
 	return payload, err
 }
 
+// InventoryMap an alternative to Inventory which returns an Array of Maps which will allow for fields that do
+// not fit into the Inventory struct, i.e. dot notation fields.
+func (c *Client) InventoryMap(query string, pagination *Pagination, orderBy *OrderBy) ([]map[string]interface{}, error) {
+	var payload []map[string]interface{}
+	err := getRequest(c, inventory, query, pagination, orderBy, &payload)
+	return payload, err
+}
+
 // Inventory is a PuppetDB node with facts and trusted facts
 type Inventory struct {
 	Certname    string                 `json:"certname"`
