@@ -101,6 +101,67 @@ func TestCommandScheduleTask(t *testing.T) {
 	testHTTPError(t, actual, err, http.StatusNotFound)
 }
 
+func TestCommandScheduleTaskWithScheduleOptions(t *testing.T) {
+
+	// Test success
+	setupPostResponder(t, orchCommandScheduleTask, "command-schedule_task-request.json", "command-schedule_task-response.json")
+	scheduleTaskRequest := &ScheduleTaskRequest{
+		Environment: "test-env-1",
+		Task:        "package",
+		Params: map[string]string{
+			"action":  "install",
+			"package": "httpd",
+		},
+		Scope: Scope{
+			Nodes: []string{"node1.example.com"},
+		},
+		ScheduledTime: "2027-05-05T19:50:08Z",
+		ScheduleOptions: &ScheduleOptions{
+			Interval: struct {
+				Units string "json:\"units\""
+				Value int    "json:\"value\""
+			}{
+				Units: "seconds",
+				Value: 86400,
+			},
+		},
+	}
+
+	actual, err := orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, err)
+	require.Equal(t, expectedCommandScheduleTaskResponse, actual)
+
+	// Test error
+	setupErrorResponder(t, orchCommandScheduleTask)
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+
+	// Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandScheduleTask, http.StatusBadRequest, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	assert.Error(t, err)
+	require.Nil(t, actual)
+	testExpectError := getExpectedHTTPError(http.StatusBadRequest, "ignorefornow")
+	httpErr, ok := err.(*HTTPError)
+	if !ok {
+		t.Error("Error returned is not of type HTTP error.")
+	}
+	require.Equal(t, httpErr.StatusCode, testExpectError.StatusCode)
+
+	//Test Orchestrator error
+	setupErrorResponder(t, orchCommandScheduleTask)
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	require.Nil(t, actual)
+	assert.Error(t, err)
+	require.Equal(t, expectedError, err)
+
+	//Test HTTP error
+	setupResponderWithStatusCodeAndBody(t, orchCommandScheduleTask, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
+	actual, err = orchClient.CommandScheduleTask(scheduleTaskRequest)
+	testHTTPError(t, actual, err, http.StatusNotFound)
+}
+
 var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
 	ID   string "json:\"id\""
 	Name string "json:\"name\""

@@ -20,3 +20,11 @@ type Pagination struct {
 	Offset int `json:"offset"`
 	Total  int `json:"total"`
 }
+
+// ScheduleOptions represents the schedule_options of a task
+type ScheduleOptions struct {
+	Interval struct {
+		Units string `json:"units"`
+		Value int    `json:"value"`
+	} `json:"interval"`
+}

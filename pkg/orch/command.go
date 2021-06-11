@@ -69,11 +69,12 @@ type ScheduledJobID struct {
 
 // ScheduleTaskRequest describes a scheduled task
 type ScheduleTaskRequest struct {
-	Environment   string            `json:"environment,omitempty"`
-	Task          string            `json:"task"`
-	Params        map[string]string `json:"params"`
-	Scope         Scope             `json:"scope"`
-	ScheduledTime string            `json:"scheduled_time"`
+	Environment     string            `json:"environment,omitempty"`
+	Task            string            `json:"task"`
+	Params          map[string]string `json:"params"`
+	Scope           Scope             `json:"scope"`
+	ScheduledTime   string            `json:"scheduled_time"`
+	ScheduleOptions *ScheduleOptions  `json:"schedule_options,omitempty"`
 }
 
 // CommandTaskTarget creates a new task-target (POST /command/task_target)

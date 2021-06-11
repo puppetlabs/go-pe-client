@@ -8,5 +8,11 @@
   "scope" : {
     "nodes" : ["node1.example.com"]
   },
-  "scheduled_time" : "2027-05-05T19:50:08Z"
+  "scheduled_time" : "2027-05-05T19:50:08Z",
+  "schedule_options": {
+    "interval": {
+      "units": "seconds",
+      "value": 86400
+    }
+  }
 }
