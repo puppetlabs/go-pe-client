@@ -3,6 +3,7 @@ package orch
 import (
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -103,8 +104,12 @@ func TestCommandScheduleTask(t *testing.T) {
 
 func TestCommandScheduleTaskWithScheduleOptions(t *testing.T) {
 
+	var options *ScheduleOptions
+
+	options = NewScheduleTaskOptions(time.Duration(24) * time.Hour)
+
 	// Test success
-	setupPostResponder(t, orchCommandScheduleTask, "command-schedule_task-request.json", "command-schedule_task-response.json")
+	setupPostResponder(t, orchCommandScheduleTask, "command-schedule-interval_task-request.json", "command-schedule_task-response.json")
 	scheduleTaskRequest := &ScheduleTaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
@@ -115,16 +120,8 @@ func TestCommandScheduleTaskWithScheduleOptions(t *testing.T) {
 		Scope: Scope{
 			Nodes: []string{"node1.example.com"},
 		},
-		ScheduledTime: "2027-05-05T19:50:08Z",
-		ScheduleOptions: &ScheduleOptions{
-			Interval: struct {
-				Units string "json:\"units\""
-				Value int    "json:\"value\""
-			}{
-				Units: "seconds",
-				Value: 86400,
-			},
-		},
+		ScheduledTime:   "2027-05-05T19:50:08Z",
+		ScheduleOptions: options,
 	}
 
 	actual, err := orchClient.CommandScheduleTask(scheduleTaskRequest)
@@ -166,6 +163,28 @@ var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
 	ID   string "json:\"id\""
 	Name string "json:\"name\""
 }{ID: "https://orchestrator.example.com:8143/orchestrator/v1/scheduled_jobs/2", Name: "1234"}}
+
+func TestNewScheduleTaskOptions(t *testing.T) {
+
+	var optionsHour *ScheduleOptions
+	var optionsMinutes *ScheduleOptions
+
+	optionsHour = NewScheduleTaskOptions(time.Duration(1) * time.Hour)
+	optionsMinutes = NewScheduleTaskOptions(time.Duration(60) * time.Minute)
+
+	// Test Success from hour to seconds conversion
+	require.Equal(t, expectedScheduleTaskOptions, optionsHour)
+
+	// Test Success from minutes to seconds conversion
+	require.Equal(t, expectedScheduleTaskOptions, optionsMinutes)
+}
+
+var expectedScheduleTaskOptions = &ScheduleOptions{
+	Interval: Interval{
+		Units: "seconds",
+		Value: 3600,
+	},
+}
 
 func TestCommandTaskTarget(t *testing.T) {
 

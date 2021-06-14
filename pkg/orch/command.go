@@ -2,6 +2,7 @@ package orch
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
@@ -57,6 +58,13 @@ func (c *Client) CommandScheduleTask(scheduleTaskRequest *ScheduleTaskRequest) (
 	}
 
 	return &payload, nil
+}
+
+// NewScheduleTaskOptions will create task options based on time
+func NewScheduleTaskOptions(interval time.Duration) *ScheduleOptions {
+	return &ScheduleOptions{
+		Interval: Interval{Units: "seconds", Value: int(interval.Seconds())},
+	}
 }
 
 // ScheduledJobID identifies a single scheduled job
