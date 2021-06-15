@@ -2,6 +2,7 @@ package orch
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
@@ -59,6 +60,13 @@ func (c *Client) CommandScheduleTask(scheduleTaskRequest *ScheduleTaskRequest) (
 	return &payload, nil
 }
 
+// NewScheduleTaskOptions will create task options based on time
+func NewScheduleTaskOptions(interval time.Duration) *ScheduleOptions {
+	return &ScheduleOptions{
+		Interval: Interval{Units: "seconds", Value: int(interval.Seconds())},
+	}
+}
+
 // ScheduledJobID identifies a single scheduled job
 type ScheduledJobID struct {
 	ScheduledJob struct {
@@ -69,11 +77,12 @@ type ScheduledJobID struct {
 
 // ScheduleTaskRequest describes a scheduled task
 type ScheduleTaskRequest struct {
-	Environment   string            `json:"environment,omitempty"`
-	Task          string            `json:"task"`
-	Params        map[string]string `json:"params"`
-	Scope         Scope             `json:"scope"`
-	ScheduledTime string            `json:"scheduled_time"`
+	Environment     string            `json:"environment,omitempty"`
+	Task            string            `json:"task"`
+	Params          map[string]string `json:"params"`
+	Scope           Scope             `json:"scope"`
+	ScheduledTime   string            `json:"scheduled_time"`
+	ScheduleOptions *ScheduleOptions  `json:"schedule_options,omitempty"`
 }
 
 // CommandTaskTarget creates a new task-target (POST /command/task_target)

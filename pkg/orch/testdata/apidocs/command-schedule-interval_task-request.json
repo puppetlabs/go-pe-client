@@ -1,0 +1,18 @@
+{
+    "environment" : "test-env-1",
+    "task" : "package",
+    "params" : {
+      "action" : "install",
+      "package" : "httpd"
+    },
+    "scope" : {
+      "nodes" : ["node1.example.com"]
+    },
+    "scheduled_time" : "2027-05-05T19:50:08Z",
+    "schedule_options": {
+      "interval": {
+        "units": "seconds",
+        "value": 86400
+      }
+    }
+  }

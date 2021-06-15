@@ -20,3 +20,14 @@ type Pagination struct {
 	Offset int `json:"offset"`
 	Total  int `json:"total"`
 }
+
+// Interval represents the time Interval for a task to run
+type Interval struct {
+	Units string `json:"units"`
+	Value int    `json:"value"`
+}
+
+// ScheduleOptions represents the schedule options for a task
+type ScheduleOptions struct {
+	Interval Interval `json:"interval"`
+}
