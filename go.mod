@@ -13,6 +13,6 @@ require (
 	github.com/mattn/go-tty v0.0.3 // indirect
 	github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942 // indirect
 	github.com/sirupsen/logrus v1.5.0
-	github.com/stretchr/testify v1.5.1
-	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
+	github.com/stretchr/testify v1.7.0
+	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 )
