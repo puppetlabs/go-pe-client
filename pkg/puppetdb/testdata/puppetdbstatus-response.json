@@ -1,0 +1,18 @@
+{
+  "service_version": "6.8.1-20200122_170412-gc886602",
+  "service_status_version": 1,
+  "detail_level": "info",
+  "state": "running",
+  "status": {
+    "maintenance_mode?": false,
+    "queue_depth": 0,
+    "read_db_up?": true,
+    "write_db_up?": true,
+    "rbac_status": "running",
+    "sync_status": {
+      "state": "idle"
+    }
+  },
+  "active_alerts": [],
+  "service_name": "puppetdb-status"
+}
