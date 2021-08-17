@@ -104,7 +104,7 @@ func TestCommandScheduleTask(t *testing.T) {
 
 func TestCommandScheduleTaskWithScheduleOptions(t *testing.T) {
 
-	var options *ScheduleOptions = NewScheduleTaskOptions(time.Duration(24) * time.Hour)
+	var options = NewScheduleTaskOptions(time.Duration(24) * time.Hour)
 
 	// Test success
 	setupPostResponder(t, orchCommandScheduleTask, "command-schedule-interval_task-request.json", "command-schedule_task-response.json")
@@ -164,8 +164,8 @@ var expectedCommandScheduleTaskResponse = &ScheduledJobID{ScheduledJob: struct {
 
 func TestNewScheduleTaskOptions(t *testing.T) {
 
-	var optionsHour *ScheduleOptions = NewScheduleTaskOptions(time.Duration(1) * time.Hour)
-	var optionsMinutes *ScheduleOptions = NewScheduleTaskOptions(time.Duration(60) * time.Minute)
+	var optionsHour = NewScheduleTaskOptions(time.Duration(1) * time.Hour)
+	var optionsMinutes = NewScheduleTaskOptions(time.Duration(60) * time.Minute)
 
 	// Test Success from hour to seconds conversion
 	require.Equal(t, expectedScheduleTaskOptions, optionsHour)
