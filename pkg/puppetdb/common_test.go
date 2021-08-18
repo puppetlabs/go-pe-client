@@ -3,6 +3,7 @@ package puppetdb
 import (
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"testing"
 	"time"
 
@@ -30,6 +31,23 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	response.Body.Close()
 }
 
+func setupURLErrorResponder(t *testing.T, url string) {
+	setupURLResponderWithStatusCode(t, url, http.StatusNotFound)
+}
+
+func setupURLResponderWithStatusCode(t *testing.T, url string, statusCode int) {
+	setupResponderWithStatusCodeAndBody(t, url, statusCode, expectedURLError)
+}
+
+func setupResponderWithStatusCodeAndBody(t *testing.T, url string, statusCode int, response interface{}) {
+	httpmock.Reset()
+	responder, err := httpmock.NewJsonResponder(statusCode, response)
+	require.Nil(t, err)
+	httpmock.RegisterResponder(http.MethodGet, hostURL+url, responder)
+}
+
 var pdbClient *Client
 
 var hostURL = "https://test-host:8081"
+
+var expectedURLError = url.Error{Op: "nil", URL: hostURL, Err: nil}
