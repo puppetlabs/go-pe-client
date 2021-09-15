@@ -16,7 +16,7 @@ func TestCommandTask(t *testing.T) {
 	taskRequest := &TaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
-		Params: map[string]string{
+		Params: map[string]interface{}{
 			"action": "install",
 			"name":   "httpd",
 		},
@@ -57,7 +57,7 @@ func TestCommandScheduleTask(t *testing.T) {
 	scheduleTaskRequest := &ScheduleTaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
-		Params: map[string]string{
+		Params: map[string]interface{}{
 			"action":  "install",
 			"package": "httpd",
 		},
@@ -111,7 +111,7 @@ func TestCommandScheduleTaskWithScheduleOptions(t *testing.T) {
 	scheduleTaskRequest := &ScheduleTaskRequest{
 		Environment: "test-env-1",
 		Task:        "package",
-		Params: map[string]string{
+		Params: map[string]interface{}{
 			"action":  "install",
 			"package": "httpd",
 		},

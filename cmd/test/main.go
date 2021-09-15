@@ -164,7 +164,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 
 	jobID, err := orchClient.CommandTask(&orch.TaskRequest{
 		Task: "package",
-		Params: map[string]string{
+		Params: map[string]interface{}{
 			"action": "status",
 			"name":   "openssl",
 		},
@@ -189,7 +189,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 
 	scheduledJobID, err := orchClient.CommandScheduleTask(&orch.ScheduleTaskRequest{
 		Task: "package",
-		Params: map[string]string{
+		Params: map[string]interface{}{
 			"action": "status",
 			"name":   "openssl",
 		},

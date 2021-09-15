@@ -39,10 +39,10 @@ type JobID struct {
 
 // TaskRequest describes a task to be run
 type TaskRequest struct {
-	Environment string            `json:"environment,omitempty"`
-	Task        string            `json:"task"`
-	Params      map[string]string `json:"params"`
-	Scope       Scope             `json:"scope"`
+	Environment string                 `json:"environment,omitempty"`
+	Task        string                 `json:"task"`
+	Params      map[string]interface{} `json:"params"`
+	Scope       Scope                  `json:"scope"`
 }
 
 // CommandScheduleTask schedules a task to run at a future date and time (POST /command/schedule_task)
@@ -77,12 +77,12 @@ type ScheduledJobID struct {
 
 // ScheduleTaskRequest describes a scheduled task
 type ScheduleTaskRequest struct {
-	Environment     string            `json:"environment,omitempty"`
-	Task            string            `json:"task"`
-	Params          map[string]string `json:"params"`
-	Scope           Scope             `json:"scope"`
-	ScheduledTime   string            `json:"scheduled_time"`
-	ScheduleOptions *ScheduleOptions  `json:"schedule_options,omitempty"`
+	Environment     string                 `json:"environment,omitempty"`
+	Task            string                 `json:"task"`
+	Params          map[string]interface{} `json:"params"`
+	Scope           Scope                  `json:"scope"`
+	ScheduledTime   string                 `json:"scheduled_time"`
+	ScheduleOptions *ScheduleOptions       `json:"schedule_options,omitempty"`
 }
 
 // CommandTaskTarget creates a new task-target (POST /command/task_target)
