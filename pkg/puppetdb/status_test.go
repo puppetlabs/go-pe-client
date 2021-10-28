@@ -25,5 +25,5 @@ func TestStatus(t *testing.T) {
 var (
 	expectedStatuses      = &PDbStatus{"6.8.1-20200122_170412-gc886602"}
 	expectedErrorStatuses = &PDbStatus{""}
-	errExpectedURL        = fmt.Errorf("https://test-host:8081 /status/v1/services/puppetdb-status: 404: \"{\"Op\":\"nil\",\"URL\":\"https://test-host:8081\",\"Err\":null}\"")
+	errExpectedURL        = fmt.Errorf("https://test-host:8081/status/v1/services/puppetdb-status: 404: \"{\"Op\":\"nil\",\"URL\":\"https://test-host:8081\",\"Err\":null}\"")
 )
