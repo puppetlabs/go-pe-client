@@ -37,7 +37,6 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 	httpmock.Reset()
 	httpmock.RegisterResponder(http.MethodPost, orchHostURL+url,
 		func(req *http.Request) (*http.Response, error) {
-
 			// Validate the body
 			actual := map[string]interface{}{}
 			err := json.NewDecoder(req.Body).Decode(&actual)
@@ -55,7 +54,6 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 			response := httpmock.NewBytesResponse(200, responseBody)
 			response.Header.Set("Content-Type", "application/json")
 			return response, nil
-
 		},
 	)
 }

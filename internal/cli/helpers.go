@@ -22,7 +22,7 @@ func InitHistoryFile() (*os.File, error) {
 	}
 
 	filename := filepath.Join(usr.HomeDir, ".pdb_history")
-	return os.OpenFile(filepath.Clean(filename), os.O_RDWR|os.O_CREATE, 0600)
+	return os.OpenFile(filepath.Clean(filename), os.O_RDWR|os.O_CREATE, 0o600)
 }
 
 // WriteHistory ...
@@ -91,7 +91,6 @@ func createPaginationStruct(options []string) (result puppetdb.Pagination) {
 			pagination.Limit, err = strconv.Atoi(limit[1])
 		}
 		if len(offset) >= 1 {
-
 			pagination.Offset, err = strconv.Atoi(offset[1])
 		}
 		if len(total) >= 1 {
@@ -129,7 +128,6 @@ func createOrderByStruct(options []string) (result puppetdb.OrderBy) {
 // Would return "nodes" "["=", "certname", "jenkins-compose.example.net"]" "Limit=5 Offset=10"
 // "nodes", "nodes Limit=10 OrderBy={field: "certname", order: "asc"}", "nodes []", "nodes ["=", "certname", "jenkins-compose.example.net"]" are all accepted by this func
 func ParseInput(command string) (string, string, puppetdb.Pagination, puppetdb.OrderBy) {
-
 	checkForQuery, err := regexp.Match(`[\w+]`, []byte(command))
 	var query string
 	if checkForQuery {
@@ -151,12 +149,12 @@ func ParseInput(command string) (string, string, puppetdb.Pagination, puppetdb.O
 		os.Exit(0)
 	}
 
-	var rex = regexp.MustCompile(`(\w+)=(\w+)`)
+	rex := regexp.MustCompile(`(\w+)=(\w+)`)
 	options := rex.FindAllString(querylessCommand, -1)
 	pagination := createPaginationStruct(options)
 
 	order := extractString(command, "{", "}")
-	var rex2 = regexp.MustCompile(`(\w+): "(\w+)"`)
+	rex2 := regexp.MustCompile(`(\w+): "(\w+)"`)
 	options2 := rex2.FindAllString(order, -1)
 
 	orderBy := createOrderByStruct(options2)

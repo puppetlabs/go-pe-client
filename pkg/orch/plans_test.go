@@ -11,7 +11,6 @@ import (
 )
 
 func TestPlans(t *testing.T) {
-
 	// Test without environment
 	setupGetResponder(t, orchPlans, "", "plans-response.json")
 	actual, err := orchClient.Plans("")
@@ -34,11 +33,9 @@ func TestPlans(t *testing.T) {
 	setupResponderWithStatusCodeAndBody(t, orchPlans, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.Plans("")
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 func TestPlan(t *testing.T) {
-
 	replacer := strings.NewReplacer("{module}", "package", "{planname}", "install")
 	orchPlanPackageInstall := replacer.Replace(orchPlanName)
 
@@ -94,5 +91,4 @@ func TestPlanByID(t *testing.T) {
 	setupResponderWithStatusCodeAndBody(t, orchPlanPackageUpgrade, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.PlanByID("myenv", id)
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }

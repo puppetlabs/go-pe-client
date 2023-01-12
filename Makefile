@@ -1,5 +1,5 @@
 
-all: build test format sec tidy
+all: build test format lint sec tidy
 
 GOPATH := $(shell go env GOPATH)
 
@@ -35,9 +35,8 @@ format:
 	@echo "✅ Checking go fmt complete"
 
 PHONY+= lint
-lint: $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/golint
+lint: $(GOPATH)/bin/golangci-lint
 	@echo "🔘 Linting $(1) (`date '+%H:%M:%S'`)"
-	@golint -set_exit_status ./...
 	@go vet ./...
 	@golangci-lint run \
 		-E asciicheck \
@@ -76,16 +75,12 @@ $(GOPATH)/bin/golangci-lint:
 	@echo "🔘 Installing golangci-lint... (`date '+%H:%M:%S'`)"
 	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
-$(GOPATH)/bin/golint:
-	@echo "🔘 Installing golint ... (`date '+%H:%M:%S'`)"
-	@GO111MODULE=off go get -u golang.org/x/lint/golint
-
 $(GOPATH)/bin/gosec:
 	@echo "🔘 Installing gosec ... (`date '+%H:%M:%S'`)"
 	@curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(GOPATH)/bin
 
 PHONY+= update-tools
-update-tools: delete-tools $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/golint $(GOPATH)/bin/gosec
+update-tools: delete-tools $(GOPATH)/bin/golangci-lint $(GOPATH)/bin/gosec
 
 PHONY+= delete-tools
 delete-tools:

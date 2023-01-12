@@ -47,8 +47,10 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	response.Body.Close()
 }
 
-var pdbClient *Client
-var hostURL = "https://test-host:4433"
+var (
+	pdbClient *Client
+	hostURL   = "https://test-host:4433"
+)
 
 var g = Group{
 	Parent:            "5239b6da-8194-4f99-ab37-de6cbf665754",
@@ -64,22 +66,24 @@ var g = Group{
 	ConfigData:        map[string]interface{}{},
 }
 
-var g2ID = "913e54b7-b09c-4543-9f74-daff5e51a49f"
-var g2 = Group{
-	Parent:            "d1fc626d-222a-4616-be89-cc67ef1f8b3a",
-	Description:       "Production nodes",
-	EnvironmentTrumps: true,
-	Name:              "Production environment",
-	Rule:              []interface{}{"and", []interface{}{"=", []interface{}{"trusted", "extensions", "pp_environment"}, "production"}},
-	Variables:         map[string]interface{}{},
-	ID:                g2ID,
-	Environment:       "production",
-	LastEdited:        time.Time{},
-	SerialNumber:      1,
-	Classes:           map[string]interface{}{},
-	ConfigData:        map[string]interface{}{},
-	Deleted:           map[string]interface{}(nil),
-}
+var (
+	g2ID = "913e54b7-b09c-4543-9f74-daff5e51a49f"
+	g2   = Group{
+		Parent:            "d1fc626d-222a-4616-be89-cc67ef1f8b3a",
+		Description:       "Production nodes",
+		EnvironmentTrumps: true,
+		Name:              "Production environment",
+		Rule:              []interface{}{"and", []interface{}{"=", []interface{}{"trusted", "extensions", "pp_environment"}, "production"}},
+		Variables:         map[string]interface{}{},
+		ID:                g2ID,
+		Environment:       "production",
+		LastEdited:        time.Time{},
+		SerialNumber:      1,
+		Classes:           map[string]interface{}{},
+		ConfigData:        map[string]interface{}{},
+		Deleted:           map[string]interface{}(nil),
+	}
+)
 var expected = []Group{
 	g, g2,
 }

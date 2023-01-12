@@ -9,7 +9,6 @@ import (
 )
 
 func TestInventory(t *testing.T) {
-
 	// Test success
 	setupGetResponder(t, orchInventory, "", "inventory-response.json")
 	actual, err := orchClient.Inventory()
@@ -22,15 +21,13 @@ func TestInventory(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
-	//Test HTTP error
+	// Test HTTP error
 	setupResponderWithStatusCodeAndBody(t, orchInventory, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.Inventory()
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 func TestInventoryNode(t *testing.T) {
-
 	orchInventoryNodeFoo := strings.ReplaceAll(orchInventoryNode, "{node}", "foo")
 
 	// Test success
@@ -45,15 +42,13 @@ func TestInventoryNode(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
-	//Test HTTP error
+	// Test HTTP error
 	setupResponderWithStatusCodeAndBody(t, orchInventoryNodeFoo, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.InventoryNode("foo")
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 func TestInventoryCheck(t *testing.T) {
-
 	// Test success
 	setupPostResponder(t, orchInventory, "inventory-check-request.json", "inventory-check-response.json")
 	actual, err := orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
@@ -66,11 +61,10 @@ func TestInventoryCheck(t *testing.T) {
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)
 
-	//Test HTTP error
+	// Test HTTP error
 	setupResponderWithStatusCodeAndBody(t, orchInventory, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.InventoryCheck([]string{"foo.example.com", "bar.example.com", "baz.example.com"})
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 var expectedInventory = []InventoryNode{{Name: "foo.example.com", Connected: true, Broker: "pcp://broker1.example.com/server", Timestamp: "2016-010-22T13:36:41.449Z"}, {Name: "bar.example.com", Connected: true, Broker: "pcp://broker2.example.com/server", Timestamp: "2016-010-22T13:39:16.377Z"}}

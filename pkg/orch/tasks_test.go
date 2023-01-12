@@ -9,7 +9,6 @@ import (
 )
 
 func TestTasks(t *testing.T) {
-
 	// Test without environment
 	setupGetResponder(t, orchTasks, "", "tasks-response.json")
 	actual, err := orchClient.Tasks("")
@@ -32,11 +31,9 @@ func TestTasks(t *testing.T) {
 	setupResponderWithStatusCodeAndBody(t, orchTasks, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.Tasks("")
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 func TestTask(t *testing.T) {
-
 	replacer := strings.NewReplacer("{module}", "foo", "{taskname}", "bar")
 	orchTaskFooBar := replacer.Replace(orchTaskName)
 
@@ -92,7 +89,6 @@ func TestTaskByID(t *testing.T) {
 	setupResponderWithStatusCodeAndBody(t, orchTaskPackageUpgrade, http.StatusNotFound, []byte(`{"StatusCode": 400}`))
 	actual, err = orchClient.TaskByID("myenv", id)
 	testHTTPError(t, actual, err, http.StatusNotFound)
-
 }
 
 var expectedTask = &Task{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install", Environment: struct {
@@ -114,7 +110,6 @@ var expectedTasks = &Tasks{Environment: struct {
 	ID   string "json:\"id,omitempty\""
 	Name string "json:\"name,omitempty\""
 }{
-
 	{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install", Name: "package::install"},
 
 	{ID: "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade", Name: "package::upgrade"},
