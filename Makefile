@@ -1,5 +1,5 @@
 
-all: build test format lint sec tidy
+all: build test format sec tidy
 
 GOPATH := $(shell go env GOPATH)
 
