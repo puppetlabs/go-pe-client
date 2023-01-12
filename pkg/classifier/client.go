@@ -38,8 +38,9 @@ func (c *Client) SetTransport(tripper http.RoundTripper) {
 // the query.  The result of the request is marshalled into the response type. e.g.
 // var payload *[]Group
 // getRequest(client, "/classifier/v1/groups",
-//				&Pagination{Limit: 10, Offset: 20},
-//				&payload)
+//
+//	&Pagination{Limit: 10, Offset: 20},
+//	&payload)
 func getRequest(client *Client, path string, pagination *Pagination, response interface{}) error {
 	req := client.resty.R().SetResult(&response)
 

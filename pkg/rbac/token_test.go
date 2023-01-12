@@ -7,7 +7,6 @@ import (
 )
 
 func TestGetRBACToken(t *testing.T) {
-
 	// Test success
 	setupPostResponder(t, requestAuthTokenURI, "GetRBACToken-request.json", "GetRBACToken-response.json")
 	request := &RequestKeys{

@@ -18,7 +18,6 @@ func newAPIError(statusCode int, msg string) *APIError {
 // FormatError takes the resty response and a possible resty err and tries to create an
 // APIError with as much info as possible
 func FormatError(r *resty.Response, customError ...string) error {
-
 	msg := strings.Join(customError, ", ")
 
 	if apiErr, ok := r.Error().(*APIError); ok {

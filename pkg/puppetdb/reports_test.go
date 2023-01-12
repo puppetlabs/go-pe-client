@@ -46,4 +46,5 @@ var expectedReport = []Report{{
 	},
 	Logs: Logs{
 		Href: "http://foobar.logs.com",
-	}}}
+	},
+}}

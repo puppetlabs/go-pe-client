@@ -14,10 +14,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var client *puppetdb.Client
-var prompter *prompt.Prompt
-var historyFile *os.File
-var pdbTimeout = time.Second * 30
+var (
+	client      *puppetdb.Client
+	prompter    *prompt.Prompt
+	historyFile *os.File
+	pdbTimeout  = time.Second * 30
+)
 
 var suggestions = []prompt.Suggest{
 	//  Methods
@@ -53,7 +55,7 @@ func executor(in string) {
 	in = strings.TrimSpace(in)
 
 	// Parse the input and extract the API call + query
-	var api, query, pagination, orderBy = cli.ParseInput(in)
+	api, query, pagination, orderBy := cli.ParseInput(in)
 	// If a api has been selected, then execute it with the provided query
 	// the command should be recorded in history and the response printed to
 	// stdout
@@ -119,7 +121,6 @@ func processArgs() (*puppetdb.Client, error) {
 }
 
 func main() {
-
 	// Process args and create a context with PDB client
 	var err error
 	client, err = processArgs()

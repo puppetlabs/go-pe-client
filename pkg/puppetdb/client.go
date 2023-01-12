@@ -44,10 +44,11 @@ func (c *Client) SetTransport(tripper http.RoundTripper) {
 // the query.  The result of the request is marshalled into the response type. e.g.
 // var payload *[]Fact
 // getRequest(client, "/pdb/query/v4/facts",
-//				query,
-//				&Pagination{Limit: 10, Offset: 20},
-//				&OrderBy{Field: "certname", Order: "asc"},
-//				&payload)
+//
+//	query,
+//	&Pagination{Limit: 10, Offset: 20},
+//	&OrderBy{Field: "certname", Order: "asc"},
+//	&payload)
 func getRequest(client *Client, path string, query string, pagination *Pagination, orderBy *OrderBy, response interface{}) error {
 	req := client.resty.R().SetResult(&response)
 	if query != "" {

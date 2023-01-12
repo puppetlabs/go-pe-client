@@ -13,7 +13,6 @@ const (
 // certname is the hostname of the node to query.
 func (c *Client) Node(certname string) (Node, error) {
 	payload, err := PostRequest(c, fmt.Sprintf("%s/%s", uri, certname))
-
 	if err != nil {
 		return Node{}, err
 	}
@@ -31,10 +30,7 @@ type Node struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 	} `json:"groups"`
-	Classes struct {
-	} `json:"classes"`
-	Parameters struct {
-	} `json:"parameters"`
-	ConfigData struct {
-	} `json:"config_data"`
+	Classes    struct{} `json:"classes"`
+	Parameters struct{} `json:"parameters"`
+	ConfigData struct{} `json:"config_data"`
 }
