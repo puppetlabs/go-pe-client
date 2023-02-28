@@ -117,15 +117,56 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	}
 	peServer := os.Args[1]
 	token := os.Args[2]
+
 	pdbHostURL := "https://" + peServer + ":8081"
 	pdbClient := puppetdb.NewClient(pdbHostURL, token, &tls.Config{InsecureSkipVerify: true}, pdbTimeout) // #nosec - this main() is private and for development purpose
+
 	orchHostURL := "https://" + peServer + ":8143"
 	orchClient := orch.NewClient(orchHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+
 	classifierHostURL := "https://" + peServer + ":4433"
 	classifierClient := classifier.NewClient(classifierHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
+
 	peHostURL := "https://" + peServer
 	peClient := pe.NewClient(peHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
-	fmt.Println("Connecting to:", peServer)
+
+	rbacHostURL := "https://" + peServer + ":4433"
+	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true})
+
+	fmt.Println("Connectping to:", peServer)
+
+	// Try creating the same role (same display name) multiple times,
+	// the second attempt should return a HTTP 409 status.
+	roleDisplayName := fmt.Sprintf("Testing %d", time.Now().UnixNano())
+	for {
+		fmt.Printf("Create role \"%s\"", roleDisplayName)
+
+		location, err := rbacClient.CreateRole(&rbac.Role{
+			DisplayName: roleDisplayName,
+			Description: "Role added by go-pe-client test",
+			Permissions: []rbac.Permission{
+				{
+					ObjectType: "node_groups",
+					Action:     "view",
+					Instance:   "*",
+				},
+			},
+		}, token)
+
+		if err != nil {
+			if apiErr, ok := err.(*rbac.APIError); ok {
+				if apiErr.GetStatusCode() == 409 {
+					fmt.Println(" failed (as expected) because this role already exists")
+				} else {
+					fmt.Printf(" failed with RBAC APIError %d: %s\n", apiErr.GetStatusCode(), apiErr.Error())
+				}
+				break
+			}
+			panic(err)
+		}
+		fmt.Printf(" was successful: %s\n", location)
+	}
+	fmt.Println()
 
 	environments, err := peClient.Environments()
 	if err != nil {
