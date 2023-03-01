@@ -131,7 +131,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	peClient := pe.NewClient(peHostURL, token, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 
 	rbacHostURL := "https://" + peServer + ":4433"
-	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true})
+	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 
 	fmt.Println("Connectping to:", peServer)
 
