@@ -133,7 +133,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	rbacHostURL := "https://" + peServer + ":4433"
 	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 
-	fmt.Println("Connectping to:", peServer)
+	fmt.Println("Connecting to:", peServer)
 
 	// Try creating the same role (same display name) multiple times,
 	// the second attempt should return a HTTP 409 status.
