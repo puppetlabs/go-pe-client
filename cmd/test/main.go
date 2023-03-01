@@ -139,8 +139,6 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	// the second attempt should return a HTTP 409 status.
 	roleDisplayName := fmt.Sprintf("Testing %d", time.Now().UnixNano())
 	for {
-		fmt.Printf("Create role \"%s\"", roleDisplayName)
-
 		location, err := rbacClient.CreateRole(&rbac.Role{
 			DisplayName: roleDisplayName,
 			Description: "Role added by go-pe-client test",
@@ -156,15 +154,21 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 		if err != nil {
 			if apiErr, ok := err.(*rbac.APIError); ok {
 				if apiErr.GetStatusCode() == 409 {
-					fmt.Println(" failed (as expected) because this role already exists")
+					fmt.Printf("Create role \"%s\" failed as expected because role already exists\n",
+						roleDisplayName)
 				} else {
-					fmt.Printf(" failed with RBAC APIError %d: %s\n", apiErr.GetStatusCode(), apiErr.Error())
+					fmt.Printf("Create role \"%s\" failed with RBAC APIError %d: %s\n",
+						roleDisplayName,
+						apiErr.GetStatusCode(),
+						apiErr.Error())
 				}
 				break
 			}
 			panic(err)
 		}
-		fmt.Printf(" was successful: %s\n", location)
+		fmt.Printf("Create role \"%s\" was successful, location: %s\n",
+			roleDisplayName,
+			location)
 	}
 	fmt.Println()
 

@@ -8,23 +8,26 @@ const (
 // the specified users and groups. Authentication is required.
 //
 // If the role was created successfully then the path of the new role is
-// returned. In all other cases an error is returned, cast it to rbac.APIError
-// to get the HTTP status code & message.
+// returned, otherwise an error is returned.
 func (c *Client) CreateRole(roles *Role, token string) (string, error) {
 	r, err := c.resty.R().
 		SetBody(roles).
 		SetHeader("X-Authentication", token).
 		Post(rbacRoles)
-
 	if err != nil {
-		// On success the response is HTTP 303 with a redirect. The RBAC client
-		// considers this an error because it's configured to not follow
-		// redirects.
-		if r.StatusCode() != 303 {
+		// This API uses a redirect with location header to indicate success.
+		// Because redirects are disabled in the RBAC client an
+		// error will be thrown when the redirect cannot be followed.
+		if !r.IsError() && r.RawResponse.Header.Get("Location") != "" {
+			// Ignore the error.
+		} else {
 			return "", FormatError(r, err.Error())
 		}
 	}
-	if r.IsError() {
+
+	// If the HTTP status code is >400 or there is no location header in the
+	// response then the request was not successful.
+	if r.IsError() || r.RawResponse.Header.Get("Location") == "" {
 		return "", FormatError(r)
 	}
 
