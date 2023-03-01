@@ -1,0 +1,13 @@
+{
+  "permissions": [
+          {
+                  "object_type": "node_groups",
+                  "action": "view",
+                  "instance": "*"
+          }
+  ],
+  "user_ids": null,
+  "group_ids": null,
+  "display_name": "Testing",
+  "description": "Role added by go-pe-client test"
+}
