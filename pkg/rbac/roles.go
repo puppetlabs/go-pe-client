@@ -36,6 +36,7 @@ func (c *Client) CreateRole(roles *Role, token string) (string, error) {
 
 // Role represents an RBAC role
 type Role struct {
+	ID          uint         `json:"id,omitempty"`
 	Permissions []Permission `json:"permissions"`
 	UserIDs     []string     `json:"user_ids"`
 	GroupIDs    []string     `json:"group_ids"`
