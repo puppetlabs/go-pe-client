@@ -61,10 +61,10 @@ func handlerClassifierGroups(peServer string, token string) {
 func main() {
 	if len(os.Args) < 3 {
 		msg := `Runs through a gamut of PDB and Orchestration queries or returns an RBAC token
-Run the queries: go run cmd/main.go <pe-server> <token> e.g. go run cmd/main.go pe.puppetlabs.net aabbccddeeff
+Run the queries: go run cmd/test/main.go <pe-server> <token> e.g. go run cmd/test/main.go pe.puppetlabs.net aabbccddeeff
 or
-Run a classifier query: go run cmd/main.go classifier [nodes/groups] <pe-server> [nodename] <token>
-Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go run cmd/main.go pe.puppetlabs.net admin pazzw0rd`
+Run a classifier query: go run cmd/test/main.go classifier [nodes/groups] <pe-server> [nodename] <token>
+Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. go run cmd/test/main.go pe.puppetlabs.net admin pazzw0rd`
 		panic(msg)
 	}
 
@@ -133,7 +133,7 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 	rbacHostURL := "https://" + peServer + ":4433"
 	rbacClient := rbac.NewClient(rbacHostURL, &tls.Config{InsecureSkipVerify: true}) // #nosec - this main() is private and for development purpose
 
-	fmt.Println("Connecting to:", peServer)
+	fmt.Printf("Connecting to: %s\n\n", peServer)
 
 	// Try creating the same role (same display name) multiple times,
 	// the second attempt should return a HTTP 409 status.
@@ -150,7 +150,6 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 				},
 			},
 		}, token)
-
 		if err != nil {
 			if apiErr, ok := err.(*rbac.APIError); ok {
 				if apiErr.GetStatusCode() == 409 {
@@ -171,6 +170,27 @@ Get the RBAC token: go run cmd/main.go <pe-server> <login> <password> e.g. go ru
 			location)
 	}
 	fmt.Println()
+
+	var roles []rbac.Role
+	roles, err := rbacClient.GetRoles(token)
+	if err != nil {
+		panic(err)
+	}
+
+	var createdRolePresent bool
+	for _, role := range roles {
+		if role.DisplayName == roleDisplayName {
+			createdRolePresent = true
+			break
+		}
+	}
+
+	if createdRolePresent {
+		fmt.Printf("Get roles was successful, as role \"%s\" was present in response\n\n", roleDisplayName)
+	} else {
+		panic(fmt.Sprintf("Expected the role \"%s\" to be present in the response from get roles, but it was not",
+			roleDisplayName))
+	}
 
 	environments, err := peClient.Environments()
 	if err != nil {
