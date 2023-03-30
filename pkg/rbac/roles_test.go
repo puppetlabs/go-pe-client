@@ -7,7 +7,6 @@ import (
 )
 
 func TestCreateRole(t *testing.T) {
-
 	var (
 		token = "dummyToken"
 
@@ -25,13 +24,13 @@ func TestCreateRole(t *testing.T) {
 	)
 
 	// Test success
-	setupCreateRoleSuccessResponder(t, rbacRoles, "CreateRole-request.json")
+	setupCreateRoleSuccessResponder(t, rolesPath, "CreateRole-request.json")
 	actual, err := rbacClient.CreateRole(role, token)
 	require.Nil(t, err)
 	require.Equal(t, "/path/to/role", actual)
 
 	// Test error
-	setupCreateRoleErrorResponder(t, rbacRoles)
+	setupCreateRoleErrorResponder(t, rolesPath)
 	location, err := rbacClient.CreateRole(role, token)
 	require.NotNil(t, err)
 	require.Equal(t, "", location)

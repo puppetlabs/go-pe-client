@@ -1,7 +1,7 @@
 package rbac
 
 const (
-	rbacRoles = "/rbac-api/v1/roles"
+	rolesPath = "/rbac-api/v1/roles"
 )
 
 // CreateRole creates a role, and attaches to it the specified permissions and
@@ -9,11 +9,11 @@ const (
 //
 // If the role was created successfully then the path of the new role is
 // returned, otherwise an error is returned.
-func (c *Client) CreateRole(roles *Role, token string) (string, error) {
+func (c *Client) CreateRole(role *Role, token string) (string, error) {
 	r, err := c.resty.R().
-		SetBody(roles).
+		SetBody(role).
 		SetHeader("X-Authentication", token).
-		Post(rbacRoles)
+		Post(rolesPath)
 	if err != nil {
 		// This API uses a redirect with location header to indicate success.
 		// Because redirects are disabled in the RBAC client an
