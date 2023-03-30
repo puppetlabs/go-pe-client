@@ -4,6 +4,21 @@ const (
 	rolesPath = "/rbac-api/v1/roles"
 )
 
+// GetRoles fetches information about all user roles.
+func (c *Client) GetRoles(token string) ([]Role, error) {
+	var roles []Role
+
+	response, err := c.resty.R().
+		SetHeader("X-Authentication", token).
+		SetResult(&roles).
+		Get(rolesPath)
+	if err != nil {
+		return nil, FormatError(response, err.Error())
+	}
+
+	return roles, nil
+}
+
 // CreateRole creates a role, and attaches to it the specified permissions and
 // the specified users and groups. Authentication is required.
 //
