@@ -40,7 +40,7 @@ type Role struct {
 	UserIDs     []string     `json:"user_ids"`
 	GroupIDs    []string     `json:"group_ids"`
 	DisplayName string       `json:"display_name"`
-	Description string       `json:"description,omitempty"`
+	Description string       `json:"description"`
 }
 
 // Permission represents an RBAC permission
