@@ -1,8 +1,8 @@
 package pe
 
 import (
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -18,7 +18,7 @@ func init() {
 
 func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	httpmock.Reset()
-	responseBody, err := ioutil.ReadFile("testdata/apidocs/" + responseFilename)
+	responseBody, err := os.ReadFile("testdata/apidocs/" + responseFilename)
 	require.Nil(t, err)
 	response := httpmock.NewBytesResponse(200, responseBody)
 	response.Header.Set("Content-Type", "application/json")
