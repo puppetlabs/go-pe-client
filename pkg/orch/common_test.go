@@ -2,7 +2,6 @@ package orch
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -21,7 +20,7 @@ func init() {
 
 func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	httpmock.Reset()
-	responseBody, err := ioutil.ReadFile("testdata/apidocs/" + responseFilename)
+	responseBody, err := os.ReadFile("testdata/apidocs/" + responseFilename)
 	require.Nil(t, err)
 	response := httpmock.NewBytesResponse(200, responseBody)
 	response.Header.Set("Content-Type", "application/json")
@@ -49,7 +48,7 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 			require.Equal(t, expected, actual)
 
 			// Build response
-			responseBody, err := ioutil.ReadFile("testdata/apidocs/" + responseFilename)
+			responseBody, err := os.ReadFile("testdata/apidocs/" + responseFilename)
 			require.Nil(t, err)
 			response := httpmock.NewBytesResponse(200, responseBody)
 			response.Header.Set("Content-Type", "application/json")

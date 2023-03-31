@@ -2,7 +2,6 @@ package rbac
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -28,6 +27,7 @@ func setUpOKResponder(t *testing.T, httpMethod string, path string, responseFile
 	response.Header.Set("Content-Type", "application/json")
 
 	httpmock.RegisterResponder(httpMethod, rbacAPIOrigin+path, httpmock.ResponderFromResponse(response))
+	response.Body.Close()
 }
 
 func setUpBadRequestResponder(t *testing.T, httpMethod string, path string) {
@@ -55,7 +55,7 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 			require.Equal(t, expected, actual)
 
 			// Build response
-			responseBody, err := ioutil.ReadFile("testdata/apidocs/" + responseFilename)
+			responseBody, err := os.ReadFile("testdata/apidocs/" + responseFilename)
 			require.Nil(t, err)
 			response := httpmock.NewBytesResponse(200, responseBody)
 			response.Header.Set("Content-Type", "application/json")
