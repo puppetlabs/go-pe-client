@@ -1,6 +1,6 @@
 module github.com/puppetlabs/go-pe-client
 
-go 1.14
+go 1.19
 
 require (
 	github.com/c-bata/go-prompt v0.2.3
