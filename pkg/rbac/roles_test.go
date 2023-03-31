@@ -10,20 +10,20 @@ import (
 )
 
 const (
-	responseFilePath = "testdata/apidocs/GetRoles-response.json"
-	token            = "dummy-token"
+	getRolesResponseFilePath = "testdata/apidocs/GetRoles-response.json"
+	token                    = "dummy-token"
 )
 
 func TestGetRoles(t *testing.T) {
 	var expectedRoles []Role
 
-	expectedRolesJSONFile, err := os.Open(responseFilePath)
+	expectedRolesJSONFile, err := os.Open(getRolesResponseFilePath)
 	require.Nil(t, err, "failed to open expected roles JSON file")
 
 	err = json.NewDecoder(expectedRolesJSONFile).Decode(&expectedRoles)
 	require.Nil(t, err, "error decoding expected roles")
 
-	setUpOKResponder(t, http.MethodGet, rolesPath, responseFilePath)
+	setUpOKResponder(t, http.MethodGet, rolesPath, getRolesResponseFilePath)
 
 	actualRoles, err := rbacClient.GetRoles(token)
 	require.Nil(t, err)
