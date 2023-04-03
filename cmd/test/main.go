@@ -3,7 +3,10 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -135,6 +138,10 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 
 	fmt.Printf("Connecting to: %s\n\n", peServer)
 
+	fmt.Printf("* Testing RBAC API client function CreateRole...\n\n")
+
+	var createdRoleIDString string
+
 	// Try creating the same role (same display name) multiple times,
 	// the second attempt should return a HTTP 409 status.
 	roleDisplayName := fmt.Sprintf("Testing %d", time.Now().UnixNano())
@@ -152,7 +159,7 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 		}, token)
 		if err != nil {
 			if apiErr, ok := err.(*rbac.APIError); ok {
-				if apiErr.GetStatusCode() == 409 {
+				if apiErr.GetStatusCode() == http.StatusConflict {
 					fmt.Printf("Create role \"%s\" failed as expected because role already exists\n",
 						roleDisplayName)
 				} else {
@@ -165,14 +172,36 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 			}
 			panic(err)
 		}
+		createdRoleIDString = location[strings.LastIndex(location, "/")+1:]
+
 		fmt.Printf("Create role \"%s\" was successful, location: %s\n",
 			roleDisplayName,
 			location)
 	}
 	fmt.Println()
 
+	fmt.Printf("* Testing RBAC API client function GetRole...\n\n")
+
+	var role *rbac.Role
+
+	createdRoleID, _ := strconv.Atoi(createdRoleIDString)
+	role, err := rbacClient.GetRole(uint(createdRoleID), token)
+	if err != nil {
+		panic(err)
+	}
+
+	if role.DisplayName == roleDisplayName {
+		fmt.Printf("Get role was successful, as the role \"%s\" was returned in response\n\n",
+			roleDisplayName)
+	} else {
+		panic(fmt.Sprintf("Expected the role \"%s\" to be returned in response from get role, but it was not",
+			roleDisplayName))
+	}
+
+	fmt.Printf("* Testing RBAC API client function GetRoles...\n\n")
+
 	var roles []rbac.Role
-	roles, err := rbacClient.GetRoles(token)
+	roles, err = rbacClient.GetRoles(token)
 	if err != nil {
 		panic(err)
 	}
