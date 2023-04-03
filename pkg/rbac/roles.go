@@ -1,6 +1,7 @@
 package rbac
 
 const (
+	rolePath  = "/rbac-api/v1/roles/{id}"
 	rolesPath = "/rbac-api/v1/roles"
 )
 
@@ -17,6 +18,22 @@ func (c *Client) GetRoles(token string) ([]Role, error) {
 	}
 
 	return roles, nil
+}
+
+// GetRole fetches information about a single role, identified by its ID.
+func (c *Client) GetRole(id string, token string) (*Role, error) {
+	var role Role
+
+	response, err := c.resty.R().
+		SetHeader("X-Authentication", token).
+		SetPathParams(map[string]string{"id": id}).
+		SetResult(&role).
+		Get(rolePath)
+	if err != nil {
+		return nil, FormatError(response, err.Error())
+	}
+
+	return &role, nil
 }
 
 // CreateRole creates a role, and attaches to it the specified permissions and
