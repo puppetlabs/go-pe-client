@@ -1,0 +1,17 @@
+{
+  "description": "Role used in go-pe-client get role test",
+  "display_name": "Test Role",
+  "id": 1,
+  "group_ids": [],
+  "user_ids": [
+    "af94921f-bd76-4b58-b5ce-e17c029a2790",
+    "42bf351c-f9ec-40af-84ad-e976fec7f4bd"
+  ],
+  "permissions": [
+    {
+      "object_type": "node_groups",
+      "action": "view",
+      "instance": "*"
+    }
+  ]
+}

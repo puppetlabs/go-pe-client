@@ -1,5 +1,7 @@
 package rbac
 
+import "strconv"
+
 const (
 	rolePath  = "/rbac-api/v1/roles/{id}"
 	rolesPath = "/rbac-api/v1/roles"
@@ -21,12 +23,12 @@ func (c *Client) GetRoles(token string) ([]Role, error) {
 }
 
 // GetRole fetches information about a single role, identified by its ID.
-func (c *Client) GetRole(id string, token string) (*Role, error) {
+func (c *Client) GetRole(id uint, token string) (*Role, error) {
 	var role Role
 
 	response, err := c.resty.R().
 		SetHeader("X-Authentication", token).
-		SetPathParams(map[string]string{"id": id}).
+		SetPathParams(map[string]string{"id": strconv.FormatUint(uint64(id), 10)}).
 		SetResult(&role).
 		Get(rolePath)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -139,7 +140,7 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 
 	fmt.Printf("* Testing RBAC API client function CreateRole...\n\n")
 
-	var createdRoleID string
+	var createdRoleIDString string
 
 	// Try creating the same role (same display name) multiple times,
 	// the second attempt should return a HTTP 409 status.
@@ -171,7 +172,7 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 			}
 			panic(err)
 		}
-		createdRoleID = location[strings.LastIndex(location, "/")+1:]
+		createdRoleIDString = location[strings.LastIndex(location, "/")+1:]
 
 		fmt.Printf("Create role \"%s\" was successful, location: %s\n",
 			roleDisplayName,
@@ -182,7 +183,9 @@ Get the RBAC token: go run cmd/test/main.go <pe-server> <login> <password> e.g. 
 	fmt.Printf("* Testing RBAC API client function GetRole...\n\n")
 
 	var role *rbac.Role
-	role, err := rbacClient.GetRole(createdRoleID, token)
+
+	createdRoleID, _ := strconv.Atoi(createdRoleIDString)
+	role, err := rbacClient.GetRole(uint(createdRoleID), token)
 	if err != nil {
 		panic(err)
 	}
