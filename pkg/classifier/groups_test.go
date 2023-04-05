@@ -2,8 +2,8 @@ package classifier
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
@@ -35,7 +35,7 @@ func TestGroup(t *testing.T) {
 
 func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	httpmock.Reset()
-	responseBody, err := ioutil.ReadFile("testdata/" + responseFilename)
+	responseBody, err := os.ReadFile("testdata/" + responseFilename)
 	require.Nil(t, err)
 	response := httpmock.NewBytesResponse(200, responseBody)
 	response.Header.Set("Content-Type", "application/json")
@@ -84,6 +84,7 @@ var (
 		Deleted:           map[string]interface{}(nil),
 	}
 )
+
 var expected = []Group{
 	g, g2,
 }

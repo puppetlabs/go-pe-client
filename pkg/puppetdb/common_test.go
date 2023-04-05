@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
@@ -22,7 +23,7 @@ func init() {
 
 func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	httpmock.Reset()
-	responseBody, err := ioutil.ReadFile("testdata/" + responseFilename)
+	responseBody, err := os.ReadFile("testdata/" + responseFilename)
 	require.Nil(t, err)
 	response := httpmock.NewBytesResponse(200, responseBody)
 	response.Header.Set("Content-Type", "application/json")

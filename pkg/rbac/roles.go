@@ -1,19 +1,53 @@
 package rbac
 
+import "strconv"
+
 const (
-	rbacRoles = "/rbac-api/v1/roles"
+	rolePath  = "/rbac-api/v1/roles/{id}"
+	rolesPath = "/rbac-api/v1/roles"
 )
+
+// GetRoles fetches information about all user roles.
+func (c *Client) GetRoles(token string) ([]Role, error) {
+	var roles []Role
+
+	response, err := c.resty.R().
+		SetHeader("X-Authentication", token).
+		SetResult(&roles).
+		Get(rolesPath)
+	if err != nil {
+		return nil, FormatError(response, err.Error())
+	}
+
+	return roles, nil
+}
+
+// GetRole fetches information about a single role, identified by its ID.
+func (c *Client) GetRole(id uint, token string) (*Role, error) {
+	var role Role
+
+	response, err := c.resty.R().
+		SetHeader("X-Authentication", token).
+		SetPathParams(map[string]string{"id": strconv.FormatUint(uint64(id), 10)}).
+		SetResult(&role).
+		Get(rolePath)
+	if err != nil {
+		return nil, FormatError(response, err.Error())
+	}
+
+	return &role, nil
+}
 
 // CreateRole creates a role, and attaches to it the specified permissions and
 // the specified users and groups. Authentication is required.
 //
 // If the role was created successfully then the path of the new role is
 // returned, otherwise an error is returned.
-func (c *Client) CreateRole(roles *Role, token string) (string, error) {
+func (c *Client) CreateRole(role *Role, token string) (string, error) {
 	r, err := c.resty.R().
-		SetBody(roles).
+		SetBody(role).
 		SetHeader("X-Authentication", token).
-		Post(rbacRoles)
+		Post(rolesPath)
 	if err != nil {
 		// This API uses a redirect with location header to indicate success.
 		// Because redirects are disabled in the RBAC client an
@@ -36,11 +70,12 @@ func (c *Client) CreateRole(roles *Role, token string) (string, error) {
 
 // Role represents an RBAC role
 type Role struct {
+	ID          uint         `json:"id,omitempty"`
 	Permissions []Permission `json:"permissions"`
 	UserIDs     []string     `json:"user_ids"`
 	GroupIDs    []string     `json:"group_ids"`
 	DisplayName string       `json:"display_name"`
-	Description string       `json:"description,omitempty"`
+	Description string       `json:"description"`
 }
 
 // Permission represents an RBAC permission

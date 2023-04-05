@@ -1,6 +1,7 @@
 package rbac
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,7 +23,7 @@ func TestGetRBACToken(t *testing.T) {
 	require.Equal(t, expectedResponse, actual)
 
 	// Test error
-	setupErrorResponder(t, requestAuthTokenURI)
+	setUpBadRequestResponder(t, http.MethodPost, requestAuthTokenURI)
 	actual, err = rbacClient.GetRBACToken(request)
 	require.Nil(t, actual)
 	require.Equal(t, expectedError, err)

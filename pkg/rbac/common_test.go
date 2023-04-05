@@ -2,7 +2,6 @@ package rbac
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -12,15 +11,37 @@ import (
 )
 
 func init() {
-	rbacClient = NewClient(rbacHostURL, nil)
+	rbacClient = NewClient(rbacAPIOrigin, nil)
 	rbacClient.strict = true
 	httpmock.Activate()
 	httpmock.ActivateNonDefault(rbacClient.resty.GetClient())
 }
 
+func setUpOKResponder(t *testing.T, httpMethod string, path string, responseFilePath string) {
+	httpmock.Reset()
+
+	responseBody, err := os.ReadFile(responseFilePath)
+	require.Nil(t, err)
+
+	response := httpmock.NewBytesResponse(http.StatusOK, responseBody)
+	response.Header.Set("Content-Type", "application/json")
+
+	httpmock.RegisterResponder(httpMethod, rbacAPIOrigin+path, httpmock.ResponderFromResponse(response))
+	response.Body.Close()
+}
+
+func setUpBadRequestResponder(t *testing.T, httpMethod string, path string) {
+	httpmock.Reset()
+
+	responder, err := httpmock.NewJsonResponder(http.StatusBadRequest, expectedError)
+	require.Nil(t, err)
+
+	httpmock.RegisterResponder(httpMethod, rbacAPIOrigin+path, responder)
+}
+
 func setupPostResponder(t *testing.T, url, requestFilename, responseFilename string) {
 	httpmock.Reset()
-	httpmock.RegisterResponder(http.MethodPost, rbacHostURL+url,
+	httpmock.RegisterResponder(http.MethodPost, rbacAPIOrigin+url,
 		func(req *http.Request) (*http.Response, error) {
 			// Validate the body
 			actual := map[string]interface{}{}
@@ -34,7 +55,7 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 			require.Equal(t, expected, actual)
 
 			// Build response
-			responseBody, err := ioutil.ReadFile("testdata/apidocs/" + responseFilename)
+			responseBody, err := os.ReadFile("testdata/apidocs/" + responseFilename)
 			require.Nil(t, err)
 			response := httpmock.NewBytesResponse(200, responseBody)
 			response.Header.Set("Content-Type", "application/json")
@@ -43,17 +64,9 @@ func setupPostResponder(t *testing.T, url, requestFilename, responseFilename str
 	)
 }
 
-func setupErrorResponder(t *testing.T, url string) {
-	httpmock.Reset()
-	responder, err := httpmock.NewJsonResponder(400, expectedError)
-	require.Nil(t, err)
-	httpmock.RegisterResponder(http.MethodGet, rbacHostURL+url, responder)
-	httpmock.RegisterResponder(http.MethodPost, rbacHostURL+url, responder)
-}
-
 func setupCreateRoleSuccessResponder(t *testing.T, url string, requestFilename string) {
 	httpmock.Reset()
-	httpmock.RegisterResponder(http.MethodPost, rbacHostURL+url,
+	httpmock.RegisterResponder(http.MethodPost, rbacAPIOrigin+url,
 		func(req *http.Request) (*http.Response, error) {
 			// Validate the body
 			actual := map[string]interface{}{}
@@ -79,13 +92,13 @@ func setupCreateRoleErrorResponder(t *testing.T, url string) {
 	httpmock.Reset()
 	responder, err := httpmock.NewJsonResponder(409, createRoleDuplicateError)
 	require.Nil(t, err)
-	httpmock.RegisterResponder(http.MethodGet, rbacHostURL+url, responder)
-	httpmock.RegisterResponder(http.MethodPost, rbacHostURL+url, responder)
+	httpmock.RegisterResponder(http.MethodGet, rbacAPIOrigin+url, responder)
+	httpmock.RegisterResponder(http.MethodPost, rbacAPIOrigin+url, responder)
 }
 
 var rbacClient *Client
 
-var rbacHostURL = "https://test-host:4433"
+var rbacAPIOrigin = "https://test-host:4433"
 
 var expectedError = &APIError{
 	Kind:       "puppetlabs.rbac/unknown-environment",
