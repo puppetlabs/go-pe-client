@@ -2,7 +2,6 @@ package puppetdb
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,7 +44,7 @@ func setupPaginatedGetResponder(t *testing.T, url, query string, opts mockPagina
 	var pages [][]byte
 
 	for _, pfn := range opts.pageFilenames {
-		responseBody, err := ioutil.ReadFile(filepath.Join("testdata", pfn))
+		responseBody, err := os.ReadFile(filepath.Join("testdata", pfn))
 		require.NoError(t, err)
 
 		pages = append(pages, responseBody)
