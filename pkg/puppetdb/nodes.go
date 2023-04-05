@@ -19,19 +19,27 @@ func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) (
 	return payload, err
 }
 
+// PaginatedNodes works just like Nodes, but returns a NodesCursor that
+// provides methods for iterating over N pages of nodes and calculates page
+// information for tracking progress. If pagination is nil, then a default
+// configuration with a limit of 100 is used instead.
 func (c *Client) PaginatedNodes(query string, pagination *Pagination, orderBy *OrderBy) (*NodesCursor, error) {
-	tp := Pagination{
+	if pagination == nil {
+		pagination = &Pagination{Limit: 100}
+	}
+
+	tempPagination := Pagination{
 		Limit:        1,
 		IncludeTotal: true,
 	}
 
 	// make a call to pdb for 1 node to fetch the total number of nodes for
 	// page calculations in the cursor.
-	if _, err := c.Nodes(query, &tp, orderBy); err != nil {
+	if _, err := c.Nodes(query, &tempPagination, orderBy); err != nil {
 		return nil, fmt.Errorf("failed to get node total from pdb: %w", err)
 	}
 
-	pagination.Total = tp.Total
+	pagination.Total = tempPagination.Total
 	pagination.IncludeTotal = true
 
 	nc := &NodesCursor{
