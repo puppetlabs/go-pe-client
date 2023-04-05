@@ -1,9 +1,12 @@
 package puppetdb
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"path/filepath"
+	"strconv"
 	"testing"
 	"time"
 
@@ -29,6 +32,56 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 		httpmock.RegisterResponderWithQuery(http.MethodGet, hostURL+url, query, httpmock.ResponderFromResponse(response))
 	}
 	response.Body.Close()
+}
+
+type mockPaginatedGetOptions struct {
+	limit         int
+	total         int
+	pageFilenames []string
+}
+
+func setupPaginatedGetResponder(t *testing.T, url, query string, opts mockPaginatedGetOptions) {
+	var pages [][]byte
+
+	for _, pfn := range opts.pageFilenames {
+		responseBody, err := ioutil.ReadFile(filepath.Join("testdata", pfn))
+		require.NoError(t, err)
+
+		pages = append(pages, responseBody)
+	}
+
+	responder := func(r *http.Request) (*http.Response, error) {
+		var (
+			offset  int
+			pageNum int
+			err     error
+		)
+
+		offsetS := r.URL.Query().Get("offset")
+		if offsetS != "" {
+			offset, err = strconv.Atoi(offsetS)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if offset > 0 {
+			pageNum = offset / opts.limit
+		}
+
+		responseBody := pages[pageNum]
+
+		response := httpmock.NewBytesResponse(http.StatusOK, responseBody)
+		response.Header.Set("Content-Type", "application/json")
+		response.Header.Set("X-Records", fmt.Sprintf("%d", opts.total))
+
+		defer response.Body.Close()
+
+		return response, nil
+	}
+
+	httpmock.Reset()
+	httpmock.RegisterResponderWithQuery(http.MethodGet, hostURL+url, query, responder)
 }
 
 func setupURLErrorResponder(t *testing.T, url string) {
