@@ -1,6 +1,7 @@
 package puppetdb
 
 import (
+	"io"
 	"strings"
 	"testing"
 
@@ -20,6 +21,47 @@ func TestNodes(t *testing.T) {
 	actual, err = pdbClient.Nodes(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedNodes, actual)
+}
+
+func TestPaginatedNodes(t *testing.T) {
+	pagination := Pagination{
+		Limit:        5,
+		Offset:       0,
+		IncludeTotal: true,
+	}
+
+	setupPaginatedGetResponder(t, "/pdb/query/v4/nodes", "", mockPaginatedGetOptions{
+		limit: pagination.Limit,
+		total: 10,
+		pageFilenames: []string{
+			"nodes-page-1-response.json",
+			"nodes-page-2-response.json",
+		},
+	})
+
+	cursor, err := pdbClient.PaginatedNodes("", &pagination, nil)
+	require.NoError(t, err)
+	require.Equal(t, 2, cursor.TotalPages())
+	require.Equal(t, 1, cursor.CurrentPage())
+
+	actual, err := cursor.Next()
+	require.NoError(t, err)
+	require.Len(t, actual, 5)
+	require.Equal(t, "1.delivery.puppetlabs.net", actual[0].Certname)
+
+	{ // page 2 (last page)
+		actual, err := cursor.Next()
+		require.ErrorIs(t, err, io.EOF)
+		require.Equal(t, 2, cursor.CurrentPage())
+		require.Len(t, actual, 5)
+		require.Equal(t, "6.delivery.puppetlabs.net", actual[0].Certname)
+	}
+
+	{
+		actual, err := cursor.Next()
+		require.Len(t, actual, 0)
+		require.ErrorIs(t, err, io.EOF)
+	}
 }
 
 func TestNode(t *testing.T) {
