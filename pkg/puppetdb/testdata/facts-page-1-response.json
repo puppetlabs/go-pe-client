@@ -1,0 +1,62 @@
+[
+  {
+    "name": "os",
+    "certname": "1.delivery.puppetlabs.net",
+    "value": "Debian",
+    "environment": "production"
+  },
+  {
+    "name": "uptime_days",
+    "certname": "1.delivery.puppetlabs.net",
+    "value": "1000000 days",
+    "environment": "production"
+  },
+  {
+    "name": "os",
+    "certname": "2.delivery.puppetlabs.net",
+    "value": "Debian",
+    "environment": "production"
+  },
+  {
+    "name": "uptime_days",
+    "certname": "2.delivery.puppetlabs.net",
+    "value": "1000000 days",
+    "environment": "production"
+  },
+  {
+    "name": "os",
+    "certname": "3.delivery.puppetlabs.net",
+    "value": "Debian",
+    "environment": "production"
+  },
+  {
+    "name": "uptime_days",
+    "certname": "3.delivery.puppetlabs.net",
+    "value": "1000000 days",
+    "environment": "production"
+  },
+  {
+    "name": "os",
+    "certname": "4.delivery.puppetlabs.net",
+    "value": "Debian",
+    "environment": "production"
+  },
+  {
+    "name": "uptime_days",
+    "certname": "4.delivery.puppetlabs.net",
+    "value": "1000000 days",
+    "environment": "production"
+  },
+  {
+    "name": "os",
+    "certname": "5.delivery.puppetlabs.net",
+    "value": "Debian",
+    "environment": "production"
+  },
+  {
+    "name": "uptime_days",
+    "certname": "5.delivery.puppetlabs.net",
+    "value": "1000000 days",
+    "environment": "production"
+  }
+]

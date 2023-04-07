@@ -1,6 +1,7 @@
 package puppetdb
 
 import (
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -32,6 +33,47 @@ func TestFacts(t *testing.T) {
 	actual, err := pdbClient.Facts(query, nil, nil)
 	require.Nil(t, err)
 	require.Equal(t, expectedFacts, actual)
+}
+
+func TestPaginatedFacts(t *testing.T) {
+	pagination := Pagination{
+		Limit:        10,
+		Offset:       0,
+		IncludeTotal: true,
+	}
+
+	setupPaginatedGetResponder(t, facts, "", mockPaginatedGetOptions{
+		limit: pagination.Limit,
+		total: 20,
+		pageFilenames: []string{
+			"facts-page-1-response.json",
+			"facts-page-2-response.json",
+		},
+	})
+
+	cursor, err := pdbClient.PaginatedFacts("", &pagination, nil)
+	require.NoError(t, err)
+	require.Equal(t, 2, cursor.TotalPages())
+	require.Equal(t, 1, cursor.CurrentPage())
+
+	actual, err := cursor.Next()
+	require.NoError(t, err)
+	require.Len(t, actual, 10)
+	require.Equal(t, "1.delivery.puppetlabs.net", actual[0].Certname)
+
+	{ // page 2 (last page)
+		actual, err := cursor.Next()
+		require.ErrorIs(t, err, io.EOF)
+		require.Equal(t, 2, cursor.CurrentPage())
+		require.Len(t, actual, 10)
+		require.Equal(t, "6.delivery.puppetlabs.net", actual[0].Certname)
+	}
+
+	{
+		actual, err := cursor.Next()
+		require.Len(t, actual, 0)
+		require.ErrorIs(t, err, io.EOF)
+	}
 }
 
 // TestFactContents performs a test on the FactContents method, and verified the expected response is returned,
