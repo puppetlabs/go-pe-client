@@ -49,8 +49,9 @@ type pageCursor struct {
 	currentPage any
 }
 
-// Next returns a page of nodes and iterates the pagination cursor by the
-// offset. If there are no more results left, the error will be io.EOF.
+// next makes a request for a page of results and iterates the pagination
+// cursor by the offset. If there are no more results left, the error will be
+// io.EOF.
 func (pc *pageCursor) next(response any) error {
 	// this block increases the offset and checks of it's greater than or equal
 	// to the total only if we have already returned a first page.
@@ -60,12 +61,6 @@ func (pc *pageCursor) next(response any) error {
 		if pc.pagination.Offset >= pc.pagination.Total {
 			return io.EOF
 		}
-	} else {
-		if pc.pagination == nil {
-			pc.pagination = NewDefaultPagination()
-		}
-
-		pc.pagination.IncludeTotal = true
 	}
 
 	var err error
