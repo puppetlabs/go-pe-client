@@ -1,5 +1,11 @@
 package puppetdb
 
+import (
+	"errors"
+	"fmt"
+	"io"
+)
+
 const (
 	factNames    = "/pdb/query/v4/fact-names"
 	factPaths    = "/pdb/query/v4/fact-paths"
@@ -26,6 +32,19 @@ func (c *Client) Facts(query string, pagination *Pagination, orderBy *OrderBy) (
 	payload := []Fact{}
 	err := getRequest(c, facts, query, pagination, orderBy, &payload)
 	return payload, err
+}
+
+func (c *Client) PaginatedFacts(query string, pagination *Pagination, orderBy *OrderBy) (*FactsCursor, error) {
+	pc, err := newPageCursor(c, facts, query, pagination, orderBy)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize page cursor: %w", err)
+	}
+
+	cursor := FactsCursor{
+		pageCursor: pc,
+	}
+
+	return &cursor, nil
 }
 
 // FactContents will return all facts matching the given query on the fact-contents endpoint. Facts for deactivated nodes are not included in the response.
@@ -59,4 +78,18 @@ type FactPath struct {
 	Path  []interface{} `json:"path"`
 	Type  string        `json:"type"`
 	Count int           `json:"count"`
+}
+
+type FactsCursor struct {
+	*pageCursor
+}
+
+func (fc FactsCursor) Next() ([]Fact, error) {
+	payload := []Fact{}
+	err := fc.next(&payload)
+	if err != nil && !errors.Is(err, io.EOF) {
+		return nil, err
+	}
+
+	return payload, err
 }

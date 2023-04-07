@@ -1,9 +1,9 @@
 package puppetdb
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"math"
 	"strings"
 )
 
@@ -24,32 +24,16 @@ func (c *Client) Nodes(query string, pagination *Pagination, orderBy *OrderBy) (
 // information for tracking progress. If pagination is nil, then a default
 // configuration with a limit of 100 is used instead.
 func (c *Client) PaginatedNodes(query string, pagination *Pagination, orderBy *OrderBy) (*NodesCursor, error) {
-	if pagination == nil {
-		pagination = &Pagination{Limit: 100}
+	pc, err := newPageCursor(c, nodes, query, pagination, orderBy)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize page cursor: %w", err)
 	}
 
-	tempPagination := Pagination{
-		Limit:        1,
-		IncludeTotal: true,
+	cursor := NodesCursor{
+		pageCursor: pc,
 	}
 
-	// make a call to pdb for 1 node to fetch the total number of nodes for
-	// page calculations in the cursor.
-	if _, err := c.Nodes(query, &tempPagination, orderBy); err != nil {
-		return nil, fmt.Errorf("failed to get node total from pdb: %w", err)
-	}
-
-	pagination.Total = tempPagination.Total
-	pagination.IncludeTotal = true
-
-	nc := &NodesCursor{
-		client:     c,
-		pagination: pagination,
-		query:      query,
-		orderBy:    orderBy,
-	}
-
-	return nc, nil
+	return &cursor, nil
 }
 
 // Node will return a single node by certname
@@ -95,53 +79,17 @@ type Node struct {
 // NodesCursor is a pagination cursor that provides convenience methods for
 // stepping through pages of nodes.
 type NodesCursor struct {
-	client      *Client
-	pagination  *Pagination
-	query       string
-	orderBy     *OrderBy
-	currentPage []Node
+	*pageCursor
 }
 
 // Next returns a page of nodes and iterates the pagination cursor by the
 // offset. If there are no more results left, the error will be io.EOF.
 func (nc *NodesCursor) Next() ([]Node, error) {
-	// this block increases the offset and checks of it's greater than or equal
-	// to the total only if we have already returned a first page.
-	if nc.currentPage != nil {
-		nc.pagination.Offset = nc.pagination.Offset + nc.pagination.Limit
-
-		if nc.pagination.Offset >= nc.pagination.Total {
-			return []Node{}, io.EOF
-		}
+	payload := []Node{}
+	err := nc.next(&payload)
+	if err != nil && !errors.Is(err, io.EOF) {
+		return nil, err
 	}
 
-	var err error
-
-	nc.currentPage, err = nc.client.Nodes(nc.query, nc.pagination, nc.orderBy)
-	if err != nil {
-		return nil, fmt.Errorf("client call for Nodes returned an error: %w", err)
-	}
-
-	if nc.CurrentPage() == nc.TotalPages() {
-		err = io.EOF
-	}
-
-	return nc.currentPage, err
-}
-
-// TotalPages returns the total number of pages that can returns nodes.
-func (nc *NodesCursor) TotalPages() int {
-	pagesf := float64(nc.pagination.Total) / float64(nc.pagination.Limit)
-	pages := int(math.Ceil(pagesf))
-
-	return pages
-}
-
-// CurrentPage returns the current page number the cursor is at.
-func (nc *NodesCursor) CurrentPage() int {
-	if nc.pagination.Offset == 0 {
-		return 1
-	}
-
-	return nc.pagination.Offset/nc.pagination.Limit + 1
+	return payload, err
 }
