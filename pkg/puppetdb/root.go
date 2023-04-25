@@ -33,5 +33,5 @@ func (rqc *RootQueryCursor) NextInto(target any) error {
 		return err
 	}
 
-	return nil
+	return err
 }
