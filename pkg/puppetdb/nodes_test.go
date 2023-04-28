@@ -64,6 +64,44 @@ func TestPaginatedNodes(t *testing.T) {
 	}
 }
 
+func TestPaginatedNodesWithError(t *testing.T) {
+	pagination := Pagination{
+		Limit:        5,
+		Offset:       0,
+		IncludeTotal: true,
+	}
+
+	errIndex := 1
+	setupPaginatedGetResponder(t, "/pdb/query/v4/nodes", "", mockPaginatedGetOptions{
+		limit: pagination.Limit,
+		total: 10,
+		pageFilenames: []string{
+			"nodes-page-1-response.json",
+			"nodes-page-2-response.json",
+		},
+		returnErrorOnPage: &errIndex,
+	})
+
+	cursor, err := pdbClient.PaginatedNodes("", &pagination, nil)
+	require.NoError(t, err)
+	require.Equal(t, 2, cursor.TotalPages())
+	require.Equal(t, 1, cursor.CurrentPage())
+
+	actual, err := cursor.Next()
+	require.NoError(t, err)
+	require.Len(t, actual, 5)
+	require.Equal(t, "1.delivery.puppetlabs.net", actual[0].Certname)
+
+	{ // page 2 (last page)
+		_, err := cursor.Next()
+		require.Error(t, err)
+		require.NotErrorIs(t, err, io.EOF)
+		require.Equal(t, 0, pagination.Offset,
+			"offset should still be 0 because the client returned an error")
+		require.Equal(t, 1, cursor.CurrentPage())
+	}
+}
+
 func TestNode(t *testing.T) {
 	nodeFooURL := strings.ReplaceAll(node, "{certname}", "foo")
 

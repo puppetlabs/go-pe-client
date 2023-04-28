@@ -55,21 +55,29 @@ type pageCursor struct {
 func (pc *pageCursor) next(response any) error {
 	// this block increases the offset and checks of it's greater than or equal
 	// to the total only if we have already returned a first page.
-	if pc.currentPage != nil {
-		pc.pagination.Offset = pc.pagination.Offset + pc.pagination.Limit
 
-		if pc.pagination.Offset >= pc.pagination.Total {
+	// make a copy of the paginator so we can calculate a new offset to use for
+	// the request and only "commit" it to the real pagination field if we
+	// don't recieve an error.
+	pg := *pc.pagination
+	if pc.currentPage != nil {
+		pg.Offset = pc.pagination.Offset + pc.pagination.Limit
+
+		if pg.Offset >= pc.pagination.Total {
 			return io.EOF
 		}
 	}
 
 	var err error
 
-	err = getRequest(pc.client, pc.path, pc.query, pc.pagination, pc.orderBy, response)
+	err = getRequest(pc.client, pc.path, pc.query, &pg, pc.orderBy, response)
 	if err != nil {
 		return fmt.Errorf("page cursor: client call returned an error: %w", err)
 	}
 
+	// if we don't recieve an error when executing the request, copy the new
+	// offset we calculated above to the real pagination object.
+	pc.pagination.Offset = pg.Offset
 	pc.currentPage = response
 
 	if pc.CurrentPage() == pc.TotalPages() {
