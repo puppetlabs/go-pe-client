@@ -35,9 +35,10 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 }
 
 type mockPaginatedGetOptions struct {
-	limit         int
-	total         int
-	pageFilenames []string
+	limit             int
+	total             int
+	pageFilenames     []string
+	returnErrorOnPage *int
 }
 
 func setupPaginatedGetResponder(t *testing.T, url, query string, opts mockPaginatedGetOptions) {
@@ -67,6 +68,15 @@ func setupPaginatedGetResponder(t *testing.T, url, query string, opts mockPagina
 
 		if offset > 0 {
 			pageNum = offset / opts.limit
+		}
+
+		if opts.returnErrorOnPage != nil && *opts.returnErrorOnPage == pageNum {
+			response := httpmock.NewBytesResponse(http.StatusInternalServerError, []byte("{\"error\": \"oops\"}"))
+			response.Header.Set("Content-Type", "application/json")
+
+			defer response.Body.Close()
+
+			return response, nil
 		}
 
 		responseBody := pages[pageNum]
