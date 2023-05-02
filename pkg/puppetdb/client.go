@@ -14,8 +14,16 @@ import (
 )
 
 var (
-	ErrNonTransientResponse = errors.New("puppetdb: the api response status code indicates an error that cannot be recovered from")
-	ErrTransientResponse    = errors.New("puppetdb: the api response indicates a recoverable error")
+	// ErrNonTransientResponse is returned if the downstream puppetdb api
+	// returns an error response that most likely means a retry of the request
+	// will fail. A caller receiving this error should not attempt a retry.
+	ErrNonTransientResponse = errors.New("puppetdb: the api response indicates an error that cannot be recovered from")
+
+	// ErrTransientResponse is returned if the downstream puppetdb api returns
+	// an error that is transient in nature and a retry of the request is
+	// likely to succeed. An example of these could be a gateway timeout error
+	// or some kind of temporary reverse proxy issue.
+	ErrTransientResponse = errors.New("puppetdb: the api response indicates a recoverable error")
 )
 
 // Client for the Orchestrator API
