@@ -19,7 +19,9 @@ func TestStatus(t *testing.T) {
 	setupURLErrorResponder(t, puppetDBStatus)
 	actual, err = pdbClient.PDbStatus()
 	require.Equal(t, expectedErrorStatuses, actual)
-	require.Equal(t, errExpectedURL, err)
+	require.Error(t, err)
+	require.ErrorIs(t, err, ErrNonTransientResponse)
+	require.Contains(t, err.Error(), errExpectedURL.Error())
 }
 
 var (

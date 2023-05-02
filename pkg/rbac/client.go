@@ -20,7 +20,7 @@ func NewClient(hostURL string, tlsConfig *tls.Config) *Client {
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
-	r.SetHostURL(hostURL)
+	r.SetBaseURL(hostURL)
 	r.SetError(APIError{})
 	r.SetRedirectPolicy(resty.NoRedirectPolicy())
 

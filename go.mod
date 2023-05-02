@@ -6,7 +6,7 @@ require (
 	github.com/c-bata/go-prompt v0.2.3
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/structs v1.1.0
-	github.com/go-resty/resty/v2 v2.2.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/jarcoal/httpmock v1.0.4
 	github.com/sirupsen/logrus v1.5.0
 	github.com/stretchr/testify v1.7.0

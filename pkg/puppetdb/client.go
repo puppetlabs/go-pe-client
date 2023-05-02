@@ -13,6 +13,19 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	// ErrNonTransientResponse is returned if the downstream puppetdb api
+	// returns an error response that most likely means a retry of the request
+	// will fail. A caller receiving this error should not attempt a retry.
+	ErrNonTransientResponse = errors.New("puppetdb: the api response indicates an error that cannot be recovered from")
+
+	// ErrTransientResponse is returned if the downstream puppetdb api returns
+	// an error that is transient in nature and a retry of the request is
+	// likely to succeed. An example of these could be a gateway timeout error
+	// or some kind of temporary reverse proxy issue.
+	ErrTransientResponse = errors.New("puppetdb: the api response indicates a recoverable error")
+)
+
 // Client for the Orchestrator API
 type Client struct {
 	resty *resty.Client
@@ -26,7 +39,7 @@ func NewClient(hostURL, token string, tlsConfig *tls.Config, timeout time.Durati
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
-	r.SetHostURL(hostURL)
+	r.SetBaseURL(hostURL)
 	r.SetHeader("X-Authentication", token)
 	r.SetTimeout(timeout)
 	r.SetRedirectPolicy(resty.NoRedirectPolicy())
@@ -67,14 +80,30 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 		if errors.As(err, &ue) {
 			return fmt.Errorf("%s%s: %w", client.resty.HostURL, path, ue.Err)
 		}
+
 		return fmt.Errorf("%s%s: %w", client.resty.HostURL, path, err)
 	}
+
 	if r.IsError() {
-		re := r.Error()
-		if re == nil {
-			return fmt.Errorf("%s%s: %s: \"%s\"", client.resty.HostURL, path, r.Status(), r.Body())
+		var err error
+
+		switch r.StatusCode() {
+		case http.StatusBadGateway, http.StatusServiceUnavailable,
+			http.StatusGatewayTimeout, http.StatusRequestTimeout,
+			http.StatusUnauthorized, http.StatusPreconditionFailed,
+			http.StatusTooManyRequests:
+
+			err = ErrTransientResponse
+		default:
+			err = ErrNonTransientResponse
 		}
-		return fmt.Errorf("%s%s: %s: \"%s\": %v", client.resty.HostURL, path, r.Status(), r.Body(), re)
+
+		re := r.Error()
+		if re != nil {
+			err = fmt.Errorf("client error: %v: %w", re, err)
+		}
+
+		return fmt.Errorf("%s%s: %s: \"%s\": %w", client.resty.HostURL, path, r.Status(), r.Body(), err)
 	}
 
 	if pagination != nil && pagination.IncludeTotal {
