@@ -13,6 +13,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	ErrNonTransientResponse = errors.New("puppetdb: the api response status code indicates an error that cannot be recovered from")
+	ErrTransientResponse    = errors.New("puppetdb: the api response indicates a recoverable error")
+)
+
 // Client for the Orchestrator API
 type Client struct {
 	resty *resty.Client
@@ -67,14 +72,27 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 		if errors.As(err, &ue) {
 			return fmt.Errorf("%s%s: %w", client.resty.HostURL, path, ue.Err)
 		}
+
 		return fmt.Errorf("%s%s: %w", client.resty.HostURL, path, err)
 	}
+
 	if r.IsError() {
-		re := r.Error()
-		if re == nil {
-			return fmt.Errorf("%s%s: %s: \"%s\"", client.resty.HostURL, path, r.Status(), r.Body())
+		var err error
+
+		code := r.StatusCode()
+		switch {
+		case code >= http.StatusBadRequest || code < http.StatusInternalServerError:
+			err = ErrTransientResponse
+		case code > http.StatusInternalServerError:
+			err = ErrNonTransientResponse
 		}
-		return fmt.Errorf("%s%s: %s: \"%s\": %v", client.resty.HostURL, path, r.Status(), r.Body(), re)
+
+		re := r.Error()
+		if re != nil {
+			err = fmt.Errorf("client error: %v: %w", re, err)
+		}
+
+		return fmt.Errorf("puppetdb: request failed with status %s: %w", r.Status(), err)
 	}
 
 	if pagination != nil && pagination.IncludeTotal {
