@@ -87,11 +87,14 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 	if r.IsError() {
 		var err error
 
-		code := r.StatusCode()
-		switch {
-		case code >= http.StatusBadRequest || code < http.StatusInternalServerError:
+		switch r.StatusCode() {
+		case http.StatusBadGateway, http.StatusServiceUnavailable,
+			http.StatusGatewayTimeout, http.StatusRequestTimeout,
+			http.StatusUnauthorized, http.StatusPreconditionFailed,
+			http.StatusTooManyRequests:
+
 			err = ErrTransientResponse
-		case code > http.StatusInternalServerError:
+		default:
 			err = ErrNonTransientResponse
 		}
 

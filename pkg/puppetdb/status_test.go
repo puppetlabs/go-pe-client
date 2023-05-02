@@ -20,7 +20,7 @@ func TestStatus(t *testing.T) {
 	actual, err = pdbClient.PDbStatus()
 	require.Equal(t, expectedErrorStatuses, actual)
 	require.Error(t, err)
-	require.ErrorIs(t, err, ErrTransientResponse)
+	require.ErrorIs(t, err, ErrNonTransientResponse)
 	require.Contains(t, err.Error(), errExpectedURL.Error())
 }
 
