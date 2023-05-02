@@ -8,6 +8,7 @@ const (
 func (c *Client) PDbStatus() (*PDbStatus, error) {
 	payload := &PDbStatus{}
 	err := getRequest(c, puppetDBStatus, "", nil, nil, &payload)
+
 	return payload, err
 }
 

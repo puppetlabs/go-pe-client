@@ -100,7 +100,7 @@ func getRequest(client *Client, path string, query string, pagination *Paginatio
 			err = fmt.Errorf("client error: %v: %w", re, err)
 		}
 
-		return fmt.Errorf("puppetdb: request failed with status %s: %w", r.Status(), err)
+		return fmt.Errorf("%s%s: %s: \"%s\": %w", client.resty.HostURL, path, r.Status(), r.Body(), err)
 	}
 
 	if pagination != nil && pagination.IncludeTotal {
