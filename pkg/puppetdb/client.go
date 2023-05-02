@@ -39,7 +39,7 @@ func NewClient(hostURL, token string, tlsConfig *tls.Config, timeout time.Durati
 	if tlsConfig != nil {
 		r.SetTLSClientConfig(tlsConfig)
 	}
-	r.SetHostURL(hostURL)
+	r.SetBaseURL(hostURL)
 	r.SetHeader("X-Authentication", token)
 	r.SetTimeout(timeout)
 	r.SetRedirectPolicy(resty.NoRedirectPolicy())
