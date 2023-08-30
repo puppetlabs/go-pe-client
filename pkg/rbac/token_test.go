@@ -1,6 +1,7 @@
 package rbac
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -47,5 +48,20 @@ func TestAuthenticateRBACToken(t *testing.T) {
 	setUpBadRequestResponder(t, http.MethodPost, tokenAuthenticateURI)
 	actual, err = rbacClient.AuthenticateRBACToken("blah")
 	require.Nil(t, actual)
+	require.Equal(t, expectedError, err)
+}
+
+func TestRevokeRBACToken(t *testing.T) {
+	tokenValue := "abc"
+
+	// Test success
+	setUpOKDeleteResponder(fmt.Sprintf("%s%s", tokenRevokeURI, tokenValue))
+
+	err := rbacClient.RevokeRBACToken(tokenValue)
+	require.Nil(t, err)
+
+	// Test error
+	setUpBadRequestResponder(t, http.MethodDelete, fmt.Sprintf("%s%s", tokenRevokeURI, tokenValue))
+	err = rbacClient.RevokeRBACToken(tokenValue)
 	require.Equal(t, expectedError, err)
 }
