@@ -30,6 +30,16 @@ func setUpOKResponder(t *testing.T, httpMethod string, path string, responseFile
 	response.Body.Close()
 }
 
+func setUpOKDeleteResponder(path string) {
+	httpmock.Reset()
+
+	response := httpmock.NewStringResponse(http.StatusOK, `{}`)
+	response.Header.Set("Content-Type", "application/json")
+
+	httpmock.RegisterResponder(http.MethodDelete, rbacAPIOrigin+path, httpmock.ResponderFromResponse(response))
+	response.Body.Close()
+}
+
 func setUpBadRequestResponder(t *testing.T, httpMethod string, path string) {
 	httpmock.Reset()
 

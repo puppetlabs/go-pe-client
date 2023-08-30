@@ -39,6 +39,7 @@ func NewClient(hostURL string, tlsConfig *tls.Config) *Client {
 type APIError struct {
 	Kind       string `json:"kind"`
 	Msg        string `json:"msg"`
+	Details    string `json:"details"`
 	StatusCode int
 }
 

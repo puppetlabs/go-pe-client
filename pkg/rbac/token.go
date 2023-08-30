@@ -1,8 +1,11 @@
 package rbac
 
+import "fmt"
+
 const (
 	requestAuthTokenURI  = "/rbac-api/v1/auth/token"              // #nosec - this is the uri to g et RBAC tokens
 	tokenAuthenticateURI = "/rbac-api/v2/auth/token/authenticate" // #nosec - this is the uri to authenticate RBAC tokens
+	tokenRevokeURI       = "/rbac-api/v2/tokens/"                 // #nosec - this is the uri to revoke individual RBAC tokens
 )
 
 // GetRBACToken returns an auth token given user/password information
@@ -43,6 +46,24 @@ func (c *Client) AuthenticateRBACToken(token string) (*AuthenticateResponse, err
 		return nil, FormatError(r)
 	}
 	return &payload, nil
+}
+
+func (c *Client) RevokeRBACToken(token string) error {
+	payload := AuthenticateResponse{}
+
+	r, err := c.resty.R().
+		SetResult(&payload).
+		Delete(fmt.Sprintf("%s%s", tokenRevokeURI, token))
+	if err != nil {
+		return FormatError(r, err.Error())
+	}
+	if r.IsError() {
+		if r.Error() != nil {
+			return FormatError(r)
+		}
+		return FormatError(r)
+	}
+	return nil
 }
 
 // Token is the returned auth token
