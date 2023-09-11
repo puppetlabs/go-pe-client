@@ -6,6 +6,7 @@ const (
 	requestAuthTokenURI  = "/rbac-api/v1/auth/token"              // #nosec - this is the uri to g et RBAC tokens
 	tokenAuthenticateURI = "/rbac-api/v2/auth/token/authenticate" // #nosec - this is the uri to authenticate RBAC tokens
 	tokenRevokeURI       = "/rbac-api/v2/tokens/"                 // #nosec - this is the uri to revoke individual RBAC tokens
+	tokenGenerateURI     = "/rbac-api/v1/tokens"                  // #nosec - this is the uri to generate a token.
 )
 
 // GetRBACToken returns an auth token given user/password information
@@ -66,6 +67,27 @@ func (c *Client) RevokeRBACToken(token string) error {
 	return nil
 }
 
+// GenerateRBACToken returns an RBAC token or errors otherwise
+func (c *Client) GenerateRBACToken(token string, request TokenRequest) (string, error) {
+	var payload Token
+
+	r, err := c.resty.R().
+		SetHeader("X-Authentication", token).
+		SetResult(&payload).
+		SetBody(request).
+		Post(tokenGenerateURI)
+	if err != nil {
+		return "", FormatError(r, err.Error())
+	}
+	if r.IsError() {
+		if r.Error() != nil {
+			return "", FormatError(r)
+		}
+		return "", FormatError(r)
+	}
+	return payload.Token, nil
+}
+
 // Token is the returned auth token
 type Token struct {
 	Token string `json:"token"`
@@ -94,4 +116,11 @@ type AuthenticateResponse struct {
 	RoleIDs     []int  `json:"role_ids"`
 	UserID      string `json:"user_id"`
 	DisplayName string `json:"display_name"`
+}
+
+// TokenRequest will hold the details needed by the /tokens endpoint.
+type TokenRequest struct {
+	Lifetime    string `json:"lifetime,omitempty"`
+	Description string `json:"description,omitempty"`
+	Client      string `json:"client,omitempty"`
 }

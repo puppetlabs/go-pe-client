@@ -65,3 +65,25 @@ func TestRevokeRBACToken(t *testing.T) {
 	err = rbacClient.RevokeRBACToken(tokenValue)
 	require.Equal(t, expectedError, err)
 }
+
+func TestGenerateRBACToken(t *testing.T) {
+	tokenValue := "some token"
+
+	tokenRequest := TokenRequest{
+		Description: "A token to be used with joy and care.",
+		Lifetime:    "1y",
+		Client:      "PE console",
+	}
+
+	// Test success
+	setupPostResponder(t, tokenGenerateURI, "GenerateToken-request.json", "GenerateToken-response.json")
+
+	tokenResponse, err := rbacClient.GenerateRBACToken(tokenValue, tokenRequest)
+	require.Nil(t, err)
+	require.Equal(t, tokenValue, tokenResponse)
+
+	// Test error
+	setUpBadRequestResponder(t, http.MethodPost, tokenGenerateURI)
+	_, err = rbacClient.GenerateRBACToken(tokenValue, tokenRequest)
+	require.Equal(t, expectedError, err)
+}
