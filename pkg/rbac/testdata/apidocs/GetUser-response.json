@@ -1,0 +1,10 @@
+{"id": "fe62d770-5886-11e4-8ed6-0800200c9a66",
+  "login": "Amari",
+  "email": "amariperez@example.com",
+  "display_name": "Amari Perez",
+  "role_ids": [1,2,3],
+  "is_group" : false,
+  "is_remote" : false,
+  "is_superuser" : false,
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"}
