@@ -17,7 +17,7 @@ func init() {
 	httpmock.ActivateNonDefault(rbacClient.resty.GetClient())
 }
 
-func setUpOKResponder(t *testing.T, httpMethod string, path string, responseFilePath string) {
+func setUpOKResponder(t *testing.T, path string, responseFilePath string) {
 	httpmock.Reset()
 
 	responseBody, err := os.ReadFile(responseFilePath)
@@ -26,7 +26,7 @@ func setUpOKResponder(t *testing.T, httpMethod string, path string, responseFile
 	response := httpmock.NewBytesResponse(http.StatusOK, responseBody)
 	response.Header.Set("Content-Type", "application/json")
 
-	httpmock.RegisterResponder(httpMethod, rbacAPIOrigin+path, httpmock.ResponderFromResponse(response))
+	httpmock.RegisterResponder(http.MethodGet, rbacAPIOrigin+path, httpmock.ResponderFromResponse(response))
 	response.Body.Close()
 }
 

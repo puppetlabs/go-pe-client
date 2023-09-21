@@ -2,7 +2,6 @@ package rbac
 
 import (
 	"encoding/json"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -26,7 +25,7 @@ func TestGetRoles(t *testing.T) {
 	err = json.NewDecoder(expectedRolesJSONFile).Decode(&expectedRoles)
 	require.Nil(t, err, "error decoding expected roles")
 
-	setUpOKResponder(t, http.MethodGet, rolesPath, getRolesResponseFilePath)
+	setUpOKResponder(t, rolesPath, getRolesResponseFilePath)
 
 	actualRoles, err := rbacClient.GetRoles(token)
 	require.Nil(t, err)
@@ -43,7 +42,7 @@ func TestGetRole(t *testing.T) {
 	require.Nil(t, err, "error decoding expected role")
 
 	rolePathWithID := strings.ReplaceAll(rolePath, "{id}", strconv.Itoa(int(expectedRole.ID)))
-	setUpOKResponder(t, http.MethodGet, rolePathWithID, getRoleResponseFilePath)
+	setUpOKResponder(t, rolePathWithID, getRoleResponseFilePath)
 
 	actualRole, err := rbacClient.GetRole(expectedRole.ID, token)
 	require.Nil(t, err)

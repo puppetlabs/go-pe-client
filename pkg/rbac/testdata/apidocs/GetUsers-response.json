@@ -1,0 +1,38 @@
+[{
+  "id": "fe62d770-5886-11e4-8ed6-0800200c9a66",
+  "login": "Kalo",
+  "email": "kalohill@example.com",
+  "display_name": "Kalo Hill",
+  "role_ids": [1,2,3],
+  "is_group" : false,
+  "is_remote" : false,
+  "is_superuser" : true,
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+},{
+  "id": "07d9c8e0-5887-11e4-8ed6-0800200c9a66",
+  "login": "Jean",
+  "email": "jeanjackson@example.com",
+  "display_name": "Jean Jackson",
+  "role_ids": [2, 3],
+  "inherited_role_ids": [5],
+  "is_group" : false,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+},{
+  "id": "1cadd0e0-5887-11e4-8ed6-0800200c9a66",
+  "login": "Amari",
+  "email": "amariperez@example.com",
+  "display_name": "Amari Perez",
+  "role_ids": [2, 3],
+  "inherited_role_ids": [5],
+  "is_group" : false,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+}]
