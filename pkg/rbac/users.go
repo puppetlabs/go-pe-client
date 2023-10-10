@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	requestUsersURI       = "/users"         // #nosec - this is the uri to g et RBAC tokens
-	requestCurrentUserURI = "/users/current" // #nosec - this is the uri to authenticate RBAC tokens
-	requestUserURI        = "/users/"        // #nosec - this is the uri to revoke individual RBAC tokens
+	requestUsersURI       = "/rbac-api/v1/users"         // #nosec - this is the uri to g et RBAC tokens
+	requestCurrentUserURI = "/rbac-api/v1/users/current" // #nosec - this is the uri to authenticate RBAC tokens
+	requestUserURI        = "/rbac-api/v1/users/"        // #nosec - this is the uri to revoke individual RBAC tokens
 )
 
 // User describes the user keys.
