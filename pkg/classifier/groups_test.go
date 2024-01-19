@@ -47,6 +47,14 @@ func setupGetResponder(t *testing.T, url, query, responseFilename string) {
 	response.Body.Close()
 }
 
+func setupResponderWithStatusCodeAndBody(t *testing.T, url string, statusCode int, response interface{}) {
+	httpmock.Reset()
+	responder, err := httpmock.NewJsonResponder(statusCode, response)
+	require.Nil(t, err)
+	httpmock.RegisterResponder(http.MethodGet, hostURL+url, responder)
+	httpmock.RegisterResponder(http.MethodPost, hostURL+url, responder)
+}
+
 var (
 	pdbClient *Client
 	hostURL   = "https://test-host:4433"
